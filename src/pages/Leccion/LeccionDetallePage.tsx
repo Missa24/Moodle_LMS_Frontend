@@ -1,9 +1,18 @@
+import { useState } from "react";
 import DOMPurify from "dompurify";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trophy, Award, GraduationCap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { QueryState } from "@/components/common/QueryState";
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription,
+    DialogFooter,
+} from "@/components/ui/dialog";
 
 import { LeccionVideoPlayer } from "@/features/Leccion/Components/LeccionVideoPlayer";
 import { RecursoViewer } from "@/features/Leccion/Components/RecursoViewer";
@@ -20,6 +29,8 @@ export default function LeccionDetallePage() {
         leccionId: string;
     }>();
     const navigate = useNavigate();
+    const [showModuloDialog, setShowModuloDialog] = useState(false);
+    const [showCursoDialog, setShowCursoDialog] = useState(false);
 
     const { data: leccion, isLoading, isError, error } = useGetLeccion(leccionId!);
     const { data: leccionesProgreso } = useGetLeccionesConProgreso(moduloId!);
@@ -55,9 +66,83 @@ export default function LeccionDetallePage() {
                         onNavigateSiguiente={(nuevaLeccionId) =>
                             navigate(`/cursos/${cursoId}/modulos/${moduloId}/lecciones/${nuevaLeccionId}`)
                         }
+                        onModuloCompletado={(cursoCompletado) => {
+                            setShowModuloDialog(true);
+                            if (cursoCompletado) {
+                                setShowCursoDialog(true);
+                            }
+                        }}
                     />
                 ) : null}
             </QueryState>
+
+            <Dialog open={showModuloDialog} onOpenChange={setShowModuloDialog}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader className="items-center text-center">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+                            <Trophy className="h-8 w-8 text-primary" />
+                        </div>
+                        <DialogTitle className="text-xl">¡Felicitaciones!</DialogTitle>
+                        <DialogDescription>
+                            Has completado todas las lecciones del módulo. Se ha generado tu certificado de participación.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex-col gap-2 sm:flex-row">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowModuloDialog(false)}
+                        >
+                            Cerrar
+                        </Button>
+                        <Button
+                            type="button"
+                            className="gap-2"
+                            onClick={() => {
+                                setShowModuloDialog(false);
+                                navigate("/certificados");
+                            }}
+                        >
+                            <Award className="h-4 w-4" />
+                            Ver mi certificado
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={showCursoDialog} onOpenChange={setShowCursoDialog}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader className="items-center text-center">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
+                            <GraduationCap className="h-8 w-8 text-green-600" />
+                        </div>
+                        <DialogTitle className="text-xl">¡Curso completado!</DialogTitle>
+                        <DialogDescription>
+                            Has completado el curso. Se ha generado tu certificado de aprobación.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex-col gap-2 sm:flex-row">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowCursoDialog(false)}
+                        >
+                            Cerrar
+                        </Button>
+                        <Button
+                            type="button"
+                            className="gap-2"
+                            onClick={() => {
+                                setShowCursoDialog(false);
+                                navigate("/certificados");
+                            }}
+                        >
+                            <Award className="h-4 w-4" />
+                            Ver mi certificado de curso
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
@@ -68,6 +153,7 @@ interface LeccionContenidoProps {
     moduloId: string;
     leccionesProgreso: ReturnType<typeof useGetLeccionesConProgreso>["data"];
     onNavigateSiguiente: (leccionId: string) => void;
+    onModuloCompletado: (cursoCompletado: boolean) => void;
 }
 
 function LeccionContenido({
@@ -76,9 +162,12 @@ function LeccionContenido({
     moduloId,
     leccionesProgreso,
     onNavigateSiguiente,
+    onModuloCompletado,
 }: LeccionContenidoProps) {
     const indexActual = leccionesProgreso?.findIndex((l) => l.id === leccion.id) ?? -1;
     const estaCompletada = indexActual >= 0 ? leccionesProgreso![indexActual].completada : false;
+    const esUltimaLeccion =
+        indexActual >= 0 && indexActual === (leccionesProgreso?.length ?? 0) - 1;
     const siguienteLeccionId =
         indexActual >= 0 && indexActual < (leccionesProgreso?.length ?? 0) - 1
             ? leccionesProgreso![indexActual + 1].id
@@ -120,6 +209,11 @@ function LeccionContenido({
                     estaCompletada={estaCompletada}
                     siguienteLeccionId={siguienteLeccionId}
                     onNavigateSiguiente={onNavigateSiguiente}
+                    onCompletada={(data) => {
+                        if (!estaCompletada && esUltimaLeccion) {
+                            onModuloCompletado(data.cursoCompletado);
+                        }
+                    }}
                 />
             </div>
 

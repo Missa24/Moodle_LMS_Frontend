@@ -15,6 +15,7 @@ interface LeccionCheckpointFormProps {
     estaCompletada: boolean;
     siguienteLeccionId?: string;
     onNavigateSiguiente: (leccionId: string) => void;
+    onCompletada?: (data: { moduloCompletado: boolean; cursoCompletado: boolean }) => void;
 }
 
 type MotivoBloqueo = "no_inscrito" | "leccion_anterior_pendiente";
@@ -26,6 +27,7 @@ export function LeccionCheckpointForm({
     estaCompletada,
     siguienteLeccionId,
     onNavigateSiguiente,
+    onCompletada,
 }: LeccionCheckpointFormProps) {
     const { data: formulario, isLoading, isError, error } = useGetFormularioLeccion(leccionId);
     const { mutate: completar, isPending } = useMarcarLeccionCompletada();
@@ -36,11 +38,12 @@ export function LeccionCheckpointForm({
         motivo: null,
     });
 
-    const handleExito = () => {
+    const handleExito = (data: { moduloCompletado: boolean; cursoCompletado: boolean }) => {
         toast.success("¡Lección completada!");
         if (siguienteLeccionId) {
             onNavigateSiguiente(siguienteLeccionId);
         }
+        onCompletada?.(data);
     };
 
     const handleError = (error: unknown) => {
@@ -92,7 +95,7 @@ export function LeccionCheckpointForm({
                 <>
                     <Button
                         type="button"
-                        onClick={() => completar({ id: leccionId }, { onSuccess: handleExito, onError: handleError })}
+                        onClick={() => completar({ id: leccionId }, { onSuccess: (data) => handleExito(data), onError: handleError })}
                         disabled={isPending}
                         className="w-full gap-2 sm:w-auto"
                     >
@@ -119,7 +122,7 @@ export function LeccionCheckpointForm({
             opcionFormularioId: respuestas[p.id],
         }));
 
-        completar({ id: leccionId, respuestas: payload }, { onSuccess: handleExito, onError: handleError });
+        completar({ id: leccionId, respuestas: payload }, { onSuccess: (data) => handleExito(data), onError: handleError });
     };
 
     return (

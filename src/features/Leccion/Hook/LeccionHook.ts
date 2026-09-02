@@ -15,6 +15,7 @@ import {
     UpdateRecursoLeccion,
     DeleteRecursoLeccion,
     GetFormularioLeccion,
+    MarcarLeccionCompletadaResponseType,
 } from "../Service/LeccionService";
 import {
     LeccionCreateType,
@@ -124,6 +125,8 @@ export function useMarcarLeccionCompletada() {
             MarcarLeccionCompletada(id, respuestas),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["lecciones", "progreso"] });
+            queryClient.invalidateQueries({ queryKey: ["notificaciones"] });
+            queryClient.invalidateQueries({ queryKey: ["notificaciones-no-leidas"] });
         },
         onError: (error: unknown) => {
             const code = getApiErrorCode(error);

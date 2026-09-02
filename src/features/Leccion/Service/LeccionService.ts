@@ -13,6 +13,11 @@ import {
 } from "../Schema/LeccionSchema";
 import { buildFormData } from "@/utils/buildFormData";
 
+export type MarcarLeccionCompletadaResponseType = ResponseType & {
+    moduloCompletado: boolean;
+    cursoCompletado: boolean;
+};
+
 export async function GetLeccionesByModulo(
     moduloId: string,
     filtros?: { nombre?: string; tipoLeccion?: string; estaPublicada?: boolean }
@@ -64,7 +69,7 @@ export async function GetFormularioLeccion(leccionId: string): Promise<Formulari
 export async function MarcarLeccionCompletada(
     id: string,
     respuestas?: { preguntaFormularioId: string; opcionFormularioId: string }[],
-): Promise<ResponseType> {
+): Promise<MarcarLeccionCompletadaResponseType> {
     const response = await apiService.post(`/lecciones/${id}/completar`, { respuestas });
     return response.data;
 }

@@ -50,9 +50,9 @@ export function MisCursoCard({ curso, onVerModulo }: MisCursoCardProps) {
                         </div>
 
                         <div className="shrink-0 text-right">
-                            <p className="text-xs font-semibold text-foreground">
+                            {/* <p className="text-xs font-semibold text-foreground">
                                 {modulo.porcentajeAvance}%
-                            </p>
+                            </p> */}
                             <div className="mt-0.5 h-1 w-14 overflow-hidden rounded-full bg-muted">
                                 <div
                                     className="h-full rounded-full bg-primary transition-all duration-300"
