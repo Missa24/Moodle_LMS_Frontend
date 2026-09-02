@@ -15,7 +15,6 @@ import {
     UpdateRecursoLeccion,
     DeleteRecursoLeccion,
     GetFormularioLeccion,
-    MarcarLeccionCompletadaResponseType,
 } from "../Service/LeccionService";
 import {
     LeccionCreateType,

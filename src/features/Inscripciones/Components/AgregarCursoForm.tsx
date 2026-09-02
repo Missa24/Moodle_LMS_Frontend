@@ -99,7 +99,7 @@ export function AgregarCursoForm({
         agregarCursoMutation.mutate(
             {
                 cursoId: cursoIdSeleccionado,
-                moduloId: moduloIdSeleccionado,
+                moduloIds: [moduloIdSeleccionado],
                 estudianteIds: [estudianteId],
                 estadoAcceso: "habilitado",
             },
