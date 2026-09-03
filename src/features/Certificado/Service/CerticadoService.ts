@@ -15,7 +15,11 @@ export async function descargarCertificado(idCertificado: string): Promise<Blob>
 }
 
 export async function verificarCertificado(codigo: string): Promise<VerificarCertificado> {
-    const response = await apiService.get(`/certificados/verificar/${encodeURIComponent(codigo)}`);
+    const response = await apiService.get(`/certificados/verificar/${encodeURIComponent(codigo)}`, {
+        skipAuth: true,
+        skipAuthRedirect: true,
+    });
+
 
     return VerificarCertificadoSchema.parse(response.data);
 }
