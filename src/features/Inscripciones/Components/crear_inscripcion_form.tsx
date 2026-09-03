@@ -71,7 +71,7 @@ export function CrearInscripcionForm({
         defaultValues: {
             estadoAcceso: "pendiente",
             cursoId: "",
-            moduloId: "",
+            moduloIds: [],
             estudianteIds: [],
         },
     });
@@ -148,8 +148,8 @@ export function CrearInscripcionForm({
                                             );
 
                                             setValue(
-                                                "moduloId",
-                                                "",
+                                                "moduloIds",
+                                                [],
                                             );
                                         }}
                                         isLoading={
@@ -170,30 +170,34 @@ export function CrearInscripcionForm({
                     </Field>
 
                     <Field>
-                        <FieldLabel htmlFor="moduloId">
-                            Módulo
+                        <FieldLabel htmlFor="moduloIds">
+                            Módulos
                         </FieldLabel>
 
                         <Controller
-                            name="moduloId"
+                            name="moduloIds"
                             control={control}
                             render={({ field }) => {
                                 const value =
-                                    moduloOptions.find(
+                                    moduloOptions.filter(
                                         (option) =>
-                                            option.value ===
-                                            field.value,
-                                    ) ?? null;
+                                            field.value.includes(
+                                                option.value,
+                                            ),
+                                    );
 
                                 return (
-                                    <Select<SelectOption>
+                                    <Select<SelectOption, true>
                                         options={moduloOptions}
                                         value={value}
                                         onChange={(
-                                            option: SingleValue<SelectOption>,
+                                            option: MultiValue<SelectOption>,
                                         ) => {
                                             field.onChange(
-                                                option?.value ?? "",
+                                                option.map(
+                                                    (option) =>
+                                                        option.value,
+                                                ),
                                             );
                                         }}
                                         isLoading={
@@ -207,15 +211,16 @@ export function CrearInscripcionForm({
                                         isDisabled={
                                             !cursoSeleccionado
                                         }
+                                        isMulti
                                         isClearable
                                     />
                                 );
                             }}
                         />
 
-                        {errors.moduloId && (
+                        {errors.moduloIds && (
                             <span className="text-sm text-red-500">
-                                {errors.moduloId.message}
+                                {errors.moduloIds.message}
                             </span>
                         )}
                     </Field>
@@ -262,9 +267,6 @@ export function CrearInscripcionForm({
                                             }
                                             isMulti
                                             placeholder="Selecciona estudiantes"
-                                            closeMenuOnSelect={
-                                                false
-                                            }
                                         />
                                     );
                                 }}

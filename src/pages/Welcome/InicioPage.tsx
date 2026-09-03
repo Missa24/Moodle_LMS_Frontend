@@ -1,8 +1,9 @@
 import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Plus, GraduationCap, ArrowLeft } from "lucide-react";
+import { Plus, GraduationCap, ArrowLeft, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Banner } from "@/components/common/Banner";
 import { QueryState } from "@/components/common/QueryState";
 
@@ -21,6 +22,7 @@ export default function InicioPage() {
     const [categoriaActiva, setCategoriaActiva] = useState(
         () => searchParams.get("sub") ?? searchParams.get("cat") ?? ""
     );
+    const [search, setSearch] = useState("");
 
     const { data: categorias = [] } = useCategoriasCursos();
 
@@ -30,7 +32,7 @@ export default function InicioPage() {
     );
 
     const { data: subcategorias = [] } = useSubcategoriasCursos(categoriaIdSeleccionada ?? "");
-    const { data, isLoading, isError, error } = useCursos(1, 12, "", categoriaActiva);
+    const { data, isLoading, isError, error } = useCursos(1, 12, search, categoriaActiva);
 
     const cursos = data?.data ?? [];
     const totalCursos = data?.meta.total;
@@ -103,18 +105,28 @@ export default function InicioPage() {
                     )}
                 </div>
 
+                <div className="relative">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Buscar cursos..."
+                        className="h-10 pl-9"
+                    />
+                </div>
+
                 {!categoriaIdSeleccionada ? (
                     categorias.length > 0 && (
-                        <div className="flex flex-wrap gap-2">
+                        <div className="flex flex-wrap gap-3">
                             <button
                                 type="button"
                                 onClick={() => {
                                     setCategoriaActiva("");
                                     setSearchParams({}, { replace: true });
                                 }}
-                                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${categoriaActiva === ""
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-muted text-muted-foreground hover:bg-muted/70"
+                                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${categoriaActiva === ""
+                                    ? "bg-primary text-primary-foreground shadow-md"
+                                    : "border border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                                     }`}
                             >
                                 Todas
@@ -125,9 +137,9 @@ export default function InicioPage() {
                                     key={categoria.slug}
                                     type="button"
                                     onClick={() => handleCategoriaClick(categoria)}
-                                    className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${categoriaActiva === categoria.id
-                                        ? "bg-primary text-primary-foreground"
-                                        : "bg-muted text-muted-foreground hover:bg-muted/70"
+                                    className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${categoriaActiva === categoria.id
+                                        ? "bg-primary text-primary-foreground shadow-md"
+                                        : "border border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                                         }`}
                                 >
                                     {categoria.nombre}
@@ -136,22 +148,22 @@ export default function InicioPage() {
                         </div>
                     )
                 ) : (
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-3">
                         <button
                             type="button"
                             onClick={handleVolver}
-                            className="flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/70"
+                            className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground transition-all hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                         >
-                            <ArrowLeft className="h-3 w-3" />
+                            <ArrowLeft className="h-4 w-4" />
                             Volver
                         </button>
 
                         <button
                             type="button"
                             onClick={handleVerTodos}
-                            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${categoriaActiva === categoriaIdSeleccionada
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground hover:bg-muted/70"
+                            className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${categoriaActiva === categoriaIdSeleccionada
+                                ? "bg-primary text-primary-foreground shadow-md"
+                                : "border border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                                 }`}
                         >
                             Todos
@@ -162,9 +174,9 @@ export default function InicioPage() {
                                 key={sub.slug}
                                 type="button"
                                 onClick={() => handleSubcategoriaClick(sub)}
-                                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${categoriaActiva === sub.id
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-muted text-muted-foreground hover:bg-muted/70"
+                                className={`rounded-lg px-4 py-2 text-sm font-semibold transition-all ${categoriaActiva === sub.id
+                                    ? "bg-primary text-primary-foreground shadow-md"
+                                    : "border border-border bg-card text-foreground hover:bg-accent hover:text-accent-foreground hover:shadow-sm"
                                     }`}
                             >
                                 {sub.nombre}
@@ -208,7 +220,11 @@ export default function InicioPage() {
                         </div>
                     ) : (
                         <div className="flex min-h-[200px] items-center justify-center rounded-xl border bg-muted/20">
-                            <p className="text-sm text-muted-foreground">No hay cursos en esta categoría.</p>
+                            <p className="text-sm text-muted-foreground">
+                                {search.trim()
+                                    ? "No se encontraron cursos con ese término de búsqueda."
+                                    : "No hay cursos en esta categoría."}
+                            </p>
                         </div>
                     )}
                 </QueryState>
