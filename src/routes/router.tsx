@@ -104,7 +104,6 @@ export const router = createBrowserRouter([
                 path: "verificar/:codigo",
                 element: lazyElement(VerificarCertificadoPage),
             },
-
             {
                 element: lazyElement(ProtectedRoute),
                 children: [
