@@ -1,6 +1,10 @@
-import { LockKeyhole } from "lucide-react";
+import {
+    LockKeyhole,
+    LogIn,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+
 import {
     Dialog,
     DialogContent,
@@ -11,9 +15,18 @@ import {
 
 type LessonPurchaseDialogProps = {
     open: boolean;
-    onOpenChange: (open: boolean) => void;
-    leccionNombre: string | null;
+
+    onOpenChange: (
+        open: boolean
+    ) => void;
+
+    leccionNombre:
+    | string
+    | null;
+
     moduloNombre: string;
+
+    onBuy: () => void;
 };
 
 export const LessonPurchaseDialog = ({
@@ -21,11 +34,14 @@ export const LessonPurchaseDialog = ({
     onOpenChange,
     leccionNombre,
     moduloNombre,
+    onBuy,
 }: LessonPurchaseDialogProps) => {
     return (
         <Dialog
             open={open}
-            onOpenChange={onOpenChange}
+            onOpenChange={
+                onOpenChange
+            }
         >
             <DialogContent className="rounded-3xl sm:max-w-md">
                 <DialogHeader>
@@ -34,13 +50,17 @@ export const LessonPurchaseDialog = ({
                     </div>
 
                     <DialogTitle className="text-2xl leading-[1.1] tracking-[-0.035em]">
-                        Accede al módulo completo
+                        Accede al módulo
+                        completo
                     </DialogTitle>
 
                     <DialogDescription className="leading-[1.6]">
-                        Este contenido forma parte de{" "}
+                        Este contenido
+                        forma parte de{" "}
                         <span className="font-medium text-foreground">
-                            {moduloNombre}
+                            {
+                                moduloNombre
+                            }
                         </span>
                         .
                     </DialogDescription>
@@ -49,28 +69,39 @@ export const LessonPurchaseDialog = ({
                 {leccionNombre && (
                     <div className="rounded-xl border border-border bg-muted/40 p-4">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-                            Lección seleccionada
+                            Lección
+                            seleccionada
                         </p>
 
                         <p className="mt-1.5 text-sm font-semibold text-foreground">
-                            {leccionNombre}
+                            {
+                                leccionNombre
+                            }
                         </p>
                     </div>
                 )}
 
                 <p className="text-sm leading-[1.65] text-muted-foreground">
-                    Adquiere el módulo para acceder a todas sus lecciones,
-                    recursos y contenidos desde nuestra plataforma educativa.
+                    Para continuar,
+                    inicia sesión o crea
+                    una cuenta en Élite
+                    Academy. Después
+                    podrás continuar con
+                    el acceso a este
+                    módulo.
                 </p>
 
                 <Button
                     type="button"
                     size="lg"
+                    onClick={onBuy}
                     className="w-full rounded-xl"
                 >
-                    Comprar módulo
+                    <LogIn className="mr-2 size-4" />
+
+                    Continuar
                 </Button>
             </DialogContent>
         </Dialog>
     );
-};
+}; 

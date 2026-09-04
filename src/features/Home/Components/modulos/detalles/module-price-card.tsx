@@ -4,22 +4,24 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+
 import {
     Card,
     CardContent,
     CardFooter,
     CardHeader,
 } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
+
+import {
+    Separator,
+} from "@/components/ui/separator";
 
 type ModulePriceCardProps = {
-    precio: number;
     cantidadLecciones: number;
     onBuy: () => void;
 };
 
 export const ModulePriceCard = ({
-    precio,
     cantidadLecciones,
     onBuy,
 }: ModulePriceCardProps) => {
@@ -30,14 +32,10 @@ export const ModulePriceCard = ({
                     Acceso al módulo
                 </p>
 
-                <div className="mt-2 flex items-end gap-2">
-                    <span className="text-3xl font-semibold tracking-[-0.05em] text-foreground sm:text-4xl">
-                        Bs {precio}
-                    </span>
-                </div>
-
                 <p className="mt-2 text-xs leading-[1.6] text-muted-foreground sm:text-sm">
-                    Accede al contenido completo de este módulo desde nuestra
+                    Accede al contenido
+                    completo de este
+                    módulo desde nuestra
                     plataforma educativa.
                 </p>
             </CardHeader>
@@ -50,8 +48,11 @@ export const ModulePriceCard = ({
                         <Check className="size-4 shrink-0 text-primary" />
 
                         <span>
-                            {cantidadLecciones}{" "}
-                            {cantidadLecciones === 1
+                            {
+                                cantidadLecciones
+                            }{" "}
+                            {cantidadLecciones ===
+                                1
                                 ? "lección incluida"
                                 : "lecciones incluidas"}
                         </span>
@@ -61,7 +62,9 @@ export const ModulePriceCard = ({
                         <Check className="size-4 shrink-0 text-primary" />
 
                         <span>
-                            Acceso desde nuestra plataforma
+                            Acceso desde
+                            nuestra
+                            plataforma
                         </span>
                     </div>
 
@@ -69,7 +72,9 @@ export const ModulePriceCard = ({
                         <Check className="size-4 shrink-0 text-primary" />
 
                         <span>
-                            Recursos disponibles en las lecciones
+                            Recursos
+                            disponibles en
+                            las lecciones
                         </span>
                     </div>
                 </div>
@@ -82,14 +87,15 @@ export const ModulePriceCard = ({
                     onClick={onBuy}
                     className="w-full rounded-xl"
                 >
-                    Comprar módulo
+                    Acceder al módulo
 
                     <ChevronRight className="ml-1 size-4" />
                 </Button>
 
                 <p className="mt-3 text-center text-[10px] leading-relaxed text-muted-foreground sm:text-xs">
-                    Nuestro equipo te brindará información para completar tu
-                    inscripción.
+                    Inicia sesión para
+                    continuar con el
+                    acceso al módulo.
                 </p>
             </CardFooter>
         </Card>

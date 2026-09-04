@@ -40,7 +40,7 @@ export const CategoryShowcase = () => {
     }
 
     return (
-        <section className="overflow-hidden py-12 sm:py-14 md:py-16 lg:py-20">
+        <section id="categorias" className="overflow-hidden py-12 sm:py-14 md:py-16 lg:py-20">
             <div className="px-5 sm:px-8 lg:px-[50px]">
                 <div className="mx-auto max-w-[1800px]">
                     <div className="mb-7 flex items-end justify-between gap-4 sm:mb-9 md:mb-10 lg:mb-12">

@@ -4,7 +4,7 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function ModeToggle() {
-    const [isDark, setIsDark] = React.useState(false);
+    const [isDark, setIsDark] = React.useState(true);
 
     React.useEffect(() => {
         setIsDark(

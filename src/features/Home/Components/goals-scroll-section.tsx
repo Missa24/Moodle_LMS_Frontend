@@ -1,284 +1,256 @@
-"use client";
-
-import { useRef } from "react";
-
 import {
-    motion,
-    MotionValue,
-    useScroll,
-    useTransform,
-} from "motion/react";
+    Award,
+    BookOpenCheck,
+    GraduationCap,
+    Rocket,
+    Sparkles,
+    TrendingUp,
+} from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import type { LucideIcon } from "lucide-react";
 
 type Goal = {
-    texto: string;
-    posicion: string;
-    variante: "primary" | "secondary" | "card";
-    entrada: number;
+    number: string;
+    title: string;
+    description: string;
+    icon: LucideIcon;
 };
 
 const GOALS: Goal[] = [
     {
-        texto: "Perfeccionar mis técnicas",
-        posicion:
-            "left-[2%] top-[17%] sm:left-[7%] sm:top-[18%] lg:left-[13%] lg:top-[22%]",
-        variante: "secondary",
-        entrada: 0.26,
+        number: "01",
+        title: "Perfeccionar mis técnicas",
+        description:
+            "Fortalece tus habilidades y mejora tu práctica profesional.",
+        icon: Sparkles,
     },
     {
-        texto: "Emprender",
-        posicion:
-            "right-[3%] top-[14%] sm:right-[9%] sm:top-[16%] lg:right-[18%] lg:top-[18%]",
-        variante: "primary",
-        entrada: 0.34,
+        number: "02",
+        title: "Emprender",
+        description:
+            "Convierte tus conocimientos en nuevas oportunidades.",
+        icon: Rocket,
     },
     {
-        texto: "Obtener mi certificación",
-        posicion:
-            "left-[2%] bottom-[18%] sm:left-[7%] sm:bottom-[20%] lg:left-[7%] lg:bottom-[22%]",
-        variante: "card",
-        entrada: 0.42,
+        number: "03",
+        title: "Obtener mi certificación",
+        description:
+            "Respalda tu formación y continúa avanzando.",
+        icon: GraduationCap,
     },
     {
-        texto: "Actualizar mis conocimientos",
-        posicion:
-            "right-[1%] bottom-[20%] sm:right-[5%] sm:bottom-[22%] lg:right-[8%] lg:bottom-[24%]",
-        variante: "secondary",
-        entrada: 0.5,
+        number: "04",
+        title: "Actualizar mis conocimientos",
+        description:
+            "Mantente al día y descubre nuevas técnicas.",
+        icon: BookOpenCheck,
     },
     {
-        texto: "Crecer profesionalmente",
-        posicion:
-            "left-[18%] bottom-[5%] sm:left-[26%] sm:bottom-[7%] lg:left-[27%] lg:bottom-[8%]",
-        variante: "primary",
-        entrada: 0.58,
+        number: "05",
+        title: "Crecer profesionalmente",
+        description:
+            "Amplía tus capacidades y alcanza nuevos objetivos.",
+        icon: TrendingUp,
     },
     {
-        texto: "Aprender nuevas especialidades",
-        posicion:
-            "right-[14%] top-[5%] sm:right-[25%] sm:top-[6%] lg:right-[34%] lg:top-[7%]",
-        variante: "card",
-        entrada: 0.66,
+        number: "06",
+        title: "Aprender nuevas especialidades",
+        description:
+            "Explora nuevas áreas y continúa ampliando tu formación.",
+        icon: Award,
     },
 ];
 
-type GoalBubbleProps = {
-    goal: Goal;
-    progress: MotionValue<number>;
-    index: number;
-};
-
-const GoalBubble = ({
+const GoalItem = ({
     goal,
-    progress,
-    index,
-}: GoalBubbleProps) => {
-    const opacity = useTransform(
-        progress,
-        [
-            goal.entrada,
-            goal.entrada + 0.08,
-            0.92,
-            1,
-        ],
-        [0, 1, 1, 0]
-    );
-
-    const scale = useTransform(
-        progress,
-        [
-            goal.entrada,
-            goal.entrada + 0.09,
-        ],
-        [0.65, 1]
-    );
-
-    const y = useTransform(
-        progress,
-        [
-            goal.entrada,
-            goal.entrada + 0.09,
-        ],
-        [25, 0]
-    );
-
-    const rotate = useTransform(
-        progress,
-        [
-            goal.entrada,
-            goal.entrada + 0.1,
-        ],
-        [
-            index % 2 === 0 ? -4 : 4,
-            index % 2 === 0 ? -1 : 1,
-        ]
-    );
+    align = "left",
+}: {
+    goal: Goal;
+    align?: "left" | "right";
+}) => {
+    const Icon = goal.icon;
 
     return (
-        <motion.div
-            style={{
-                opacity,
-                scale,
-                y,
-                rotate,
-            }}
-            className={cn(
-                "absolute z-20",
-                goal.posicion
-            )}
+        <div
+            className={`group flex items-center gap-4 ${align === "right"
+                    ? "md:flex-row-reverse md:text-right"
+                    : ""
+                }`}
         >
-            <div
-                className={cn(
-                    "relative flex items-center justify-center",
-                    "max-w-[125px] rounded-[1.1rem]",
-                    "px-3 py-2.5 text-center",
-                    "text-[10px] font-semibold leading-[1.2]",
-                    "tracking-[-0.02em]",
-                    "shadow-sm",
-                    "sm:max-w-[170px]",
-                    "sm:rounded-[1.25rem]",
-                    "sm:px-4 sm:py-3",
-                    "sm:text-xs",
-                    "md:max-w-none",
-                    "md:text-sm",
-                    "lg:rounded-[1.4rem]",
-                    "lg:px-6 lg:py-3.5",
-                    "lg:text-base",
-                    goal.variante === "primary" &&
-                    "bg-primary text-primary-foreground",
-                    goal.variante === "secondary" &&
-                    "bg-secondary text-secondary-foreground",
-                    goal.variante === "card" &&
-                    "border border-border bg-card text-foreground"
-                )}
-            >
-                {goal.texto}
+            <div className="relative shrink-0">
+                <div className="flex size-11 items-center justify-center rounded-full border border-primary/20 bg-primary/5 text-primary transition-all duration-300 group-hover:border-primary/40 group-hover:bg-primary group-hover:text-primary-foreground sm:size-12">
+                    <Icon className="size-[18px] sm:size-5" />
+                </div>
 
-                <span
-                    className={cn(
-                        "absolute -bottom-1.5 left-1/2",
-                        "size-2.5 -translate-x-1/2 rotate-45",
-                        "sm:-bottom-2 sm:size-3",
-                        goal.variante === "primary" &&
-                        "bg-primary",
-                        goal.variante === "secondary" &&
-                        "bg-secondary",
-                        goal.variante === "card" &&
-                        "border-b border-r border-border bg-card"
-                    )}
-                />
-
-                <span
-                    className={cn(
-                        "absolute -bottom-5 left-[54%]",
-                        "size-1.5 rounded-full sm:-bottom-6 sm:size-2",
-                        goal.variante === "primary" &&
-                        "bg-primary/60",
-                        goal.variante === "secondary" &&
-                        "bg-secondary/80",
-                        goal.variante === "card" &&
-                        "bg-primary/40"
-                    )}
-                />
+                <span className="absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full bg-background text-[7px] font-bold text-primary ring-1 ring-border">
+                    {goal.number}
+                </span>
             </div>
-        </motion.div>
+
+            <div className="min-w-0">
+                <h3 className="text-sm font-semibold leading-tight tracking-[-0.02em] text-foreground sm:text-base lg:text-[17px]">
+                    {goal.title}
+                </h3>
+
+                <p className="mt-1 max-w-[280px] text-xs leading-[1.55] text-muted-foreground sm:text-[13px]">
+                    {goal.description}
+                </p>
+            </div>
+        </div>
     );
 };
 
 export const GoalsScrollSection = () => {
-    const sectionRef = useRef<HTMLElement | null>(
-        null
-    );
-
-    const { scrollYProgress } = useScroll({
-        target: sectionRef,
-        offset: ["start start", "end end"],
-    });
-
-    const titleOpacity = useTransform(
-        scrollYProgress,
-        [0.05, 0.16, 0.88, 0.98],
-        [0, 1, 1, 0]
-    );
-
-    const titleScale = useTransform(
-        scrollYProgress,
-        [0.05, 0.18],
-        [0.92, 1]
-    );
-
-    const titleY = useTransform(
-        scrollYProgress,
-        [0.05, 0.18],
-        [30, 0]
-    );
-
-    const footerOpacity = useTransform(
-        scrollYProgress,
-        [0.76, 0.87],
-        [0, 1]
-    );
-
     return (
         <section
-            ref={sectionRef}
-            className="relative h-[300svh] overflow-visible sm:h-[290svh] lg:h-[280svh]"
+            id="metas"
+            className="relative scroll-mt-28 overflow-hidden bg-background py-16 sm:py-20 lg:py-24"
         >
-            <div className="sticky top-0 h-[100svh] overflow-hidden">
-                <div className="absolute inset-0 px-4 sm:px-8 lg:px-[50px]">
-                    <div className="relative mx-auto h-full max-w-[1800px]">
-                        <div className="pointer-events-none absolute left-1/2 top-1/2 size-[300px] -translate-x-1/2 -translate-y-1/2 rounded-full sm:size-[450px] lg:size-[600px]" />
+            {/* Decoración de fondo */}
+            <div className="pointer-events-none absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/[0.035] blur-3xl sm:size-[600px] lg:size-[760px]" />
 
-                        <motion.div
-                            style={{
-                                opacity: titleOpacity,
-                                scale: titleScale,
-                                y: titleY,
-                            }}
-                            className="absolute inset-0 z-10 flex items-center justify-center"
-                        >
-                            <div className="mx-auto max-w-[900px] px-10 text-center sm:px-14 lg:px-8">
-                                <h2 className="text-[28px] font-medium leading-[1.02] tracking-[-0.045em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
-                                    Convierte tus metas en crecimiento profesional
-                                </h2>
+            <div className="relative mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-[50px]">
+                {/* Encabezado */}
+                <div className="mx-auto max-w-2xl text-center">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/5 px-3 py-1.5">
+                        <span className="size-1.5 rounded-full bg-primary" />
 
-                                <p className="mx-auto mt-4 hidden max-w-xl text-sm leading-[1.6] text-muted-foreground sm:block md:text-base">
-                                    Elige hacia dónde quieres avanzar y construye
-                                    tu camino con formación práctica y
-                                    especializada.
-                                </p>
-                            </div>
-                        </motion.div>
-
-                        {GOALS.map((goal, index) => (
-                            <GoalBubble
-                                key={goal.texto}
-                                goal={goal}
-                                progress={
-                                    scrollYProgress
-                                }
-                                index={index}
-                            />
-                        ))}
-
-                        <motion.div
-                            style={{
-                                opacity: footerOpacity,
-                            }}
-                            className="absolute bottom-[3%] left-1/2 z-20 -translate-x-1/2 sm:bottom-[4%]"
-                        >
-                            <div className="flex items-center gap-2 whitespace-nowrap">
-                                <span className="h-px w-4 bg-border sm:w-5" />
-
-                                <span className="text-[8px] font-semibold uppercase tracking-[0.18em] text-muted-foreground sm:text-[10px]">
-                                    Aprende · Crece · Evoluciona
-                                </span>
-
-                                <span className="h-px w-4 bg-border sm:w-5" />
-                            </div>
-                        </motion.div>
+                        <span className="text-[9px] font-semibold uppercase tracking-[0.18em] text-primary sm:text-[10px]">
+                            Tus objetivos importan
+                        </span>
                     </div>
+
+                    <h2 className="mt-4 text-2xl font-semibold leading-[1.08] tracking-[-0.035em] text-foreground sm:text-3xl lg:text-4xl">
+                        ¿Cuál es tu próxima meta?
+                    </h2>
+
+                    <p className="mx-auto mt-3 max-w-xl text-sm leading-[1.65] text-muted-foreground sm:text-base">
+                        Cada estudiante tiene un objetivo diferente.
+                        Encuentra el tuyo y sigue construyendo tu camino.
+                    </p>
+                </div>
+
+                {/* DESKTOP / TABLET */}
+                <div className="relative mt-14 hidden min-h-[520px] md:block lg:mt-16 lg:min-h-[570px]">
+                    {/* Órbita exterior */}
+                    <div className="pointer-events-none absolute left-1/2 top-1/2 h-[390px] w-[620px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-dashed border-border lg:h-[430px] lg:w-[760px]" />
+
+                    {/* Órbita interior */}
+                    <div className="pointer-events-none absolute left-1/2 top-1/2 size-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/10 lg:size-[300px]" />
+
+                    {/* Centro */}
+                    <div className="absolute left-1/2 top-1/2 z-10 flex size-[190px] -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-border bg-background text-center shadow-sm lg:size-[220px]">
+                        <div className="flex size-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                            <TrendingUp className="size-[18px]" />
+                        </div>
+
+                        <p className="mt-4 text-[9px] font-semibold uppercase tracking-[0.18em] text-primary">
+                            Tu crecimiento
+                        </p>
+
+                        <p className="mt-1.5 max-w-[145px] text-base font-semibold leading-[1.15] tracking-[-0.025em] text-foreground lg:text-lg">
+                            Aprende a tu ritmo y avanza
+                        </p>
+                    </div>
+
+                    {/* Izquierda arriba */}
+                    <div className="absolute left-[3%] top-[5%] lg:left-[7%]">
+                        <GoalItem
+                            goal={GOALS[0]}
+                            align="left"
+                        />
+                    </div>
+
+                    {/* Derecha arriba */}
+                    <div className="absolute right-[3%] top-[5%] lg:right-[7%]">
+                        <GoalItem
+                            goal={GOALS[1]}
+                            align="right"
+                        />
+                    </div>
+
+                    {/* Izquierda centro */}
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 lg:left-[2%]">
+                        <GoalItem
+                            goal={GOALS[2]}
+                            align="left"
+                        />
+                    </div>
+
+                    {/* Derecha centro */}
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 lg:right-[2%]">
+                        <GoalItem
+                            goal={GOALS[3]}
+                            align="right"
+                        />
+                    </div>
+
+                    {/* Izquierda abajo */}
+                    <div className="absolute bottom-[4%] left-[7%] lg:left-[12%]">
+                        <GoalItem
+                            goal={GOALS[4]}
+                            align="left"
+                        />
+                    </div>
+
+                    {/* Derecha abajo */}
+                    <div className="absolute bottom-[4%] right-[7%] lg:right-[12%]">
+                        <GoalItem
+                            goal={GOALS[5]}
+                            align="right"
+                        />
+                    </div>
+                </div>
+
+                {/* MOBILE */}
+                <div className="relative mt-10 md:hidden">
+                    <div className="absolute bottom-6 left-[21px] top-6 w-px bg-border" />
+
+                    <div className="space-y-7">
+                        {GOALS.map((goal) => {
+                            const Icon = goal.icon;
+
+                            return (
+                                <div
+                                    key={goal.number}
+                                    className="relative flex gap-4"
+                                >
+                                    <div className="relative z-10 flex size-[43px] shrink-0 items-center justify-center rounded-full border border-primary/20 bg-background text-primary">
+                                        <Icon className="size-[17px]" />
+                                    </div>
+
+                                    <div className="min-w-0 pb-1 pt-0.5">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[9px] font-bold tracking-[0.12em] text-primary">
+                                                {goal.number}
+                                            </span>
+
+                                            <div className="h-px w-5 bg-primary/30" />
+                                        </div>
+
+                                        <h3 className="mt-1.5 text-[15px] font-semibold leading-[1.15] tracking-[-0.02em] text-foreground sm:text-base">
+                                            {goal.title}
+                                        </h3>
+
+                                        <p className="mt-1.5 max-w-sm text-xs leading-[1.55] text-muted-foreground sm:text-sm">
+                                            {goal.description}
+                                        </p>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+
+                {/* Cierre */}
+                <div className="mx-auto mt-12 flex max-w-xl items-center justify-center gap-3 border-t border-border pt-7 text-center sm:mt-14">
+                    <div className="h-px w-6 bg-primary/40 sm:w-9" />
+
+                    <p className="text-[9px] font-semibold uppercase tracking-[0.18em] text-muted-foreground sm:text-[10px]">
+                        Aprende · Crece · Evoluciona
+                    </p>
+
+                    <div className="h-px w-6 bg-primary/40 sm:w-9" />
                 </div>
             </div>
         </section>

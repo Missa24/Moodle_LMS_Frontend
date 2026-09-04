@@ -65,51 +65,66 @@ export const FAQ = ({
 }: FAQProps) => {
   return (
     <section
+      id="faq"
       className={cn(
-        "py-28 lg:py-32",
+        "scroll-mt-28 bg-background",
+        "py-16 sm:py-20 lg:py-24",
         className
       )}
     >
-      <div className="container max-w-5xl">
+      <div className="mx-auto w-full max-w-[1400px] px-5 sm:px-8 lg:px-[50px]">
         <div
           className={cn(
-            "mx-auto grid gap-16 lg:grid-cols-2",
+            "mx-auto grid max-w-[1180px] gap-10",
+            "md:gap-12",
+            "lg:grid-cols-[0.78fr_1.22fr] lg:items-start lg:gap-16",
+            "xl:gap-20",
             className2
           )}
         >
-          {/* Encabezado */}
-          <div className="space-y-4">
-            <p className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+          {/* IZQUIERDA */}
+          <div className="mx-auto w-full max-w-xl text-center lg:sticky lg:top-32 lg:mx-0 lg:max-w-[430px] lg:text-left">
+            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
               FAQ
             </p>
 
             {headerTag === "h1" ? (
-              <h1 className="text-2xl tracking-tight md:text-4xl lg:text-5xl">
-                Preguntas Frecuentes
+              <h1 className="mt-3 text-2xl font-semibold leading-[1.08] tracking-[-0.035em] text-foreground sm:text-3xl lg:text-4xl">
+                Preguntas frecuentes
               </h1>
             ) : (
-              <h2 className="text-2xl tracking-tight md:text-4xl lg:text-5xl">
-                Preguntas Frecuentes
+              <h2 className="mt-3 text-2xl font-semibold leading-[1.08] tracking-[-0.035em] text-foreground sm:text-3xl lg:text-4xl">
+                Preguntas frecuentes
               </h2>
             )}
 
-            <p className="max-w-md leading-snug text-muted-foreground lg:mx-auto">
-              Todo lo que necesitas saber
-              sobre nuestros cursos.{" "}
+            <p className="mx-auto mt-4 max-w-md text-sm leading-[1.7] text-muted-foreground sm:text-base lg:mx-0">
+              Todo lo que necesitas saber sobre nuestros cursos,
+              la plataforma y tu experiencia de aprendizaje.
+            </p>
 
+            <p className="mx-auto mt-4 max-w-md text-xs leading-[1.7] text-muted-foreground sm:text-sm lg:mx-0">
+              ¿Tienes otra consulta?{" "}
               <Link
                 to="/contact"
-                className="underline underline-offset-4 transition-colors hover:text-foreground"
+                className="font-medium text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:decoration-primary"
               >
                 Contáctanos
-              </Link>{" "}
-
-              si tienes otra duda.
+              </Link>
+              .
             </p>
+
+            <div className="mx-auto mt-6 flex items-center justify-center gap-2 lg:mx-0 lg:justify-start">
+              <span className="h-1 w-8 rounded-full bg-primary" />
+
+              <span className="h-1 w-3 rounded-full bg-primary/30" />
+
+              <span className="h-1 w-3 rounded-full bg-primary/15" />
+            </div>
           </div>
 
-          {/* Preguntas */}
-          <div className="text-start">
+          {/* DERECHA */}
+          <div className="mx-auto w-full max-w-3xl lg:mx-0 lg:max-w-none">
             <Accordion
               type="single"
               collapsible
@@ -117,15 +132,44 @@ export const FAQ = ({
             >
               {FAQS.map((item, index) => (
                 <AccordionItem
-                  key={index}
-                  value={`${index}`}
+                  key={item.question}
+                  value={`faq-${index}`}
+                  className="border-border"
                 >
-                  <AccordionTrigger>
-                    {item.question}
+                  <AccordionTrigger
+                    className="
+                                            gap-4
+                                            py-5
+                                            text-left
+                                            text-sm
+                                            font-medium
+                                            leading-[1.4]
+                                            tracking-[-0.015em]
+                                            text-foreground
+                                            hover:no-underline
+                                            sm:py-6
+                                            sm:text-base
+                                            lg:text-[17px]
+                                        "
+                  >
+                    <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-primary/8 text-[9px] font-semibold text-primary sm:size-8 sm:text-[10px]">
+                        {String(index + 1).padStart(
+                          2,
+                          "0"
+                        )}
+                      </span>
+
+                      <span>
+                        {item.question}
+                      </span>
+                    </div>
                   </AccordionTrigger>
 
-                  <AccordionContent className="text-muted-foreground">
-                    {item.answer}
+                  <AccordionContent className="pb-5 pl-10 pr-3 sm:pb-6 sm:pl-12">
+                    <p className="max-w-2xl text-xs leading-[1.75] text-muted-foreground sm:text-sm lg:text-[15px]">
+                      {item.answer}
+                    </p>
                   </AccordionContent>
                 </AccordionItem>
               ))}
