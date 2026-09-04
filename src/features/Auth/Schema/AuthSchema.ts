@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const AuthSchema = z.object({
-    correo: z.string().email({ message: "Ingresa un correo electronico valido" }),
+    correo: z.string().email({
+        message: "Ingresa un correo electronico valido",
+    }),
     password: z.string().min(6, {
         message: "La contraseña debe tener un largo de 6 caracteres como minimo",
     }),
@@ -18,6 +20,7 @@ export const LoginResponseSchema = z.object({
         estado: z.string(),
         rol: z.array(z.string()),
         permisos: z.array(z.string()),
+        requiereCompletarPerfil: z.boolean(),
         menus: z.array(
             z.object({
                 id: z.string(),
@@ -72,9 +75,11 @@ export const UserMeResponseSchema = z.object({
         correo_verificado_en: z.string().nullable(),
         ultimo_acceso_en: z.string().nullable(),
         created_at: z.string(),
-        updated_at: z.string()
-    })
+        updated_at: z.string(),
+    }),
 });
 
 export type UserMeResponseType = z.infer<typeof UserMeResponseSchema>;
-export type UserMeDataType = z.infer<typeof UserMeResponseSchema>["data"];
+export type UserMeDataType = z.infer<
+    typeof UserMeResponseSchema
+>["data"];

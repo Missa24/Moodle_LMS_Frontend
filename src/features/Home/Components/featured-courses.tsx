@@ -85,7 +85,7 @@ export const FeaturedCourses = () => {
         return (
             <section
                 id="cursos"
-                className="relative scroll-mt-28 overflow-hidden bg-background py-16 sm:py-20 lg:py-24"
+                className="relative scroll-mt-28 overflow-hidden py-16 sm:py-20 lg:py-24"
             >
                 <div className="mx-auto w-full max-w-[1600px] px-5 sm:px-8 lg:px-[50px]">
                     <div className="mb-10 flex flex-col gap-4 sm:mb-12">
@@ -124,7 +124,7 @@ export const FeaturedCourses = () => {
     return (
         <section
             id="cursos"
-            className="relative scroll-mt-28 overflow-hidden bg-background py-16 sm:py-20 lg:py-24"
+            className="relative scroll-mt-28 overflow-hidden py-16 sm:py-20 lg:py-24"
         >
             <div className="pointer-events-none absolute -left-40 top-24 size-[350px] rounded-full bg-primary/[0.04] blur-3xl sm:size-[450px]" />
 

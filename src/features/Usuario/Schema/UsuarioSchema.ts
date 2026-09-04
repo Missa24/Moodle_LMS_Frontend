@@ -109,7 +109,7 @@ export const MiPerfilSchema = z.object({
     correoVerificadoEn: z.string().nullable(),
     ultimoAccesoEn: z.string().nullable(),
     createdAt: z.string(),
-
+    paisCodigo: z.string().nullable(),
     perfil: z.object({
         id: z.string(),
         usuarioId: z.string(),
@@ -123,6 +123,7 @@ export const MiPerfilSchema = z.object({
         genero: z.string().nullable(),
         ciudad: z.string().nullable(),
         pais: z.string().nullable(),
+        paisCodigo: z.string().nullable(),
         ocupacion: z.string().nullable(),
         contactoEmergenciaNombre: z.string().nullable(),
         contactoEmergenciaTelefono: z.string().nullable(),
@@ -174,7 +175,10 @@ export const UpdateMiPerfilSchema = z.object({
     ciudad: z.string().optional(),
 
     pais: z.string().optional(),
-
+    paisCodigo: z
+        .string()
+        .length(2, "Código de país inválido")
+        .optional(),
     ocupacion: z.string().optional(),
 
     contactoEmergenciaNombre: z.string().optional(),

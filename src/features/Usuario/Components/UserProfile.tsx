@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { UserRound } from "lucide-react";
-
+import { Camera, UserRound } from "lucide-react";
 
 import type { MiPerfilType } from "../Schema/UsuarioSchema";
 import { InfoField } from "@/components/common/info/InfoField";
@@ -9,10 +9,12 @@ import { InfoSection } from "@/components/common/info/InfoSection";
 
 interface UserProfileProps {
     usuario: MiPerfilType;
+    onChangePhoto: () => void;
 }
 
 export default function UserProfile({
     usuario,
+    onChangePhoto,
 }: UserProfileProps) {
     const perfil = usuario.perfil;
     const rol = usuario.roles?.[0]?.rol;
@@ -34,16 +36,38 @@ export default function UserProfile({
         .toUpperCase();
 
     const fechaNacimiento = perfil?.fechaNacimiento
-        ? new Date(
-            perfil.fechaNacimiento
-        ).toLocaleDateString("es-BO")
+        ? new Date(perfil.fechaNacimiento).toLocaleDateString("es-BO")
         : "No especificado";
 
     return (
         <div className="space-y-8">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                <div className="flex h-24 w-24 shrink-0 items-center justify-center rounded-full bg-primary text-2xl font-semibold text-primary-foreground">
-                    {iniciales || <UserRound className="h-10 w-10" />}
+                <div className="relative h-24 w-24 shrink-0">
+                    <div className="h-24 w-24 overflow-hidden rounded-full bg-primary">
+                        {perfil?.fotografiaRuta ? (
+                            <img
+                                src={perfil.fotografiaRuta}
+                                alt={nombreCompleto || usuario.username}
+                                className="h-full w-full object-cover"
+                            />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center text-2xl font-semibold text-primary-foreground">
+                                {iniciales || (
+                                    <UserRound className="h-10 w-10" />
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    <Button
+                        type="button"
+                        size="icon"
+                        variant="secondary"
+                        className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full shadow"
+                        onClick={onChangePhoto}
+                    >
+                        <Camera className="h-4 w-4" />
+                    </Button>
                 </div>
 
                 <div className="min-w-0 flex-1">
@@ -93,18 +117,12 @@ export default function UserProfile({
 
                 <InfoField
                     label="Apellido paterno"
-                    value={
-                        perfil?.apellidoPaterno ||
-                        "No especificado"
-                    }
+                    value={perfil?.apellidoPaterno || "No especificado"}
                 />
 
                 <InfoField
                     label="Apellido materno"
-                    value={
-                        perfil?.apellidoMaterno ||
-                        "No especificado"
-                    }
+                    value={perfil?.apellidoMaterno || "No especificado"}
                 />
 
                 <InfoField
@@ -114,10 +132,7 @@ export default function UserProfile({
 
                 <InfoField
                     label="Género"
-                    value={
-                        perfil?.genero ||
-                        "No especificado"
-                    }
+                    value={perfil?.genero || "No especificado"}
                 />
 
                 <InfoField
@@ -138,10 +153,7 @@ export default function UserProfile({
 
                 <InfoField
                     label="Teléfono"
-                    value={
-                        perfil?.telefono ||
-                        "No especificado"
-                    }
+                    value={perfil?.telefono || "No especificado"}
                 />
             </InfoSection>
 
@@ -151,26 +163,17 @@ export default function UserProfile({
             >
                 <InfoField
                     label="Ciudad"
-                    value={
-                        perfil?.ciudad ||
-                        "No especificado"
-                    }
+                    value={perfil?.ciudad || "No especificado"}
                 />
 
                 <InfoField
                     label="País"
-                    value={
-                        perfil?.pais ||
-                        "No especificado"
-                    }
+                    value={perfil?.pais || "No especificado"}
                 />
 
                 <InfoField
                     label="Ocupación"
-                    value={
-                        perfil?.ocupacion ||
-                        "No especificado"
-                    }
+                    value={perfil?.ocupacion || "No especificado"}
                 />
             </InfoSection>
 
@@ -185,10 +188,7 @@ export default function UserProfile({
 
                 <InfoField
                     label="Teléfono"
-                    value={
-                        perfil?.telefono ||
-                        "No especificado"
-                    }
+                    value={perfil?.telefono || "No especificado"}
                 />
             </InfoSection>
 

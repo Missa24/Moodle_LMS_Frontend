@@ -1,7 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChangeMyPassword, CreateUser, DeleteUserLogically, GetMiPerfil, GetPaginatedUsers, GetUserById, SearchUsers, UpdateMiPerfil, UpdateUser } from "../Service/UsuarioService";
+import { ChangeMyPassword, CreateUser, DeleteUserLogically, GetMiPerfil, GetPaginatedUsers, GetUserById, SearchUsers, UpdateMiPerfil, updateProfilePhoto, UpdateUser } from "../Service/UsuarioService";
 import { UserCreateType, UserUpdateType } from "../Schema/UsuarioSchema";
+import { useAuthStore } from "@/store/authStore";
 
 export function useGetUsers(page: number, limit: number = 10) {
     return useQuery({
@@ -102,19 +103,40 @@ export function useGetMiPerfil() {
 export function useUpdateMiPerfil() {
     const queryClient = useQueryClient();
 
+    const setRequiereCompletarPerfil =
+        useAuthStore(
+            (state) =>
+                state.setRequiereCompletarPerfil,
+        );
+
     return useMutation({
         mutationFn: UpdateMiPerfil,
 
-        onSuccess: () => {
-            toast.success("Perfil actualizado correctamente");
+        onSuccess: async (response) => {
+            const requiereCompletarPerfil =
+                !response.perfil?.nombre?.trim() ||
+                !response.perfil?.paisCodigo?.trim();
 
-            queryClient.invalidateQueries({
-                queryKey: ["users", "mi-perfil"],
+            setRequiereCompletarPerfil(
+                requiereCompletarPerfil,
+            );
+
+            await queryClient.invalidateQueries({
+                queryKey: [
+                    "users",
+                    "mi-perfil",
+                ],
             });
+
+            toast.success(
+                "Perfil actualizado correctamente",
+            );
         },
 
         onError: () => {
-            toast.error("No se pudo actualizar el perfil");
+            toast.error(
+                "No se pudo actualizar el perfil",
+            );
         },
     });
 }
@@ -129,6 +151,26 @@ export function useCambiarMiPassword() {
 
         onError: () => {
             toast.error("No se pudo cambiar la contraseña");
+        },
+    });
+}
+
+
+export function useUpdateProfilePhoto() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateProfilePhoto,
+
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({
+                queryKey: ["users", "mi-perfil"],
+            });
+            toast.success("Foto de perfil actualizada correctamente");
+        },
+
+        onError: () => {
+            toast.error("No se pudo actualizar la foto de perfil");
         },
     });
 }

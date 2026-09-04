@@ -46,3 +46,13 @@ export async function ChangeMyPassword(data: { passwordActual: string; passwordN
     const response = await apiService.patch("/user/mi-password", data);
     return response.data;
 }
+
+export async function updateProfilePhoto(file: File,) {
+    const formData = new FormData();
+
+    formData.append("file", file);
+
+    const { data } = await apiService.patch("/user/mi-perfil/foto", formData,);
+
+    return data;
+}
