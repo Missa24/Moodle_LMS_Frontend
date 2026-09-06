@@ -16,6 +16,7 @@ interface AuthState {
 
     login: (data: LoginResponseType) => void;
     logout: () => void;
+    setRequiereCompletarPerfil: (value: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -51,6 +52,15 @@ export const useAuthStore = create<AuthState>()(
                     menu: [],
                 });
             },
+            setRequiereCompletarPerfil: (value) =>
+                set((state) => ({
+                    usuario: state.usuario
+                        ? {
+                            ...state.usuario,
+                            requiereCompletarPerfil: value,
+                        }
+                        : null,
+                })),
         }),
         {
             name: "auth-storage",

@@ -1,21 +1,23 @@
+import { Outlet } from "react-router-dom";
+
 import AppSidebar from "@/components/dashboard/AppSidebar";
 import { Headerbar } from "@/components/nav/headerbar";
-import {
-    SidebarInset,
-    SidebarProvider,
-} from "@/components/ui/sidebar";
-import { Outlet } from "react-router-dom";
+import { CompleteProfileDialog } from "@/features/Auth/components/CompleteProfileDialog";
 
 export default function DashboardLayout() {
     return (
-        <SidebarProvider>
+        <div className="min-h-screen bg-background">
             <AppSidebar />
-            <SidebarInset>
+
+            <div className="min-h-screen md:pl-24">
                 <Headerbar />
-                <div>
+
+                <CompleteProfileDialog />
+
+                <main className="min-h-[calc(100vh-4rem)] pb-24 md:pb-6">
                     <Outlet />
-                </div>
-            </SidebarInset>
-        </SidebarProvider>
-    )
+                </main>
+            </div>
+        </div>
+    );
 }

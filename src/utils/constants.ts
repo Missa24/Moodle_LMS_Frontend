@@ -66,3 +66,30 @@ export const PERMISSIONS = {
         VER: "certificados.ver",
     },
 } as const;
+
+export const paises = [
+    {
+        nombre: "Bolivia",
+        codigo: "BO",
+    },
+    {
+        nombre: "Argentina",
+        codigo: "AR",
+    },
+    {
+        nombre: "Perú",
+        codigo: "PE",
+    },
+    {
+        nombre: "Chile",
+        codigo: "CL",
+    },
+    {
+        nombre: "Brasil",
+        codigo: "BR",
+    },
+    {
+        nombre: "Estados Unidos",
+        codigo: "US",
+    },
+];
