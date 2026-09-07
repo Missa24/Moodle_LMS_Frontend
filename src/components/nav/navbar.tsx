@@ -237,7 +237,6 @@ export function Navbar() {
                             </button>
                         )}
 
-                        {/* MENU MOBILE */}
                         <button
                             type="button"
                             onClick={() => {
@@ -274,7 +273,6 @@ export function Navbar() {
                     </div>
                 </div>
 
-                {/* BUSCADOR MOBILE */}
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
@@ -297,7 +295,6 @@ export function Navbar() {
                     </div>
                 </div>
 
-                {/* MENU MOBILE */}
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
@@ -308,7 +305,6 @@ export function Navbar() {
                 >
                     <div className="overflow-hidden">
                         <div className="p-3 sm:p-4">
-                            {/* LINKS */}
                             <nav className="flex flex-col">
                                 {ITEMS.map(
                                     (item) => (
@@ -334,7 +330,6 @@ export function Navbar() {
                                 )}
                             </nav>
 
-                            {/* LOGIN MOBILE */}
                             <div className="mt-3 border-t border-border pt-3 sm:hidden">
                                 {token ? (
                                     <Link

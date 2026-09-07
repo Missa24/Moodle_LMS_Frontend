@@ -212,21 +212,11 @@ export default function ModuloDetallePage() {
                                     />
 
                                     <LeccionesList
-                                        moduloId={
-                                            moduloId!
-                                        }
-                                        search={
-                                            search
-                                        }
-                                        onEditar={
-                                            abrirEditar
-                                        }
-                                        puedeEditar={
-                                            puedeEditar
-                                        }
-                                        puedeEliminar={
-                                            puedeEliminar
-                                        }
+                                        moduloId={moduloId!}
+                                        search={search}
+                                        onEditar={abrirEditar}
+                                        puedeEditar={puedeEditar}
+                                        puedeEliminar={puedeEliminar}
                                     />
                                 </>
                             ) : (

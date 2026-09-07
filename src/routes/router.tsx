@@ -20,11 +20,11 @@ const DashboardLayout = lazy(
 );
 
 const ProtectedRoute = lazy(() =>
-    import(
-        "@/components/Login/ProtectedRoute"
-    ).then((module) => ({
-        default: module.ProtectedRoute,
-    }))
+    import("@/components/Login/ProtectedRoute").then(
+        (module) => ({
+            default: module.ProtectedRoute,
+        })
+    )
 );
 
 const HomePage = lazy(
@@ -53,11 +53,11 @@ const ModuloDetallePublicPage = lazy(
 );
 
 const ChangePassword = lazy(() =>
-    import(
-        "@/pages/Auth/ChangePassword"
-    ).then((module) => ({
-        default: module.ChangePassword,
-    }))
+    import("@/pages/Auth/ChangePassword").then(
+        (module) => ({
+            default: module.ChangePassword,
+        })
+    )
 );
 
 const InicioPage = lazy(
@@ -159,9 +159,10 @@ const NotFoundPage = lazy(
 const lazyElement = (
     Component: React.LazyExoticComponent<
         React.ComponentType
-    >
+    >,
+    fallback: React.ReactNode = <Loading />
 ) => (
-    <Suspense fallback={<Loading />}>
+    <Suspense fallback={fallback}>
         <Component />
     </Suspense>
 );
@@ -185,7 +186,9 @@ export const router = createBrowserRouter([
                         children: [
                             {
                                 index: true,
-                                element: lazyElement(CursoCatalogoPage),
+                                element: lazyElement(
+                                    CursoCatalogoPage
+                                ),
                             },
                             {
                                 path: ":cursoId",
@@ -218,7 +221,6 @@ export const router = createBrowserRouter([
                     },
                 ],
             },
-
             {
                 path: "panel",
                 element: lazyElement(ProtectedRoute),
@@ -226,10 +228,14 @@ export const router = createBrowserRouter([
                 children: [
                     {
                         path: "cambiar-password",
-                        element: lazyElement(ChangePassword),
+                        element: lazyElement(
+                            ChangePassword
+                        ),
                     },
                     {
-                        element: lazyElement(DashboardLayout),
+                        element: lazyElement(
+                            DashboardLayout
+                        ),
                         errorElement: <RouteErrorBoundary />,
                         children: [
                             {
@@ -243,13 +249,16 @@ export const router = createBrowserRouter([
                             },
                             {
                                 path: "inicio",
-                                element: lazyElement(InicioPage),
+                                element: lazyElement(
+                                    InicioPage
+                                ),
                             },
                             {
                                 path: "perfil",
-                                element: lazyElement(ProfilePage),
+                                element: lazyElement(
+                                    ProfilePage
+                                ),
                             },
-
                             {
                                 path: "usuario",
                                 children: [
@@ -267,7 +276,6 @@ export const router = createBrowserRouter([
                                     },
                                 ],
                             },
-
                             {
                                 path: "cursos",
                                 children: [
@@ -312,10 +320,9 @@ export const router = createBrowserRouter([
                                                             },
                                                             {
                                                                 path: "lecciones/:leccionId",
-                                                                element:
-                                                                    lazyElement(
-                                                                        LeccionDetallePage
-                                                                    ),
+                                                                element: lazyElement(
+                                                                    LeccionDetallePage
+                                                                ),
                                                             },
                                                         ],
                                                     },
@@ -325,14 +332,12 @@ export const router = createBrowserRouter([
                                     },
                                 ],
                             },
-
                             {
                                 path: "mis-cursos",
                                 element: lazyElement(
                                     MisCursosPage
                                 ),
                             },
-
                             {
                                 path: "inscripciones",
                                 children: [
@@ -356,7 +361,6 @@ export const router = createBrowserRouter([
                                     },
                                 ],
                             },
-
                             {
                                 path: "certificados",
                                 element: lazyElement(
