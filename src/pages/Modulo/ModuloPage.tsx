@@ -15,20 +15,47 @@ import { usePermission } from "@/hooks/usePermission";
 import { PERMISSIONS } from "@/utils/constants";
 
 export default function ModulosPage() {
-    const { id: cursoId } = useParams<{ id: string }>();
+    const { id: cursoId } =
+        useParams<{ id: string }>();
+
     const navigate = useNavigate();
 
-    const [search, setSearch] = useState("");
-    const [incluirNoPublicados, setIncluirNoPublicados] = useState(false);
+    const [search, setSearch] =
+        useState("");
 
-    const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState<"create" | "edit">("create");
-    const [moduloIdSeleccionado, setModuloIdSeleccionado] = useState<string | undefined>(undefined);
+    const [
+        incluirNoPublicados,
+        setIncluirNoPublicados,
+    ] = useState(false);
+
+    const [open, setOpen] =
+        useState(false);
+
+    const [mode, setMode] =
+        useState<"create" | "edit">(
+            "create"
+        );
+
+    const [
+        moduloIdSeleccionado,
+        setModuloIdSeleccionado,
+    ] = useState<string | undefined>(
+        undefined
+    );
 
     const { can } = usePermission();
-    const puedeCrear = can(PERMISSIONS.MODULOS.CREAR);
-    const puedeEditar = can(PERMISSIONS.MODULOS.EDITAR);
-    const puedeEliminar = can(PERMISSIONS.MODULOS.ELIMINAR);
+
+    const puedeCrear = can(
+        PERMISSIONS.MODULOS.CREAR
+    );
+
+    const puedeEditar = can(
+        PERMISSIONS.MODULOS.EDITAR
+    );
+
+    const puedeEliminar = can(
+        PERMISSIONS.MODULOS.ELIMINAR
+    );
 
     const limpiarFiltros = () => {
         setSearch("");
@@ -41,14 +68,20 @@ export default function ModulosPage() {
         setOpen(true);
     };
 
-    const abrirEditar = (modulo: ModuloType) => {
+    const abrirEditar = (
+        modulo: ModuloType
+    ) => {
         setModuloIdSeleccionado(modulo.id);
         setMode("edit");
         setOpen(true);
     };
 
-    const verModulo = (modulo: ModuloType) => {
-        navigate(`/cursos/${cursoId}/modulos/${modulo.id}`);
+    const verModulo = (
+        modulo: ModuloType
+    ) => {
+        navigate(
+            `/panel/cursos/${cursoId}/modulos/${modulo.id}`
+        );
     };
 
     return (
@@ -57,19 +90,33 @@ export default function ModulosPage() {
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate(`/cursos/${cursoId}`)}
+                onClick={() =>
+                    navigate(
+                        `/panel/cursos/${cursoId}`
+                    )
+                }
                 className="gap-1 px-0"
             >
                 <ArrowLeft className="h-4 w-4" />
                 Volver al curso
             </Button>
 
-            <QueryState isLoading={false} isError={!cursoId} fallbackMessage="Curso no especificado.">
+            <QueryState
+                isLoading={false}
+                isError={!cursoId}
+                fallbackMessage="Curso no especificado."
+            >
                 <div className="flex items-start justify-between gap-4">
-                    <AppTitle title="Módulos" subtitle="Módulos disponibles en este curso." />
+                    <AppTitle
+                        title="Módulos"
+                        subtitle="Módulos disponibles en este curso."
+                    />
 
                     {puedeCrear && (
-                        <Button type="button" onClick={abrirCrear}>
+                        <Button
+                            type="button"
+                            onClick={abrirCrear}
+                        >
                             Nuevo módulo
                         </Button>
                     )}
@@ -79,14 +126,24 @@ export default function ModulosPage() {
                     search={search}
                     onSearchChange={setSearch}
                     onClear={limpiarFiltros}
-                    incluirNoPublicados={puedeEditar ? incluirNoPublicados : undefined}
-                    onIncluirNoPublicadosChange={puedeEditar ? setIncluirNoPublicados : undefined}
+                    incluirNoPublicados={
+                        puedeEditar
+                            ? incluirNoPublicados
+                            : undefined
+                    }
+                    onIncluirNoPublicadosChange={
+                        puedeEditar
+                            ? setIncluirNoPublicados
+                            : undefined
+                    }
                 />
 
                 <ModulosList
                     cursoId={cursoId!}
                     search={search}
-                    incluirNoPublicados={incluirNoPublicados}
+                    incluirNoPublicados={
+                        incluirNoPublicados
+                    }
                     onVer={verModulo}
                     onEditar={abrirEditar}
                     puedeEditar={puedeEditar}
@@ -99,7 +156,9 @@ export default function ModulosPage() {
                 onOpenChange={setOpen}
                 mode={mode}
                 cursoId={cursoId!}
-                moduloId={moduloIdSeleccionado}
+                moduloId={
+                    moduloIdSeleccionado
+                }
             />
         </div>
     );

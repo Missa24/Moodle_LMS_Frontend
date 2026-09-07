@@ -20,14 +20,27 @@ export default function CursosPage() {
     const [categoria, setCategoria] = useState("");
 
     const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState<"create" | "edit">("create");
-    const [cursoSeleccionado, setCursoSeleccionado] = useState<CursoType | undefined>(undefined);
+    const [mode, setMode] =
+        useState<"create" | "edit">("create");
+
+    const [cursoSeleccionado, setCursoSeleccionado] =
+        useState<CursoType | undefined>(
+            undefined
+        );
 
     const { can } = usePermission();
 
-    const puedeCrear = can(PERMISSIONS.CURSOS.CREAR);
-    const puedeEditar = can(PERMISSIONS.CURSOS.EDITAR);
-    const puedeEliminar = can(PERMISSIONS.CURSOS.ELIMINAR);
+    const puedeCrear = can(
+        PERMISSIONS.CURSOS.CREAR
+    );
+
+    const puedeEditar = can(
+        PERMISSIONS.CURSOS.EDITAR
+    );
+
+    const puedeEliminar = can(
+        PERMISSIONS.CURSOS.ELIMINAR
+    );
 
     const limpiarFiltros = () => {
         setSearch("");
@@ -47,16 +60,24 @@ export default function CursosPage() {
     };
 
     const verCurso = (curso: CursoType) => {
-        navigate(`/cursos/${curso.id}`);
+        navigate(
+            `/panel/cursos/${curso.id}`
+        );
     };
 
     return (
         <div className="space-y-6 p-6">
             <div className="flex items-start justify-between gap-4">
-                <AppTitle title="Cursos" subtitle="Explora y administra los cursos disponibles." />
+                <AppTitle
+                    title="Cursos"
+                    subtitle="Explora y administra los cursos disponibles."
+                />
 
                 {puedeCrear && (
-                    <Button type="button" onClick={abrirCrear}>
+                    <Button
+                        type="button"
+                        onClick={abrirCrear}
+                    >
                         Nuevo curso
                     </Button>
                 )}
@@ -66,7 +87,9 @@ export default function CursosPage() {
                 search={search}
                 categoria={categoria}
                 onSearchChange={setSearch}
-                onCategoriaChange={setCategoria}
+                onCategoriaChange={
+                    setCategoria
+                }
                 onClear={limpiarFiltros}
             />
 
@@ -76,10 +99,19 @@ export default function CursosPage() {
                 onVer={verCurso}
                 onEditar={abrirEditar}
                 puedeEditar={puedeEditar}
-                puedeEliminar={puedeEliminar}
+                puedeEliminar={
+                    puedeEliminar
+                }
             />
 
-            <DialogCurso open={open} onOpenChange={setOpen} mode={mode} initialData={cursoSeleccionado} />
+            <DialogCurso
+                open={open}
+                onOpenChange={setOpen}
+                mode={mode}
+                initialData={
+                    cursoSeleccionado
+                }
+            />
         </div>
     );
 }

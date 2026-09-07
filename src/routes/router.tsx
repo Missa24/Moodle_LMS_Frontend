@@ -166,249 +166,207 @@ const lazyElement = (
     </Suspense>
 );
 
-export const router =
-    createBrowserRouter([
-        {
-            path: "/",
-            element: lazyElement(
-                RootLayout
-            ),
-            children: [
-                {
-                    element: lazyElement(
-                        PublicLayout
-                    ),
-                    children: [
-                        {
-                            index: true,
-                            element:
-                                lazyElement(
-                                    HomePage
-                                ),
-                        },
-                        {
-                            path: "cursos",
-                            children: [
-                                {
-                                    index: true,
-                                    element:
-                                        lazyElement(
-                                            CursoCatalogoPage
+export const router = createBrowserRouter([
+    {
+        path: "/",
+        element: lazyElement(RootLayout),
+        errorElement: <RouteErrorBoundary />,
+        children: [
+            {
+                element: lazyElement(PublicLayout),
+                errorElement: <RouteErrorBoundary />,
+                children: [
+                    {
+                        index: true,
+                        element: lazyElement(HomePage),
+                    },
+                    {
+                        path: "cursos",
+                        children: [
+                            {
+                                index: true,
+                                element: lazyElement(CursoCatalogoPage),
+                            },
+                            {
+                                path: ":cursoId",
+                                children: [
+                                    {
+                                        index: true,
+                                        element: lazyElement(
+                                            CursoModulosPage
                                         ),
-                                },
-                                {
-                                    path: ":cursoId",
-                                    children: [
-                                        {
-                                            index: true,
-                                            element:
-                                                lazyElement(
-                                                    CursoModulosPage
-                                                ),
-                                        },
-                                        {
-                                            path: "modulos/:moduloId",
-                                            element:
-                                                lazyElement(
-                                                    ModuloDetallePublicPage
-                                                ),
-                                        },
-                                    ],
-                                },
-                            ],
-                        },
-                        {
-                            path: "verificar/:codigo",
-                            element:
-                                lazyElement(
-                                    VerificarCertificadoPage
-                                ),
-                        },
-                        {
-                            path: "*",
-                            element: lazyElement(
-                                NotFoundPage
-                            ),
-                        },
-                    ],
-                },
-
-                {
-                    path: "panel",
-                    element:
-                        lazyElement(
-                            ProtectedRoute
+                                    },
+                                    {
+                                        path: "modulos/:moduloId",
+                                        element: lazyElement(
+                                            ModuloDetallePublicPage
+                                        ),
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                    {
+                        path: "verificar/:codigo",
+                        element: lazyElement(
+                            VerificarCertificadoPage
                         ),
-                    children: [
-                        {
-                            path: "cambiar-password",
-                            element:
-                                lazyElement(
-                                    ChangePassword
+                    },
+                    {
+                        path: "*",
+                        element: lazyElement(NotFoundPage),
+                    },
+                ],
+            },
+
+            {
+                path: "panel",
+                element: lazyElement(ProtectedRoute),
+                errorElement: <RouteErrorBoundary />,
+                children: [
+                    {
+                        path: "cambiar-password",
+                        element: lazyElement(ChangePassword),
+                    },
+                    {
+                        element: lazyElement(DashboardLayout),
+                        errorElement: <RouteErrorBoundary />,
+                        children: [
+                            {
+                                index: true,
+                                element: (
+                                    <Navigate
+                                        to="inicio"
+                                        replace
+                                    />
                                 ),
-                        },
-                        {
-                            element:
-                                lazyElement(
-                                    DashboardLayout
-                                ),
-                            errorElement: (
-                                <RouteErrorBoundary />
-                            ),
-                            children: [
-                                {
-                                    index: true,
-                                    element: (
-                                        <Navigate
-                                            to="inicio"
-                                            replace
-                                        />
-                                    ),
-                                },
-                                {
-                                    path: "inicio",
-                                    element:
-                                        lazyElement(
-                                            InicioPage
+                            },
+                            {
+                                path: "inicio",
+                                element: lazyElement(InicioPage),
+                            },
+                            {
+                                path: "perfil",
+                                element: lazyElement(ProfilePage),
+                            },
+
+                            {
+                                path: "usuario",
+                                children: [
+                                    {
+                                        index: true,
+                                        element: lazyElement(
+                                            UsuarioPage
                                         ),
-                                },
-                                {
-                                    path: "perfil",
-                                    element:
-                                        lazyElement(
-                                            ProfilePage
+                                    },
+                                    {
+                                        path: ":id",
+                                        element: lazyElement(
+                                            UsuarioDetallePage
                                         ),
-                                },
+                                    },
+                                ],
+                            },
 
-                                {
-                                    path: "usuario",
-                                    children: [
-                                        {
-                                            index: true,
-                                            element:
-                                                lazyElement(
-                                                    UsuarioPage
-                                                ),
-                                        },
-                                        {
-                                            path: ":id",
-                                            element:
-                                                lazyElement(
-                                                    UsuarioDetallePage
-                                                ),
-                                        },
-                                    ],
-                                },
-
-                                {
-                                    path: "cursos",
-                                    children: [
-                                        {
-                                            index: true,
-                                            element:
-                                                lazyElement(
-                                                    CursosPage
-                                                ),
-                                        },
-                                        {
-                                            path: "mis-cursos",
-                                            element:
-                                                lazyElement(
-                                                    MisCursosPage
-                                                ),
-                                        },
-                                        {
-                                            path: ":id",
-                                            children: [
-                                                {
-                                                    index: true,
-                                                    element:
-                                                        lazyElement(
-                                                            CursoDetallePage
-                                                        ),
-                                                },
-                                                {
-                                                    path: "modulos",
-                                                    children: [
-                                                        {
-                                                            index: true,
-                                                            element:
-                                                                lazyElement(
-                                                                    ModulosPage
-                                                                ),
-                                                        },
-                                                        {
-                                                            path: ":moduloId",
-                                                            children: [
-                                                                {
-                                                                    index: true,
-                                                                    element:
-                                                                        lazyElement(
-                                                                            ModuloDetallePage
-                                                                        ),
-                                                                },
-                                                                {
-                                                                    path: "lecciones/:leccionId",
-                                                                    element:
-                                                                        lazyElement(
-                                                                            LeccionDetallePage
-                                                                        ),
-                                                                },
-                                                            ],
-                                                        },
-                                                    ],
-                                                },
-                                            ],
-                                        },
-                                    ],
-                                },
-
-                                {
-                                    path: "mis-cursos",
-                                    element:
-                                        lazyElement(
+                            {
+                                path: "cursos",
+                                children: [
+                                    {
+                                        index: true,
+                                        element: lazyElement(
+                                            CursosPage
+                                        ),
+                                    },
+                                    {
+                                        path: "mis-cursos",
+                                        element: lazyElement(
                                             MisCursosPage
                                         ),
-                                },
+                                    },
+                                    {
+                                        path: ":id",
+                                        children: [
+                                            {
+                                                index: true,
+                                                element: lazyElement(
+                                                    CursoDetallePage
+                                                ),
+                                            },
+                                            {
+                                                path: "modulos",
+                                                children: [
+                                                    {
+                                                        index: true,
+                                                        element: lazyElement(
+                                                            ModulosPage
+                                                        ),
+                                                    },
+                                                    {
+                                                        path: ":moduloId",
+                                                        children: [
+                                                            {
+                                                                index: true,
+                                                                element: lazyElement(
+                                                                    ModuloDetallePage
+                                                                ),
+                                                            },
+                                                            {
+                                                                path: "lecciones/:leccionId",
+                                                                element:
+                                                                    lazyElement(
+                                                                        LeccionDetallePage
+                                                                    ),
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
 
-                                {
-                                    path: "inscripciones",
-                                    children: [
-                                        {
-                                            index: true,
-                                            element:
-                                                lazyElement(
-                                                    InscripcionesPage
-                                                ),
-                                        },
-                                        {
-                                            path: "crear",
-                                            element:
-                                                lazyElement(
-                                                    CrearInscripcionPage
-                                                ),
-                                        },
-                                        {
-                                            path: "estudiante/:estudianteId",
-                                            element:
-                                                lazyElement(
-                                                    EditarInscripcionPage
-                                                ),
-                                        },
-                                    ],
-                                },
+                            {
+                                path: "mis-cursos",
+                                element: lazyElement(
+                                    MisCursosPage
+                                ),
+                            },
 
-                                {
-                                    path: "certificados",
-                                    element:
-                                        lazyElement(
-                                            MisCertificados
+                            {
+                                path: "inscripciones",
+                                children: [
+                                    {
+                                        index: true,
+                                        element: lazyElement(
+                                            InscripcionesPage
                                         ),
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        },
-    ]);
+                                    },
+                                    {
+                                        path: "crear",
+                                        element: lazyElement(
+                                            CrearInscripcionPage
+                                        ),
+                                    },
+                                    {
+                                        path: "estudiante/:estudianteId",
+                                        element: lazyElement(
+                                            EditarInscripcionPage
+                                        ),
+                                    },
+                                ],
+                            },
+
+                            {
+                                path: "certificados",
+                                element: lazyElement(
+                                    MisCertificados
+                                ),
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+]);

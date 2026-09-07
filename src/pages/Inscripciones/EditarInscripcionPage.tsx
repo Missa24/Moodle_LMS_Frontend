@@ -64,7 +64,7 @@ export default function EditarInscripcionPage() {
     isError,
     error,
   } = useGetInscripcionesPorEstudiante(
-    estudianteId ?? "",
+    estudianteId ?? ""
   );
 
   const eliminarModuloMutation =
@@ -83,12 +83,13 @@ export default function EditarInscripcionPage() {
     setCursoAEliminar,
   ] = useState<CursoAEliminar | null>(null);
 
-  const cursosInscritosIds = cursosInscritos.map(
-    (curso: CursoType) => curso.id,
-  );
+  const cursosInscritosIds =
+    cursosInscritos.map(
+      (curso: CursoType) => curso.id
+    );
 
   const handleEliminarModulo = (
-    modulo: ModuloAEliminar,
+    modulo: ModuloAEliminar
   ) => {
     setModuloAEliminar(modulo);
   };
@@ -102,32 +103,38 @@ export default function EditarInscripcionPage() {
       {
         inscripcionId:
           moduloAEliminar.inscripcionId,
-        cursoId: moduloAEliminar.cursoId,
-        moduloId: moduloAEliminar.moduloId,
+        cursoId:
+          moduloAEliminar.cursoId,
+        moduloId:
+          moduloAEliminar.moduloId,
       },
       {
         onSuccess: () => {
           setModuloAEliminar(null);
         },
-      },
+      }
     );
   };
 
   const handleConfirmEliminarCurso = () => {
-    if (!cursoAEliminar || !estudianteId) {
+    if (
+      !cursoAEliminar ||
+      !estudianteId
+    ) {
       return;
     }
 
     eliminarCursoMutation.mutate(
       {
         estudianteId,
-        cursoId: cursoAEliminar.id,
+        cursoId:
+          cursoAEliminar.id,
       },
       {
         onSuccess: () => {
           setCursoAEliminar(null);
         },
-      },
+      }
     );
   };
 
@@ -138,7 +145,9 @@ export default function EditarInscripcionPage() {
           variant="ghost"
           size="icon"
           onClick={() =>
-            navigate("/inscripciones")
+            navigate(
+              "/panel/inscripciones"
+            )
           }
           className="cursor-pointer"
         >
@@ -162,8 +171,13 @@ export default function EditarInscripcionPage() {
               <CardTitle className="flex items-center gap-2 text-base">
                 <BookOpen className="h-4 w-4 text-primary" />
                 Cursos inscritos
+
                 <span className="text-muted-foreground">
-                  ({cursosInscritos.length})
+                  (
+                  {
+                    cursosInscritos.length
+                  }
+                  )
                 </span>
               </CardTitle>
 
@@ -171,32 +185,44 @@ export default function EditarInscripcionPage() {
                 <p className="text-sm text-muted-foreground">
                   Estudiante:{" "}
                   <span className="font-medium text-foreground">
-                    {nombreCompleto}
+                    {
+                      nombreCompleto
+                    }
                   </span>
                 </p>
               )}
             </CardHeader>
 
             <CardContent>
-              {cursosInscritos.length === 0 ? (
+              {cursosInscritos.length ===
+                0 ? (
                 <div className="rounded-lg border border-dashed py-8 text-center">
                   <BookOpen className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
 
                   <p className="text-sm font-medium">
-                    No tiene cursos inscritos
+                    No tiene cursos
+                    inscritos
                   </p>
 
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Puedes agregar un curso desde la sección inferior.
+                    Puedes agregar un
+                    curso desde la
+                    sección inferior.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {cursosInscritos.map(
-                    (curso: CursoType) => (
+                    (
+                      curso: CursoType
+                    ) => (
                       <CursoInscritoCard
-                        key={curso.id}
-                        curso={curso}
+                        key={
+                          curso.id
+                        }
+                        curso={
+                          curso
+                        }
                         onEliminarCurso={
                           setCursoAEliminar
                         }
@@ -204,7 +230,7 @@ export default function EditarInscripcionPage() {
                           handleEliminarModulo
                         }
                       />
-                    ),
+                    )
                   )}
                 </div>
               )}
@@ -213,7 +239,9 @@ export default function EditarInscripcionPage() {
 
           {estudianteId && (
             <AgregarCursoForm
-              estudianteId={estudianteId}
+              estudianteId={
+                estudianteId
+              }
               cursosInscritosIds={
                 cursosInscritosIds
               }
@@ -223,17 +251,23 @@ export default function EditarInscripcionPage() {
       </QueryState>
 
       <DialogConfirmarEliminarModulo
-        open={!!moduloAEliminar}
+        open={
+          !!moduloAEliminar
+        }
         onOpenChange={(open) => {
           if (!open) {
-            setModuloAEliminar(null);
+            setModuloAEliminar(
+              null
+            );
           }
         }}
         cursoNombre={
-          moduloAEliminar?.cursoNombre ?? ""
+          moduloAEliminar?.cursoNombre ??
+          ""
         }
         moduloNombre={
-          moduloAEliminar?.moduloNombre ?? ""
+          moduloAEliminar?.moduloNombre ??
+          ""
         }
         onConfirm={
           handleConfirmEliminarModulo
@@ -244,14 +278,19 @@ export default function EditarInscripcionPage() {
       />
 
       <DialogConfirmarEliminarModulo
-        open={!!cursoAEliminar}
+        open={
+          !!cursoAEliminar
+        }
         onOpenChange={(open) => {
           if (!open) {
-            setCursoAEliminar(null);
+            setCursoAEliminar(
+              null
+            );
           }
         }}
         cursoNombre={
-          cursoAEliminar?.nombre ?? ""
+          cursoAEliminar?.nombre ??
+          ""
         }
         moduloNombre="todos sus módulos"
         onConfirm={

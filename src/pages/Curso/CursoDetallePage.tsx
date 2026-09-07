@@ -1,5 +1,9 @@
 import { useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import {
+    useNavigate,
+    useParams,
+    useLocation,
+} from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -19,21 +23,41 @@ export default function CursoDetallePage() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const location = useLocation();
-    const from = (location.state as { from?: string })?.from ?? "cursos";
 
-    const { data: curso, isLoading, isError, error } = useGetCurso(id!);
+    const from =
+        (location.state as { from?: string })?.from ??
+        "cursos";
 
-    const [searchModulos, setSearchModulos] = useState("");
-    const [incluirNoPublicados, setIncluirNoPublicados] = useState(false);
+    const { data: curso, isLoading, isError, error } =
+        useGetCurso(id!);
+
+    const [searchModulos, setSearchModulos] =
+        useState("");
+
+    const [incluirNoPublicados, setIncluirNoPublicados] =
+        useState(false);
 
     const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState<"create" | "edit">("create");
-    const [moduloIdSeleccionado, setModuloIdSeleccionado] = useState<string | undefined>(undefined);
+
+    const [mode, setMode] =
+        useState<"create" | "edit">("create");
+
+    const [moduloIdSeleccionado, setModuloIdSeleccionado] =
+        useState<string | undefined>(undefined);
 
     const { can } = usePermission();
-    const puedeCrear = can(PERMISSIONS.MODULOS.CREAR);
-    const puedeEditar = can(PERMISSIONS.MODULOS.EDITAR);
-    const puedeEliminar = can(PERMISSIONS.MODULOS.ELIMINAR);
+
+    const puedeCrear = can(
+        PERMISSIONS.MODULOS.CREAR
+    );
+
+    const puedeEditar = can(
+        PERMISSIONS.MODULOS.EDITAR
+    );
+
+    const puedeEliminar = can(
+        PERMISSIONS.MODULOS.ELIMINAR
+    );
 
     const abrirCrear = () => {
         setModuloIdSeleccionado(undefined);
@@ -48,23 +72,57 @@ export default function CursoDetallePage() {
     };
 
     const verModulo = (modulo: ModuloType) => {
-        navigate(`/cursos/${id}/modulos/${modulo.id}`, { state: { from } });
+        navigate(
+            `/panel/cursos/${id}/modulos/${modulo.id}`,
+            {
+                state: {
+                    from,
+                },
+            }
+        );
+    };
+
+    const volver = () => {
+        if (from === "mis-cursos") {
+            navigate("/panel/mis-cursos");
+            return;
+        }
+
+        navigate("/panel/cursos");
     };
 
     return (
         <div className="space-y-8 p-6">
-            <Button type="button" variant="ghost" size="sm" onClick={() => navigate(`/${from}`)} className="gap-1 px-0">
+            <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={volver}
+                className="gap-1 px-0"
+            >
                 <ArrowLeft className="h-4 w-4" />
-                {from === "mis-cursos" ? "Volver a mis cursos" : "Volver a cursos"}
+
+                {from === "mis-cursos"
+                    ? "Volver a mis cursos"
+                    : "Volver a cursos"}
             </Button>
 
-            <QueryState isLoading={isLoading} isError={isError} error={error} fallbackMessage="No se pudo cargar el curso.">
+            <QueryState
+                isLoading={isLoading}
+                isError={isError}
+                error={error}
+                fallbackMessage="No se pudo cargar el curso."
+            >
                 {curso && (
                     <>
                         <div className="flex flex-col gap-5 sm:flex-row">
                             <div className="h-[180px] w-full shrink-0 overflow-hidden rounded-xl bg-muted sm:w-[280px]">
                                 {curso.rutaPortada ? (
-                                    <img src={curso.rutaPortada} alt={curso.nombre} className="h-full w-full object-cover" />
+                                    <img
+                                        src={curso.rutaPortada}
+                                        alt={curso.nombre}
+                                        className="h-full w-full object-cover"
+                                    />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                                         Sin imagen
@@ -73,11 +131,19 @@ export default function CursoDetallePage() {
                             </div>
 
                             <div className="min-w-0 flex-1">
-                                <AppTitle title={curso.nombre} subtitle={curso.categoria?.slug ?? undefined} />
+                                <AppTitle
+                                    title={curso.nombre}
+                                    subtitle={
+                                        curso.categoria?.slug ??
+                                        undefined
+                                    }
+                                />
 
                                 {curso.descripcionCompleta && (
                                     <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                                        {curso.descripcionCompleta}
+                                        {
+                                            curso.descripcionCompleta
+                                        }
                                     </p>
                                 )}
                             </div>
@@ -85,10 +151,16 @@ export default function CursoDetallePage() {
 
                         <div className="space-y-4 border-t pt-6">
                             <div className="flex items-start justify-between gap-4">
-                                <AppTitle title="Módulos" subtitle="Módulos disponibles en este curso." />
+                                <AppTitle
+                                    title="Módulos"
+                                    subtitle="Módulos disponibles en este curso."
+                                />
 
                                 {puedeCrear && (
-                                    <Button type="button" onClick={abrirCrear}>
+                                    <Button
+                                        type="button"
+                                        onClick={abrirCrear}
+                                    >
                                         Nuevo módulo
                                     </Button>
                                 )}
@@ -96,23 +168,39 @@ export default function CursoDetallePage() {
 
                             <ModulosToolbar
                                 search={searchModulos}
-                                onSearchChange={setSearchModulos}
+                                onSearchChange={
+                                    setSearchModulos
+                                }
                                 onClear={() => {
                                     setSearchModulos("");
-                                    setIncluirNoPublicados(false);
+                                    setIncluirNoPublicados(
+                                        false
+                                    );
                                 }}
-                                incluirNoPublicados={puedeEditar ? incluirNoPublicados : undefined}
-                                onIncluirNoPublicadosChange={puedeEditar ? setIncluirNoPublicados : undefined}
+                                incluirNoPublicados={
+                                    puedeEditar
+                                        ? incluirNoPublicados
+                                        : undefined
+                                }
+                                onIncluirNoPublicadosChange={
+                                    puedeEditar
+                                        ? setIncluirNoPublicados
+                                        : undefined
+                                }
                             />
 
                             <ModulosList
                                 cursoId={id!}
                                 search={searchModulos}
-                                incluirNoPublicados={incluirNoPublicados}
+                                incluirNoPublicados={
+                                    incluirNoPublicados
+                                }
                                 onVer={verModulo}
                                 onEditar={abrirEditar}
                                 puedeEditar={puedeEditar}
-                                puedeEliminar={puedeEliminar}
+                                puedeEliminar={
+                                    puedeEliminar
+                                }
                             />
                         </div>
                     </>

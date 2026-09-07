@@ -9,7 +9,12 @@ export default function UsuarioDetallePage() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-    const { data, isLoading, isError, error } = useGetUser(id ?? "", !!id);
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+    } = useGetUser(id ?? "", !!id);
 
     return (
         <div className="space-y-6 p-6">
@@ -19,7 +24,14 @@ export default function UsuarioDetallePage() {
                 error={error}
                 fallbackMessage="No se pudo cargar la información del usuario."
             >
-                {data && <UsuarioDetalle usuario={data} onBack={() => navigate("/usuario")} />}
+                {data && (
+                    <UsuarioDetalle
+                        usuario={data}
+                        onBack={() =>
+                            navigate("/panel/usuario")
+                        }
+                    />
+                )}
             </QueryState>
         </div>
     );
