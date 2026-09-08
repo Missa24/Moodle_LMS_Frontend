@@ -5,8 +5,9 @@ import {
 import {
     useAuthStore,
 } from "@/store/authStore";
-import { SupportForm } from "@/features/Support/Componentes/SupportForm";
 
+import { SupportForm } from "@/features/Support/Componentes/SupportForm";
+import BuyModuleButton from "@/features/Lead/Components/BuyModuleButton";
 
 export default function SupportPage() {
     const usuario = useAuthStore(
@@ -31,6 +32,13 @@ export default function SupportPage() {
                         ayudaremos lo antes posible.
                     </p>
                 </div>
+            </div>
+
+            <div className="flex items-center">
+                <BuyModuleButton
+                    moduloId="MODULO_ID_PRUEBA"
+                    linkPago="https://example.com"
+                />
             </div>
 
             <SupportForm
