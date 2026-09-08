@@ -152,6 +152,13 @@ const MisCertificados = lazy(
         )
 );
 
+const SupportPage = lazy(
+    () =>
+        import(
+            "@/pages/Support/SupportPage"
+        )
+);
+
 const NotFoundPage = lazy(
     () => import("@/pages/NotFound/NotFoundPage")
 );
@@ -367,6 +374,10 @@ export const router = createBrowserRouter([
                                     MisCertificados
                                 ),
                             },
+                            {
+                                path: "soporte",
+                                element: lazyElement(SupportPage)
+                            }
                         ],
                     },
                 ],

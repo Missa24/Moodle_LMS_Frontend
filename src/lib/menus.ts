@@ -52,4 +52,9 @@ export const menuItems: MenuItem[] = [
         icon: faCertificate,
         url: "/panel/certificados",
     },
+    {
+        title: "Soporte",
+        icon: faUsersGear,
+        url: "/panel/soporte",
+    }
 ];
