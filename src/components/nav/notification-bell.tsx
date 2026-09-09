@@ -65,7 +65,7 @@ export const NotificationBell = () => {
     // Si ya está leída, solo cerramos y navegamos
     if (leida) {
       setOpen(false);
-      navigate("/certificados");
+      navigate("/panel/certificados");
       return;
     }
 
@@ -73,7 +73,7 @@ export const NotificationBell = () => {
     marcarComoLeida.mutate(id, {
       onSuccess: () => {
         setOpen(false);
-        navigate("/certificados");
+        navigate("/panel/certificados");
       },
     });
   };
@@ -194,7 +194,7 @@ export const NotificationBell = () => {
                   className="cursor-pointer justify-center text-xs text-muted-foreground"
                   onClick={() => {
                     setOpen(false);
-                    navigate("/certificados");
+                    navigate("/panel/certificados");
                   }}
                 >
                   Ver todas las notificaciones

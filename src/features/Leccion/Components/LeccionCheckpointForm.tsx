@@ -14,8 +14,12 @@ interface LeccionCheckpointFormProps {
     moduloId: string;
     estaCompletada: boolean;
     siguienteLeccionId?: string;
+    linkPago?: string | null;
     onNavigateSiguiente: (leccionId: string) => void;
-    onCompletada?: (data: { moduloCompletado: boolean; cursoCompletado: boolean }) => void;
+    onCompletada?: (data: {
+        moduloCompletado: boolean;
+        cursoCompletado: boolean;
+    }) => void;
 }
 
 type MotivoBloqueo = "no_inscrito" | "leccion_anterior_pendiente";
@@ -26,6 +30,7 @@ export function LeccionCheckpointForm({
     moduloId,
     estaCompletada,
     siguienteLeccionId,
+    linkPago,
     onNavigateSiguiente,
     onCompletada,
 }: LeccionCheckpointFormProps) {
@@ -102,12 +107,12 @@ export function LeccionCheckpointForm({
                         {isPending && <Loader2 className="h-4 w-4 animate-spin" />}
                         Marcar como completada
                     </Button>
-
                     <LeccionBloqueadaDialog
                         open={dialogBloqueo.open}
                         motivo={dialogBloqueo.motivo}
                         cursoId={cursoId}
                         moduloId={moduloId}
+                        linkPago={linkPago}
                     />
                 </>
             </QueryState>

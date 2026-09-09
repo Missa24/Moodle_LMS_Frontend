@@ -6,17 +6,12 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLogout } from "@/features/Auth/Hook/AuthHook";
-import { useNavigate } from "react-router-dom";
 
 function ButtonLogOut() {
     const logoutMutation = useLogout();
-    const navigate = useNavigate();
+
     const handleLogout = () => {
-        logoutMutation.mutate(undefined, {
-            onSuccess: () => {
-                navigate("/login");
-            }
-        });
+        logoutMutation.mutate();
     };
 
     return (
@@ -30,7 +25,15 @@ function ButtonLogOut() {
                         onClick={handleLogout}
                         disabled={logoutMutation.isPending}
                         className="
-                            self-center bg-muted text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-all duration-200 shadow-sm"
+                            self-center
+                            bg-muted
+                            text-muted-foreground
+                            hover:bg-destructive/10
+                            hover:text-destructive
+                            transition-all
+                            duration-200
+                            shadow-sm
+                        "
                     >
                         <LogOut className="h-5 w-5" />
                     </Button>
