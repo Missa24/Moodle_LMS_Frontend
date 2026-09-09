@@ -67,7 +67,7 @@ export default function ModulosPage() {
             <QueryState isLoading={false} isError={!cursoId} fallbackMessage="Curso no especificado.">
                 <div className="flex items-start justify-between gap-4">
                     <AppTitle title="Módulos" subtitle="Módulos disponibles en este curso." />
-
+                    {puedeCrear ? "si": "no"}
                     {puedeCrear && (
                         <Button type="button" onClick={abrirCrear}>
                             Nuevo módulo

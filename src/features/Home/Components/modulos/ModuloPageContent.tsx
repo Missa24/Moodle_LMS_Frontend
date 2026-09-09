@@ -255,11 +255,14 @@ export default function ModuloPageContent() {
                                 <ModulePlatformVideo />
 
                                 <ModulePriceCard
-
                                     cantidadLecciones={
                                         modulo
                                             ._count
                                             .lecciones
+                                    }
+                                    costo={
+                                        modulo
+                                            .costo
                                     }
                                     onBuy={
                                         handleAccessModule
