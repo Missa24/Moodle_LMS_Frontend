@@ -61,5 +61,6 @@ export const menuItems: MenuItem[] = [
         title: "Leads",
         icon: faUsersGear,
         url: "/panel/leads",
+        permission: PERMISSIONS.LEADS.VER,
     }
 ];
