@@ -68,6 +68,9 @@ export default function LeccionDetallePage() {
         moduloId!
     );
 
+    const linkPago =
+        "https://facebook.com";
+
     return (
         <div className="space-y-6 p-4 sm:p-6">
             <Button
@@ -100,9 +103,7 @@ export default function LeccionDetallePage() {
                         }
                         cursoId={cursoId!}
                         moduloId={moduloId!}
-                        moduloNombre={
-                            leccion.modulo.nombre
-                        }
+                        linkPago={linkPago}
                     />
                 ) : leccion ? (
                     <LeccionContenido
@@ -260,14 +261,20 @@ interface LeccionContenidoProps {
     leccion: NonNullable<
         ReturnType<typeof useGetLeccion>["data"]
     >;
+
     cursoId: string;
     moduloId: string;
+
+    linkPago?: string | null;
+
     leccionesProgreso: ReturnType<
         typeof useGetLeccionesConProgreso
     >["data"];
+
     onNavigateSiguiente: (
         leccionId: string
     ) => void;
+
     onModuloCompletado: (
         cursoCompletado: boolean
     ) => void;
@@ -277,6 +284,7 @@ function LeccionContenido({
     leccion,
     cursoId,
     moduloId,
+    linkPago,
     leccionesProgreso,
     onNavigateSiguiente,
     onModuloCompletado,
@@ -371,6 +379,7 @@ function LeccionContenido({
                     leccionId={leccion.id}
                     cursoId={cursoId}
                     moduloId={moduloId}
+                    linkPago={linkPago}
                     estaCompletada={
                         estaCompletada
                     }

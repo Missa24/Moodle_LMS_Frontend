@@ -56,5 +56,10 @@ export const menuItems: MenuItem[] = [
         title: "Soporte",
         icon: faUsersGear,
         url: "/panel/soporte",
+    },
+    {
+        title: "Leads",
+        icon: faUsersGear,
+        url: "/panel/leads",
     }
 ];

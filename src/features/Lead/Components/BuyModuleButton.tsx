@@ -24,10 +24,11 @@ export default function BuyModuleButton({
 }: BuyModuleButtonProps) {
     const crearLead = useCreateLead();
 
-    const paymentUrl =
-        linkPago || "https://facebook.com";
-
     const handleOpenPayment = () => {
+        if (!linkPago) {
+            return;
+        }
+
         crearLead.mutate({
             moduloId,
         });
@@ -39,7 +40,8 @@ export default function BuyModuleButton({
                 <Button
                     type="button"
                     onClick={handleOpenPayment}
-                    className="gap-2"
+                    disabled={!linkPago}
+                    className="w-full gap-2"
                 >
                     <CreditCard className="h-4 w-4" />
 
@@ -61,16 +63,18 @@ export default function BuyModuleButton({
                     </SheetDescription>
                 </SheetHeader>
 
-                <div className="min-h-0 flex-1 bg-muted/20 p-3">
-                    <div className="h-full overflow-hidden rounded-xl border bg-background">
-                        <iframe
-                            src={paymentUrl}
-                            title="Pago del módulo"
-                            className="h-[calc(100vh-120px)] w-full border-0"
-                            allow="payment"
-                        />
+                {linkPago && (
+                    <div className="min-h-0 flex-1 bg-muted/20 p-3">
+                        <div className="h-full overflow-hidden rounded-xl border bg-background">
+                            <iframe
+                                src={linkPago}
+                                title="Pago del módulo"
+                                className="h-[calc(100vh-120px)] w-full border-0"
+                                allow="payment"
+                            />
+                        </div>
                     </div>
-                </div>
+                )}
             </SheetContent>
         </Sheet>
     );

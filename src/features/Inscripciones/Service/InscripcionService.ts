@@ -1,5 +1,5 @@
 import { apiService } from "@/api/api";
-import { CrearInscripcionSchemaType } from "../Schema/InscripcionSchema";
+import { CrearInscripcionSchemaType, MiInscripcionModuloSchema, MiInscripcionModuloType } from "../Schema/InscripcionSchema";
 import { CrearEstudianteSchemaType } from "../Schema/EstudianteSchema";
 
 export async function CrearInscripcion(data: CrearInscripcionSchemaType) {
@@ -50,4 +50,9 @@ export async function EliminarModuloInscripcion(inscripcionId: string, cursoId: 
 export async function EliminarInscripcionesPorEstudiante(estudianteId: string) {
     const response = await apiService.delete(`/inscripciones/all/${estudianteId}`);
     return response.data;
+}
+
+export async function GetMiInscripcionModulo(moduloId: string,): Promise<MiInscripcionModuloType> {
+    const response = await apiService.get(`/inscripciones/me/modulo/${moduloId}`,);
+    return MiInscripcionModuloSchema.parse(response.data,);
 }

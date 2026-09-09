@@ -16,6 +16,7 @@ import {
     EliminarCursoInscripcion,
     EliminarModuloInscripcion,
     EliminarInscripcionesPorEstudiante,
+    GetMiInscripcionModulo,
 } from "../Service/InscripcionService";
 
 import {
@@ -280,5 +281,18 @@ export function useEliminarInscripcionesPorEstudiante() {
                 "Error al eliminar las inscripciones"
             );
         },
+    });
+}
+
+export function useGetMiInscripcionModulo(
+    moduloId: string,
+    enabled = true,
+) {
+    return useQuery({
+        queryKey: ["inscripciones", "me", "modulo", moduloId,],
+
+        queryFn: () => GetMiInscripcionModulo(moduloId,),
+        enabled: enabled && !!moduloId,
+        staleTime: 1000 * 60 * 2,
     });
 }

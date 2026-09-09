@@ -7,161 +7,36 @@ import {
 import { Loading } from "@/components/common/app/Loading";
 import { RouteErrorBoundary } from "@/components/common/app/Routeerrorboundary";
 
-const RootLayout = lazy(
-    () => import("@/layouts/RootLayout")
-);
+const RootLayout = lazy(() => import("@/layouts/RootLayout"));
+const PublicLayout = lazy(() => import("@/layouts/PublicLayout"));
+const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
+const ProtectedRoute = lazy(() => import("@/components/Login/ProtectedRoute").then((module) => ({ default: module.ProtectedRoute })));
+const HomePage = lazy(() => import("@/pages/Home/Home"));
+const CursoCatalogoPage = lazy(() => import("@/features/Home/Components/Cursos/CursosPageContent"));
+const CursoModulosPage = lazy(() => import("@/features/Home/Components/Cursos/CursoPageContent"));
+const ModuloDetallePublicPage = lazy(() => import("@/features/Home/Components/modulos/ModuloPageContent"));
+const ChangePassword = lazy(() => import("@/pages/Auth/ChangePassword").then((module) => ({ default: module.ChangePassword })));
+const InicioPage = lazy(() => import("@/pages/Welcome/InicioPage"));
+const ProfilePage = lazy(() => import("@/pages/Profile/ProfilePage"));
+const UsuarioPage = lazy(() => import("@/pages/Usuario/UsuarioPage"));
+const UsuarioDetallePage = lazy(() => import("@/pages/Usuario/UsuarioDetallePage"));
+const CursosPage = lazy(() => import("@/pages/Curso/CursoPage"));
+const CursoDetallePage = lazy(() => import("@/pages/Curso/CursoDetallePage"));
+const MisCursosPage = lazy(() => import("@/pages/Curso/MisCursosPage"));
+const ModulosPage = lazy(() => import("@/pages/Modulo/ModuloPage"));
+const ModuloDetallePage = lazy(() => import("@/pages/Modulo/ModuloDetallePage"));
+const LeccionDetallePage = lazy(() => import("@/pages/Leccion/LeccionDetallePage"));
+const CrearInscripcionPage = lazy(() => import("@/pages/Inscripciones/CrearInscripcionPage").then((module) => ({ default: module.CrearInscripcionPage })));
+const EditarInscripcionPage = lazy(() => import("@/pages/Inscripciones/EditarInscripcionPage"));
+const VerificarCertificadoPage = lazy(() => import("@/pages/Certificados/VerificarCertificadoPage"));
+const InscripcionesPage = lazy(() => import("@/pages/Inscripciones/InscripcionesPage").then((module) => ({ default: module.InscripcionesPage })));
+const MisCertificados = lazy(() => import("@/pages/Certificados/MisCertificados"));
+const SupportPage = lazy(() => import("@/pages/Support/SupportPage"));
+const NotFoundPage = lazy(() => import("@/pages/NotFound/NotFoundPage"));
+const LeadsPage = lazy(() => import("@/pages/Lead/LeadPage"));
+const LeadDetailPage = lazy(() => import("@/pages/Lead/LeadDetailPage"));
+const LeadUserDetailPage = lazy(() => import("@/pages/Lead/LeadUserDetailPage"));
 
-const PublicLayout = lazy(
-    () => import("@/layouts/PublicLayout")
-);
-
-const DashboardLayout = lazy(
-    () => import("@/layouts/DashboardLayout")
-);
-
-const ProtectedRoute = lazy(() =>
-    import("@/components/Login/ProtectedRoute").then(
-        (module) => ({
-            default: module.ProtectedRoute,
-        })
-    )
-);
-
-const HomePage = lazy(
-    () => import("@/pages/Home/Home")
-);
-
-const CursoCatalogoPage = lazy(
-    () =>
-        import(
-            "@/features/Home/Components/Cursos/CursosPageContent"
-        )
-);
-
-const CursoModulosPage = lazy(
-    () =>
-        import(
-            "@/features/Home/Components/Cursos/CursoPageContent"
-        )
-);
-
-const ModuloDetallePublicPage = lazy(
-    () =>
-        import(
-            "@/features/Home/Components/modulos/ModuloPageContent"
-        )
-);
-
-const ChangePassword = lazy(() =>
-    import("@/pages/Auth/ChangePassword").then(
-        (module) => ({
-            default: module.ChangePassword,
-        })
-    )
-);
-
-const InicioPage = lazy(
-    () => import("@/pages/Welcome/InicioPage")
-);
-
-const ProfilePage = lazy(
-    () => import("@/pages/Profile/ProfilePage")
-);
-
-const UsuarioPage = lazy(
-    () => import("@/pages/Usuario/UsuarioPage")
-);
-
-const UsuarioDetallePage = lazy(
-    () =>
-        import(
-            "@/pages/Usuario/UsuarioDetallePage"
-        )
-);
-
-const CursosPage = lazy(
-    () => import("@/pages/Curso/CursoPage")
-);
-
-const CursoDetallePage = lazy(
-    () =>
-        import(
-            "@/pages/Curso/CursoDetallePage"
-        )
-);
-
-const MisCursosPage = lazy(
-    () =>
-        import(
-            "@/pages/Curso/MisCursosPage"
-        )
-);
-
-const ModulosPage = lazy(
-    () => import("@/pages/Modulo/ModuloPage")
-);
-
-const ModuloDetallePage = lazy(
-    () =>
-        import(
-            "@/pages/Modulo/ModuloDetallePage"
-        )
-);
-
-const LeccionDetallePage = lazy(
-    () =>
-        import(
-            "@/pages/Leccion/LeccionDetallePage"
-        )
-);
-
-const CrearInscripcionPage = lazy(() =>
-    import(
-        "@/pages/Inscripciones/CrearInscripcionPage"
-    ).then((module) => ({
-        default: module.CrearInscripcionPage,
-    }))
-);
-
-const EditarInscripcionPage = lazy(
-    () =>
-        import(
-            "@/pages/Inscripciones/EditarInscripcionPage"
-        )
-);
-
-const VerificarCertificadoPage = lazy(
-    () =>
-        import(
-            "@/pages/Certificados/VerificarCertificadoPage"
-        )
-);
-
-const InscripcionesPage = lazy(() =>
-    import(
-        "@/pages/Inscripciones/InscripcionesPage"
-    ).then((module) => ({
-        default: module.InscripcionesPage,
-    }))
-);
-
-const MisCertificados = lazy(
-    () =>
-        import(
-            "@/pages/Certificados/MisCertificados"
-        )
-);
-
-const SupportPage = lazy(
-    () =>
-        import(
-            "@/pages/Support/SupportPage"
-        )
-);
-
-const NotFoundPage = lazy(
-    () => import("@/pages/NotFound/NotFoundPage")
-);
 
 const lazyElement = (
     Component: React.LazyExoticComponent<
@@ -377,6 +252,23 @@ export const router = createBrowserRouter([
                             {
                                 path: "soporte",
                                 element: lazyElement(SupportPage)
+                            },
+                            {
+                                path: "leads",
+                                children: [
+                                    {
+                                        index: true,
+                                        element: lazyElement(LeadsPage),
+                                    },
+                                    {
+                                        path: ":leadId",
+                                        element: lazyElement(LeadDetailPage),
+                                    },
+                                    {
+                                        path: "usuario/:usuarioId",
+                                        element: lazyElement(LeadUserDetailPage),
+                                    },
+                                ],
                             }
                         ],
                     },
