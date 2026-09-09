@@ -10,6 +10,7 @@ export const moduloSchema = z.object({
     estaPublicado: z.boolean(),
     rutaImagen: z.string().nullable(),
     descripcion: z.string(),
+    costo: z.number().nullish(),
 });
 
 export const moduloCursoCategoriaSchema = z

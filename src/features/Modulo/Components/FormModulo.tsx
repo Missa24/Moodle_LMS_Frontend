@@ -42,6 +42,7 @@ export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModulo
                     orden: initialData?.orden ?? 0,
                     otorgaCertificacion: initialData?.otorgaCertificacion ?? false,
                     estaPublicado: initialData?.estaPublicado ?? true,
+                    costo: initialData?.costo ?? undefined,
                 }
                 : {
                     cursoId,
@@ -52,6 +53,7 @@ export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModulo
                     orden: 0,
                     otorgaCertificacion: false,
                     estaPublicado: true,
+                    costo: undefined,
                 },
     });
 
@@ -89,19 +91,32 @@ export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModulo
                 />
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <ImageUpload
-                        control={form.control}
-                        name="rutaImagen"
-                        label="Imagen del módulo"
-                        existingImage={
-                            mode === "edit"
-                                ? initialData?.rutaImagen
-                                : null
-                        }
-                        hint="JPG, PNG o WEBP · máximo 5 MB"
-                    />
+                    <div className="sm:col-span-2">
+                        <ImageUpload
+                            control={form.control}
+                            name="rutaImagen"
+                            label="Imagen del módulo"
+                            existingImage={
+                                mode === "edit"
+                                    ? initialData?.rutaImagen
+                                    : null
+                            }
+                            hint="JPG, PNG o WEBP · máximo 5 MB"
+                        />
+                    </div>
 
                     <FormField type="number" control={form.control} name="orden" label="Orden" min={0} />
+
+                    <FormField
+                        type="number"
+                        control={form.control}
+                        name="costo"
+                        label="Precio"
+                        placeholder="0.00"
+                        min={0}
+                        allowEmpty
+                        hint="Cada cambio registra un nuevo precio en el historial"
+                    />
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

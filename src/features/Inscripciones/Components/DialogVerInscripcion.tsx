@@ -7,6 +7,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Mail, User, BookOpen } from "lucide-react";
 import { InscripcionIndexType } from "../Schema/InscripcionSchema";
+import { formatearMoneda } from "@/utils/formatCurrency";
 
 interface DialogVerInscripcionProps {
   open: boolean;
@@ -64,10 +65,27 @@ export function DialogVerInscripcion({
             {inscripcion.cursos.length === 0 ? (
               <p className="text-sm text-muted-foreground">No tiene cursos inscritos</p>
             ) : (
-              <ul className="list-disc list-inside text-sm space-y-1">
-                {inscripcion.cursos.map((curso) => (
-                  <li key={curso.id}>{curso.nombre}</li>
-                ))}
+              <ul className="space-y-2">
+                {inscripcion.cursos.map((curso) => {
+                  const totalCurso = curso.modulos.reduce(
+                    (total, modulo) => total + (modulo.monto ?? 0),
+                    0,
+                  );
+
+                  return (
+                    <li
+                      key={curso.id}
+                      className="flex items-center justify-between gap-2 rounded-lg border bg-muted/20 px-3 py-2 text-sm"
+                    >
+                      <span>{curso.nombre}</span>
+                      {totalCurso > 0 && (
+                        <span className="font-medium">
+                          {formatearMoneda(totalCurso)}
+                        </span>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

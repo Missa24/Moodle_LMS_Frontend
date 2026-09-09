@@ -69,6 +69,7 @@ export async function CreateModulo(data: ModuloCreateType): Promise<ResponseType
         orden: data.orden,
         otorgaCertificacion: data.otorgaCertificacion,
         estaPublicado: data.estaPublicado,
+        costo: data.costo,
     });
     const response = await apiService.post("/modulos", formData);
     return response.data;
@@ -84,6 +85,7 @@ export async function UpdateModulo(id: string, data: ModuloUpdateType): Promise<
         orden: data.orden,
         otorgaCertificacion: data.otorgaCertificacion,
         estaPublicado: data.estaPublicado,
+        costo: data.costo,
     });
     const response = await apiService.patch(`/modulos/${id}`, formData);
     return response.data;
