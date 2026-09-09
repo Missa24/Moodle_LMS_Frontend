@@ -47,7 +47,7 @@ export default function CursosPage() {
     };
 
     const verCurso = (curso: CursoType) => {
-        navigate(`/cursos/${curso.id}`);
+        navigate(`/panel/cursos/${curso.id}`);
     };
 
     return (
