@@ -72,6 +72,9 @@ const LeadsPage = lazy(() => import("@/pages/Lead/LeadPage"));
 const LeadDetailPage = lazy(() => import("@/pages/Lead/LeadDetailPage"));
 const LeadUserDetailPage = lazy(() => import("@/pages/Lead/LeadUserDetailPage"));
 
+const PrivacyPage = lazy(() => import("@/pages/Privacy/PrivacyPolicyPage"));
+
+
 const lazyElement = (
     Component: LazyExoticComponent<ComponentType>,
     fallback: ReactNode = <Loading />,
@@ -133,6 +136,10 @@ export const router = createBrowserRouter([
                     {
                         path: "verificar/:codigo",
                         element: lazyElement(VerificarCertificadoPage),
+                    },
+                    {
+                        path: "politica-de-privacidad",
+                        element: lazyElement(PrivacyPage),
                     },
                     {
                         path: "*",
