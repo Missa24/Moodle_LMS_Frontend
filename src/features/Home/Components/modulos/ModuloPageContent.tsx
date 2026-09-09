@@ -1,15 +1,17 @@
 import { useState } from "react";
 
 import {
+    ArrowLeft,
+    BookOpen,
+} from "lucide-react";
+
+import {
     Link,
     useNavigate,
     useParams,
 } from "react-router-dom";
 
-import {
-    ArrowLeft,
-    BookOpen,
-} from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 import { useAuthDialogStore } from "@/store/authDialogStore";
 import { useAuthStore } from "@/store/authStore";
@@ -21,10 +23,6 @@ import { ModuleLessonsList } from "./detalles/module-lessons-list";
 import { ModulePlatformVideo } from "./detalles/module-platform-video";
 import { ModulePriceCard } from "./detalles/module-price-card";
 import { LessonPurchaseDialog } from "./detalles/lesson-purchase-dialog";
-
-
-
-
 
 const POST_LOGIN_REDIRECT_KEY =
     "elite_post_login_redirect";
@@ -85,71 +83,85 @@ export default function ModuloPageContent() {
     const handleLessonClick = (
         nombre: string
     ) => {
-        setSelectedLesson(
-            nombre
-        );
-
+        setSelectedLesson(nombre);
         setPurchaseOpen(true);
     };
 
-    const handleAccessModule =
-        () => {
-            if (
-                !cursoId ||
-                !moduloId
-            ) {
-                return;
-            }
+    const handleAccessModule = () => {
+        if (!cursoId || !moduloId) {
+            return;
+        }
 
-            const privatePath =
-                `/panel/cursos/${cursoId}/modulos/${moduloId}`;
+        const privatePath =
+            `/panel/cursos/${cursoId}/modulos/${moduloId}`;
 
-            if (token) {
-                setPurchaseOpen(
-                    false
-                );
+        if (token) {
+            setPurchaseOpen(false);
+            navigate(privatePath);
+            return;
+        }
 
-                navigate(
-                    privatePath
-                );
+        sessionStorage.setItem(
+            POST_LOGIN_REDIRECT_KEY,
+            privatePath
+        );
 
-                return;
-            }
-            sessionStorage.setItem(
-                POST_LOGIN_REDIRECT_KEY,
-                privatePath
-            );
-            setPurchaseOpen(
-                false
-            );
+        setPurchaseOpen(false);
+        setSelectedLesson(null);
 
-            setSelectedLesson(
-                null
-            );
-
-            openLoginDialog();
-        };
+        openLoginDialog();
+    };
 
     if (isLoadingModulo) {
         return (
-            <main className="min-h-screen px-5 pb-20 pt-28 sm:px-8 sm:pt-32 lg:px-[50px] lg:pt-40">
-                <div className="mx-auto max-w-[1600px]">
-                    <div className="h-[600px] animate-pulse rounded-3xl bg-muted" />
-                </div>
+            <main className="min-h-screen pb-20 pt-24 sm:pt-28 lg:pb-28 lg:pt-32">
+                <section className="px-5 sm:px-8 lg:px-[50px]">
+                    <div className="mx-auto max-w-[1600px]">
+                        <Skeleton className="h-5 w-32" />
+
+                        <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-14">
+                            <div className="min-w-0">
+                                <Skeleton className="h-3 w-28" />
+
+                                <Skeleton className="mt-4 h-14 w-full max-w-4xl sm:h-16 md:h-20" />
+
+                                <Skeleton className="mt-4 h-5 w-64" />
+
+                                <div className="mt-6 space-y-3">
+                                    <Skeleton className="h-4 w-full max-w-3xl" />
+                                    <Skeleton className="h-4 w-5/6 max-w-2xl" />
+                                    <Skeleton className="h-4 w-2/3 max-w-xl" />
+                                </div>
+
+                                <Skeleton className="mt-6 h-10 w-32 rounded-full" />
+
+                                <div className="mt-10 space-y-3">
+                                    <Skeleton className="h-16 w-full rounded-2xl" />
+                                    <Skeleton className="h-16 w-full rounded-2xl" />
+                                    <Skeleton className="h-16 w-full rounded-2xl" />
+                                    <Skeleton className="h-16 w-full rounded-2xl" />
+                                    <Skeleton className="h-16 w-full rounded-2xl" />
+                                </div>
+                            </div>
+
+                            <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+                                <Skeleton className="aspect-video w-full rounded-2xl" />
+
+                                <Skeleton className="h-64 w-full rounded-2xl" />
+                            </aside>
+                        </div>
+                    </div>
+                </section>
             </main>
         );
     }
 
-    if (
-        isErrorModulo ||
-        !modulo
-    ) {
+    if (isErrorModulo || !modulo) {
         return (
             <main className="flex min-h-screen items-center justify-center px-5">
                 <div className="text-center">
                     <h1 className="text-2xl font-semibold text-foreground">
-                        Módulo no
-                        encontrado
+                        Módulo no encontrado
                     </h1>
 
                     <Link
@@ -173,46 +185,34 @@ export default function ModuloPageContent() {
                             className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         >
                             <ArrowLeft className="size-4" />
-
-                            Volver a
-                            módulos
+                            Volver a módulos
                         </Link>
 
                         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-14">
                             <div className="min-w-0">
                                 <div>
-                                    {modulo
-                                        .curso
-                                        .categoria && (
-                                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
-                                                {
-                                                    modulo
-                                                        .curso
-                                                        .categoria
-                                                        .nombre
-                                                }
-                                            </p>
-                                        )}
+                                    {modulo.curso.categoria && (
+                                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
+                                            {
+                                                modulo
+                                                    .curso
+                                                    .categoria
+                                                    .nombre
+                                            }
+                                        </p>
+                                    )}
 
                                     <h1 className="mt-3 max-w-4xl text-3xl font-medium leading-[1.02] tracking-[-0.045em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
-                                        {
-                                            modulo.nombre
-                                        }
+                                        {modulo.nombre}
                                     </h1>
 
                                     <p className="mt-4 text-sm font-medium text-muted-foreground sm:text-base">
-                                        {
-                                            modulo
-                                                .curso
-                                                .nombre
-                                        }
+                                        {modulo.curso.nombre}
                                     </p>
 
                                     {modulo.descripcion && (
                                         <p className="mt-5 max-w-3xl text-sm leading-[1.7] text-muted-foreground sm:text-base">
-                                            {
-                                                modulo.descripcion
-                                            }
+                                            {modulo.descripcion}
                                         </p>
                                     )}
 
@@ -225,9 +225,7 @@ export default function ModuloPageContent() {
                                                     ._count
                                                     .lecciones
                                             }{" "}
-                                            {modulo
-                                                ._count
-                                                .lecciones ===
+                                            {modulo._count.lecciones ===
                                                 1
                                                 ? "lección"
                                                 : "lecciones"}
@@ -236,9 +234,7 @@ export default function ModuloPageContent() {
                                 </div>
 
                                 <ModuleLessonsList
-                                    lecciones={
-                                        lecciones
-                                    }
+                                    lecciones={lecciones}
                                     isLoading={
                                         isLoadingLecciones
                                     }
@@ -275,9 +271,7 @@ export default function ModuloPageContent() {
             </main>
 
             <LessonPurchaseDialog
-                open={
-                    purchaseOpen
-                }
+                open={purchaseOpen}
                 onOpenChange={
                     setPurchaseOpen
                 }

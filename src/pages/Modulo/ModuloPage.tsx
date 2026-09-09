@@ -1,17 +1,20 @@
+"use client";
+
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { AppTitle } from "@/components/common/Apptittle";
+import { PageHeader } from "@/components/common/PageHeader";
 import { QueryState } from "@/components/common/QueryState";
 
 import { ModulosList } from "@/features/Modulo/Components/ModulosList";
 import { ModulosToolbar } from "@/features/Modulo/Components/ModulosToolbar";
 import { DialogModulo } from "@/features/Modulo/Components/DialogModulo";
-import { ModuloType } from "@/features/Modulo/Schema/ModuloSchema";
+import type { ModuloType } from "@/features/Modulo/Schema/ModuloSchema";
 
-import { usePermission } from "@/hooks/usePermission";
+import { useCrudDialog } from "@/hooks/useCrudDialog";
+import { useModulePermissions } from "@/hooks/useModulePermissions";
 import { PERMISSIONS } from "@/utils/constants";
 
 export default function ModulosPage() {
@@ -21,34 +24,18 @@ export default function ModulosPage() {
     const [search, setSearch] = useState("");
     const [incluirNoPublicados, setIncluirNoPublicados] = useState(false);
 
-    const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState<"create" | "edit">("create");
-    const [moduloIdSeleccionado, setModuloIdSeleccionado] = useState<string | undefined>(undefined);
+    const dialog = useCrudDialog<ModuloType>();
 
-    const { can } = usePermission();
-    const puedeCrear = can(PERMISSIONS.MODULOS.CREAR);
-    const puedeEditar = can(PERMISSIONS.MODULOS.EDITAR);
-    const puedeEliminar = can(PERMISSIONS.MODULOS.ELIMINAR);
+    const { puedeCrear, puedeEditar, puedeEliminar } =
+        useModulePermissions(PERMISSIONS.MODULOS);
 
     const limpiarFiltros = () => {
         setSearch("");
         setIncluirNoPublicados(false);
     };
 
-    const abrirCrear = () => {
-        setModuloIdSeleccionado(undefined);
-        setMode("create");
-        setOpen(true);
-    };
-
-    const abrirEditar = (modulo: ModuloType) => {
-        setModuloIdSeleccionado(modulo.id);
-        setMode("edit");
-        setOpen(true);
-    };
-
     const verModulo = (modulo: ModuloType) => {
-        navigate(`/cursos/${cursoId}/modulos/${modulo.id}`);
+        navigate(`/panel/cursos/${cursoId}/modulos/${modulo.id}`);
     };
 
     return (
@@ -57,49 +44,59 @@ export default function ModulosPage() {
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate(`/cursos/${cursoId}`)}
+                onClick={() => navigate(`/panel/cursos/${cursoId}`)}
                 className="gap-1 px-0"
             >
                 <ArrowLeft className="h-4 w-4" />
                 Volver al curso
             </Button>
 
-            <QueryState isLoading={false} isError={!cursoId} fallbackMessage="Curso no especificado.">
-                <div className="flex items-start justify-between gap-4">
-                    <AppTitle title="Módulos" subtitle="Módulos disponibles en este curso." />
-                    {puedeCrear ? "si": "no"}
-                    {puedeCrear && (
-                        <Button type="button" onClick={abrirCrear}>
+            <PageHeader
+                title="Módulos"
+                subtitle="Módulos disponibles en este curso."
+                action={
+                    puedeCrear ? (
+                        <Button type="button" onClick={dialog.openCreate}>
                             Nuevo módulo
                         </Button>
-                    )}
-                </div>
+                    ) : undefined
+                }
+            />
 
-                <ModulosToolbar
-                    search={search}
-                    onSearchChange={setSearch}
-                    onClear={limpiarFiltros}
-                    incluirNoPublicados={puedeEditar ? incluirNoPublicados : undefined}
-                    onIncluirNoPublicadosChange={puedeEditar ? setIncluirNoPublicados : undefined}
-                />
+            <QueryState
+                isLoading={false}
+                isError={!cursoId}
+                fallbackMessage="Curso no especificado."
+            >
+                <>
+                    <ModulosToolbar
+                        search={search}
+                        onSearchChange={setSearch}
+                        onClear={limpiarFiltros}
+                        incluirNoPublicados={puedeEditar ? incluirNoPublicados : undefined}
+                        onIncluirNoPublicadosChange={
+                            puedeEditar ? setIncluirNoPublicados : undefined
+                        }
+                    />
 
-                <ModulosList
-                    cursoId={cursoId!}
-                    search={search}
-                    incluirNoPublicados={incluirNoPublicados}
-                    onVer={verModulo}
-                    onEditar={abrirEditar}
-                    puedeEditar={puedeEditar}
-                    puedeEliminar={puedeEliminar}
-                />
+                    <ModulosList
+                        cursoId={cursoId!}
+                        search={search}
+                        incluirNoPublicados={puedeEditar && incluirNoPublicados}
+                        onVer={verModulo}
+                        onEditar={dialog.openEdit}
+                        puedeEditar={puedeEditar}
+                        puedeEliminar={puedeEliminar}
+                    />
+                </>
             </QueryState>
 
             <DialogModulo
-                open={open}
-                onOpenChange={setOpen}
-                mode={mode}
+                open={dialog.open}
+                onOpenChange={dialog.setOpen}
+                mode={dialog.mode}
                 cursoId={cursoId!}
-                moduloId={moduloIdSeleccionado}
+                moduloId={dialog.selected?.id}
             />
         </div>
     );

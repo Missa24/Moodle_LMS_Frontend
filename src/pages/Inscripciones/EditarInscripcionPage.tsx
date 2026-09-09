@@ -1,18 +1,11 @@
+"use client";
+
 import { useState } from "react";
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, BookOpen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppTitle } from "@/components/common/Apptittle";
 import { QueryState } from "@/components/common/QueryState";
 
@@ -22,7 +15,7 @@ import {
   useGetInscripcionesPorEstudiante,
 } from "@/features/Inscripciones/Hook/InscripcionHook";
 
-import { CursoType } from "@/features/Inscripciones/Schema/InscripcionSchema";
+import type { CursoType } from "@/features/Inscripciones/Schema/InscripcionSchema";
 
 import { CursoInscritoCard } from "@/features/Inscripciones/Components/CursoInscritoCard";
 import { AgregarCursoForm } from "@/features/Inscripciones/Components/AgregarCursoForm";
@@ -45,91 +38,75 @@ interface LocationState {
   nombreCompleto?: string;
 }
 
-export default function EditarInscripcionPage() {
-  const { estudianteId } =
-    useParams<{ estudianteId: string }>();
+type EliminacionSeleccionada =
+  | { tipo: "modulo"; data: ModuloAEliminar }
+  | { tipo: "curso"; data: CursoAEliminar }
+  | null;
 
+export default function EditarInscripcionPage() {
+  const { estudianteId } = useParams<{ estudianteId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const state =
-    location.state as LocationState | null;
-
-  const nombreCompleto =
-    state?.nombreCompleto ?? "";
+  const nombreCompleto = (location.state as LocationState | null)?.nombreCompleto ?? "";
 
   const {
     data: cursosInscritos = [],
     isLoading,
     isError,
     error,
-  } = useGetInscripcionesPorEstudiante(
-    estudianteId ?? "",
-  );
+  } = useGetInscripcionesPorEstudiante(estudianteId ?? "");
 
-  const eliminarModuloMutation =
-    useEliminarModulo();
+  const eliminarModulo = useEliminarModulo();
+  const eliminarCurso = useEliminarCurso();
 
-  const eliminarCursoMutation =
-    useEliminarCurso();
+  const [eliminacion, setEliminacion] = useState<EliminacionSeleccionada>(null);
 
-  const [
-    moduloAEliminar,
-    setModuloAEliminar,
-  ] = useState<ModuloAEliminar | null>(null);
+  const cursosInscritosIds = cursosInscritos.map((curso: CursoType) => curso.id);
 
-  const [
-    cursoAEliminar,
-    setCursoAEliminar,
-  ] = useState<CursoAEliminar | null>(null);
+  const moduloAEliminar =
+    eliminacion?.tipo === "modulo" ? eliminacion.data : null;
 
-  const cursosInscritosIds = cursosInscritos.map(
-    (curso: CursoType) => curso.id,
-  );
+  const cursoAEliminar =
+    eliminacion?.tipo === "curso" ? eliminacion.data : null;
 
-  const handleEliminarModulo = (
-    modulo: ModuloAEliminar,
-  ) => {
-    setModuloAEliminar(modulo);
-  };
+  const handleConfirmEliminar = () => {
+    if (!eliminacion) return;
 
-  const handleConfirmEliminarModulo = () => {
-    if (!moduloAEliminar) {
-      return;
-    }
+    if (eliminacion.tipo === "modulo") {
+      const modulo = eliminacion.data;
 
-    eliminarModuloMutation.mutate(
-      {
-        inscripcionId:
-          moduloAEliminar.inscripcionId,
-        cursoId: moduloAEliminar.cursoId,
-        moduloId: moduloAEliminar.moduloId,
-      },
-      {
-        onSuccess: () => {
-          setModuloAEliminar(null);
+      eliminarModulo.mutate(
+        {
+          inscripcionId: modulo.inscripcionId,
+          cursoId: modulo.cursoId,
+          moduloId: modulo.moduloId,
         },
-      },
-    );
-  };
+        {
+          onSuccess: () => setEliminacion(null),
+        },
+      );
 
-  const handleConfirmEliminarCurso = () => {
-    if (!cursoAEliminar || !estudianteId) {
       return;
     }
 
-    eliminarCursoMutation.mutate(
+    if (!estudianteId) return;
+
+    eliminarCurso.mutate(
       {
         estudianteId,
-        cursoId: cursoAEliminar.id,
+        cursoId: eliminacion.data.id,
       },
       {
-        onSuccess: () => {
-          setCursoAEliminar(null);
-        },
+        onSuccess: () => setEliminacion(null),
       },
     );
   };
+
+  const isPending =
+    eliminacion?.tipo === "modulo"
+      ? eliminarModulo.isPending
+      : eliminarCurso.isPending;
 
   return (
     <div className="space-y-6 p-6">
@@ -137,9 +114,7 @@ export default function EditarInscripcionPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() =>
-            navigate("/inscripciones")
-          }
+          onClick={() => navigate("/panel/inscripciones")}
           className="cursor-pointer"
         >
           <ArrowLeft className="h-5 w-5" />
@@ -153,15 +128,18 @@ export default function EditarInscripcionPage() {
 
       <QueryState
         isLoading={isLoading}
-        isError={isError}
+        isError={isError || !estudianteId}
         error={error}
+        fallbackMessage="No se pudo cargar la inscripción."
       >
         <div className="space-y-6">
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2 text-base">
                 <BookOpen className="h-4 w-4 text-primary" />
+
                 Cursos inscritos
+
                 <span className="text-muted-foreground">
                   ({cursosInscritos.length})
                 </span>
@@ -192,20 +170,18 @@ export default function EditarInscripcionPage() {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {cursosInscritos.map(
-                    (curso: CursoType) => (
-                      <CursoInscritoCard
-                        key={curso.id}
-                        curso={curso}
-                        onEliminarCurso={
-                          setCursoAEliminar
-                        }
-                        onEliminarModulo={
-                          handleEliminarModulo
-                        }
-                      />
-                    ),
-                  )}
+                  {cursosInscritos.map((curso: CursoType) => (
+                    <CursoInscritoCard
+                      key={curso.id}
+                      curso={curso}
+                      onEliminarCurso={(curso) =>
+                        setEliminacion({ tipo: "curso", data: curso, })
+                      }
+                      onEliminarModulo={(modulo) =>
+                        setEliminacion({ tipo: "modulo", data: modulo, })
+                      }
+                    />
+                  ))}
                 </div>
               )}
             </CardContent>
@@ -214,52 +190,21 @@ export default function EditarInscripcionPage() {
           {estudianteId && (
             <AgregarCursoForm
               estudianteId={estudianteId}
-              cursosInscritosIds={
-                cursosInscritosIds
-              }
+              cursosInscritosIds={cursosInscritosIds}
             />
           )}
         </div>
       </QueryState>
 
       <DialogConfirmarEliminarModulo
-        open={!!moduloAEliminar}
+        open={!!eliminacion}
         onOpenChange={(open) => {
-          if (!open) {
-            setModuloAEliminar(null);
-          }
+          if (!open) setEliminacion(null);
         }}
-        cursoNombre={
-          moduloAEliminar?.cursoNombre ?? ""
-        }
-        moduloNombre={
-          moduloAEliminar?.moduloNombre ?? ""
-        }
-        onConfirm={
-          handleConfirmEliminarModulo
-        }
-        isPending={
-          eliminarModuloMutation.isPending
-        }
-      />
-
-      <DialogConfirmarEliminarModulo
-        open={!!cursoAEliminar}
-        onOpenChange={(open) => {
-          if (!open) {
-            setCursoAEliminar(null);
-          }
-        }}
-        cursoNombre={
-          cursoAEliminar?.nombre ?? ""
-        }
-        moduloNombre="todos sus módulos"
-        onConfirm={
-          handleConfirmEliminarCurso
-        }
-        isPending={
-          eliminarCursoMutation.isPending
-        }
+        cursoNombre={moduloAEliminar?.cursoNombre ?? cursoAEliminar?.nombre ?? ""}
+        moduloNombre={moduloAEliminar?.moduloNombre ?? "todos sus módulos"}
+        onConfirm={handleConfirmEliminar}
+        isPending={isPending}
       />
     </div>
   );

@@ -37,13 +37,16 @@ export const Hero = () => {
                     <div className="mx-auto max-w-[1100px] text-center">
                         <h1 className="mx-auto mt-4 max-w-[1050px] text-[clamp(2.6rem,11vw,4.5rem)] font-medium leading-[0.95] tracking-[-0.055em] text-foreground sm:mt-5 sm:text-[clamp(3.8rem,8vw,5.5rem)] lg:text-[clamp(5rem,6.7vw,7rem)]">
                             El{" "}
-                            <span className="block text-primary sm:inline">
+                            <span className="text-primary">
                                 <RotatingWord
                                     words={ROTATING_WORDS}
-                                    className="min-h-[1em]"
+                                    className="inline-block min-h-[1em]"
                                 />
-                            </span>{" "}
-                            <span className="block sm:inline">
+                            </span>
+
+                            <br />
+
+                            <span>
                                 transforma tu futuro
                             </span>
                         </h1>

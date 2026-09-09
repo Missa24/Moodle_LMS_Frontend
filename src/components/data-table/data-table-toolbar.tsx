@@ -14,11 +14,18 @@ interface DataTableToolbarProps<TData> {
     table: ReactTable<TData>;
     filterColumn?: keyof TData;
     placeholder?: string;
+    searchValue?: string;
+
+    onSearchChange?: (
+        value: string,
+    ) => void;
 }
 export function DataTableToolbar<TData>({
     table,
     filterColumn,
     placeholder = "Buscar...",
+    searchValue,
+    onSearchChange,
 }: DataTableToolbarProps<TData>) {
     const isFiltered =
         table.getState()
@@ -29,25 +36,54 @@ export function DataTableToolbar<TData>({
                 {
                     filterColumn && (
                         <Input
-                            placeholder={placeholder}
+                            placeholder={
+                                placeholder
+                            }
+
                             value={
-                                String(
+                                onSearchChange
+                                    ? searchValue ?? ""
+                                    : String(
+                                        table
+                                            .getColumn(
+                                                String(
+                                                    filterColumn,
+                                                ),
+                                            )
+                                            ?.getFilterValue() ??
+                                        "",
+                                    )
+                            }
+
+                            onChange={(event) => {
+                                const value =
+                                    event.target.value;
+
+                                if (
+                                    onSearchChange
+                                ) {
+                                    onSearchChange(
+                                        value,
+                                    );
+
+                                    return;
+                                }
+
+                                if (
+                                    filterColumn
+                                ) {
                                     table
                                         .getColumn(
-                                            String(filterColumn)
+                                            String(
+                                                filterColumn,
+                                            ),
                                         )
-                                        ?.getFilterValue() ?? ""
-                                )
-                            }
-                            onChange={(event) => {
-                                table
-                                    .getColumn(
-                                        String(filterColumn)
-                                    )
-                                    ?.setFilterValue(
-                                        event.target.value
-                                    );
+                                        ?.setFilterValue(
+                                            value,
+                                        );
+                                }
                             }}
+
                             className="h-8 w-[250px]"
                         />
                     )
