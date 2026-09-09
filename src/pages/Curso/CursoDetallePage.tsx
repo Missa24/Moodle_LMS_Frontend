@@ -6,8 +6,8 @@ import { ArrowLeft } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { AppTitle } from "@/components/common/Apptittle";
+import { PageHeader } from "@/components/common/PageHeader";
 import { QueryState } from "@/components/common/QueryState";
-import { NoPermission } from "@/components/common/NoPermission";
 
 import { useGetCurso } from "@/features/Curso/Hook/CursoHook";
 
@@ -16,6 +16,7 @@ import { ModulosToolbar } from "@/features/Modulo/Components/ModulosToolbar";
 import { DialogModulo } from "@/features/Modulo/Components/DialogModulo";
 import type { ModuloType } from "@/features/Modulo/Schema/ModuloSchema";
 
+import { useCrudDialog } from "@/hooks/useCrudDialog";
 import { useModulePermissions } from "@/hooks/useModulePermissions";
 import { PERMISSIONS } from "@/utils/constants";
 
@@ -26,47 +27,26 @@ export default function CursoDetallePage() {
 
     const from = (location.state as { from?: string })?.from ?? "cursos";
 
-    const { puedeVer: puedeVerCurso } = useModulePermissions(PERMISSIONS.CURSOS);
-
-    const {
-        puedeVer: puedeVerModulos,
-        puedeCrear,
-        puedeEditar,
-        puedeEliminar,
-    } = useModulePermissions(PERMISSIONS.MODULOS);
-
-    const { data: curso, isLoading, isError, error } = useGetCurso(
-        id!,
-        puedeVerCurso && !!id,
-    );
-
     const [searchModulos, setSearchModulos] = useState("");
     const [incluirNoPublicados, setIncluirNoPublicados] = useState(false);
-    const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState<"create" | "edit">("create");
-    const [moduloIdSeleccionado, setModuloIdSeleccionado] = useState<string | undefined>();
 
-    const abrirCrear = () => {
-        setModuloIdSeleccionado(undefined);
-        setMode("create");
-        setOpen(true);
-    };
+    const dialog = useCrudDialog<ModuloType>();
 
-    const abrirEditar = (modulo: ModuloType) => {
-        setModuloIdSeleccionado(modulo.id);
-        setMode("edit");
-        setOpen(true);
+    const { puedeCrear, puedeEditar, puedeEliminar } =
+        useModulePermissions(PERMISSIONS.MODULOS);
+
+    const { data: curso, isLoading, isError, error } =
+        useGetCurso(id!, !!id);
+
+    const limpiarFiltros = () => {
+        setSearchModulos("");
+        setIncluirNoPublicados(false);
     };
 
     const verModulo = (modulo: ModuloType) => {
         navigate(`/panel/cursos/${id}/modulos/${modulo.id}`, {
             state: { from },
         });
-    };
-
-    const limpiarFiltros = () => {
-        setSearchModulos("");
-        setIncluirNoPublicados(false);
     };
 
     const volver = () => {
@@ -80,100 +60,99 @@ export default function CursoDetallePage() {
 
     return (
         <div className="space-y-8 p-6">
-            <Button type="button" variant="ghost" size="sm" onClick={volver} className="gap-1 px-0">
+            <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                onClick={volver}
+                className="gap-1 px-0"
+            >
                 <ArrowLeft className="h-4 w-4" />
                 {from === "mis-cursos" ? "Volver a mis cursos" : "Volver a cursos"}
             </Button>
 
-            {!puedeVerCurso ? (
-                <NoPermission message="No tienes permisos para ver este curso" />
-            ) : (
-                <QueryState
-                    isLoading={isLoading}
-                    isError={isError}
-                    error={error}
-                    fallbackMessage="No se pudo cargar el curso."
-                >
-                    {curso && (
-                        <>
-                            <div className="flex flex-col gap-5 sm:flex-row">
-                                <div className="h-[180px] w-full shrink-0 overflow-hidden rounded-xl bg-muted sm:w-[280px]">
-                                    {curso.rutaPortada ? (
-                                        <img
-                                            src={curso.rutaPortada}
-                                            alt={curso.nombre}
-                                            className="h-full w-full object-cover"
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
-                                            Sin imagen
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="min-w-0 flex-1">
-                                    <AppTitle
-                                        title={curso.nombre}
-                                        subtitle={curso.categoria?.slug ?? undefined}
+            <QueryState
+                isLoading={isLoading}
+                isError={isError || !id}
+                error={error}
+                fallbackMessage="No se pudo cargar el curso."
+            >
+                {curso && (
+                    <>
+                        <div className="flex flex-col gap-5 sm:flex-row">
+                            <div className="h-[180px] w-full shrink-0 overflow-hidden rounded-xl bg-muted sm:w-[280px]">
+                                {curso.rutaPortada ? (
+                                    <img
+                                        src={curso.rutaPortada}
+                                        alt={curso.nombre}
+                                        className="h-full w-full object-cover"
                                     />
-
-                                    {curso.descripcionCompleta && (
-                                        <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                                            {curso.descripcionCompleta}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="space-y-4 border-t pt-6">
-                                <div className="flex items-start justify-between gap-4">
-                                    <AppTitle
-                                        title="Módulos"
-                                        subtitle="Módulos disponibles en este curso."
-                                    />
-
-                                    {puedeCrear && (
-                                        <Button type="button" onClick={abrirCrear}>
-                                            Nuevo módulo
-                                        </Button>
-                                    )}
-                                </div>
-
-                                {!puedeVerModulos ? (
-                                    <NoPermission message="No tienes permisos para ver los módulos" />
                                 ) : (
-                                    <>
-                                        <ModulosToolbar
-                                            search={searchModulos}
-                                            onSearchChange={setSearchModulos}
-                                            onClear={limpiarFiltros}
-                                            incluirNoPublicados={puedeEditar ? incluirNoPublicados : undefined}
-                                            onIncluirNoPublicadosChange={puedeEditar ? setIncluirNoPublicados : undefined}
-                                        />
-
-                                        <ModulosList
-                                            cursoId={id!}
-                                            search={searchModulos}
-                                            incluirNoPublicados={incluirNoPublicados}
-                                            onVer={verModulo}
-                                            onEditar={abrirEditar}
-                                            puedeEditar={puedeEditar}
-                                            puedeEliminar={puedeEliminar}
-                                        />
-                                    </>
+                                    <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
+                                        Sin imagen
+                                    </div>
                                 )}
                             </div>
-                        </>
-                    )}
-                </QueryState>
-            )}
+
+                            <div className="min-w-0 flex-1">
+                                <AppTitle
+                                    title={curso.nombre}
+                                    subtitle={curso.categoria?.slug ?? undefined}
+                                />
+
+                                {curso.descripcionCompleta && (
+                                    <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                                        {curso.descripcionCompleta}
+                                    </p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="space-y-4 border-t pt-6">
+                            <PageHeader
+                                title="Módulos"
+                                subtitle="Módulos disponibles en este curso."
+                                action={
+                                    puedeCrear ? (
+                                        <Button type="button" onClick={dialog.openCreate}>
+                                            Nuevo módulo
+                                        </Button>
+                                    ) : undefined
+                                }
+                            />
+
+                            <ModulosToolbar
+                                search={searchModulos}
+                                onSearchChange={setSearchModulos}
+                                onClear={limpiarFiltros}
+                                incluirNoPublicados={
+                                    puedeEditar ? incluirNoPublicados : undefined
+                                }
+                                onIncluirNoPublicadosChange={
+                                    puedeEditar ? setIncluirNoPublicados : undefined
+                                }
+                            />
+
+                            <ModulosList
+                                cursoId={id!}
+                                search={searchModulos}
+                                incluirNoPublicados={puedeEditar && incluirNoPublicados}
+                                onVer={verModulo}
+                                onEditar={dialog.openEdit}
+                                puedeEditar={puedeEditar}
+                                puedeEliminar={puedeEliminar}
+                            />
+                        </div>
+                    </>
+                )}
+            </QueryState>
 
             <DialogModulo
-                open={open}
-                onOpenChange={setOpen}
-                mode={mode}
+                open={dialog.open}
+                onOpenChange={dialog.setOpen}
+                mode={dialog.mode}
                 cursoId={id!}
-                moduloId={moduloIdSeleccionado}
+                moduloId={dialog.selected?.id}
             />
         </div>
     );

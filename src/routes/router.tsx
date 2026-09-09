@@ -1,52 +1,97 @@
 import { lazy, Suspense } from "react";
+import type { ComponentType, LazyExoticComponent, ReactNode } from "react";
+
 import {
     createBrowserRouter,
     Navigate,
+    Outlet,
 } from "react-router-dom";
 
 import { Loading } from "@/components/common/app/Loading";
 import { RouteErrorBoundary } from "@/components/common/app/Routeerrorboundary";
+import { PermissionRoute } from "@/features/Auth/components/PermissionRoute";
+import { PERMISSIONS } from "@/utils/constants";
 
 const RootLayout = lazy(() => import("@/layouts/RootLayout"));
 const PublicLayout = lazy(() => import("@/layouts/PublicLayout"));
 const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
-const ProtectedRoute = lazy(() => import("@/components/Login/ProtectedRoute").then((module) => ({ default: module.ProtectedRoute })));
+
+const ProtectedRoute = lazy(() =>
+    import("@/components/Login/ProtectedRoute").then((module) => ({
+        default: module.ProtectedRoute,
+    })),
+);
+
 const HomePage = lazy(() => import("@/pages/Home/Home"));
 const CursoCatalogoPage = lazy(() => import("@/features/Home/Components/Cursos/CursosPageContent"));
 const CursoModulosPage = lazy(() => import("@/features/Home/Components/Cursos/CursoPageContent"));
 const ModuloDetallePublicPage = lazy(() => import("@/features/Home/Components/modulos/ModuloPageContent"));
-const ChangePassword = lazy(() => import("@/pages/Auth/ChangePassword").then((module) => ({ default: module.ChangePassword })));
+
+const ChangePassword = lazy(() =>
+    import("@/pages/Auth/ChangePassword").then((module) => ({
+        default: module.ChangePassword,
+    })),
+);
+
 const InicioPage = lazy(() => import("@/pages/Welcome/InicioPage"));
 const ProfilePage = lazy(() => import("@/pages/Profile/ProfilePage"));
+
 const UsuarioPage = lazy(() => import("@/pages/Usuario/UsuarioPage"));
 const UsuarioDetallePage = lazy(() => import("@/pages/Usuario/UsuarioDetallePage"));
+
 const CursosPage = lazy(() => import("@/pages/Curso/CursoPage"));
 const CursoDetallePage = lazy(() => import("@/pages/Curso/CursoDetallePage"));
 const MisCursosPage = lazy(() => import("@/pages/Curso/MisCursosPage"));
+
 const ModulosPage = lazy(() => import("@/pages/Modulo/ModuloPage"));
 const ModuloDetallePage = lazy(() => import("@/pages/Modulo/ModuloDetallePage"));
+
 const LeccionDetallePage = lazy(() => import("@/pages/Leccion/LeccionDetallePage"));
-const CrearInscripcionPage = lazy(() => import("@/pages/Inscripciones/CrearInscripcionPage").then((module) => ({ default: module.CrearInscripcionPage })));
+
+const CrearInscripcionPage = lazy(() =>
+    import("@/pages/Inscripciones/CrearInscripcionPage").then((module) => ({
+        default: module.CrearInscripcionPage,
+    })),
+);
+
 const EditarInscripcionPage = lazy(() => import("@/pages/Inscripciones/EditarInscripcionPage"));
+
+const InscripcionesPage = lazy(() =>
+    import("@/pages/Inscripciones/InscripcionesPage").then((module) => ({
+        default: module.InscripcionesPage,
+    })),
+);
+
 const VerificarCertificadoPage = lazy(() => import("@/pages/Certificados/VerificarCertificadoPage"));
-const InscripcionesPage = lazy(() => import("@/pages/Inscripciones/InscripcionesPage").then((module) => ({ default: module.InscripcionesPage })));
 const MisCertificados = lazy(() => import("@/pages/Certificados/MisCertificados"));
+
 const SupportPage = lazy(() => import("@/pages/Support/SupportPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFound/NotFoundPage"));
+
 const LeadsPage = lazy(() => import("@/pages/Lead/LeadPage"));
 const LeadDetailPage = lazy(() => import("@/pages/Lead/LeadDetailPage"));
 const LeadUserDetailPage = lazy(() => import("@/pages/Lead/LeadUserDetailPage"));
 
-
 const lazyElement = (
-    Component: React.LazyExoticComponent<
-        React.ComponentType
-    >,
-    fallback: React.ReactNode = <Loading />
+    Component: LazyExoticComponent<ComponentType>,
+    fallback: ReactNode = <Loading />,
 ) => (
     <Suspense fallback={fallback}>
         <Component />
     </Suspense>
+);
+
+const withPermission = (
+    permission: string,
+    element: ReactNode,
+    message?: string,
+) => (
+    <PermissionRoute
+        permission={permission}
+        message={message}
+    >
+        {element}
+    </PermissionRoute>
 );
 
 export const router = createBrowserRouter([
@@ -68,24 +113,18 @@ export const router = createBrowserRouter([
                         children: [
                             {
                                 index: true,
-                                element: lazyElement(
-                                    CursoCatalogoPage
-                                ),
+                                element: lazyElement(CursoCatalogoPage),
                             },
                             {
                                 path: ":cursoId",
                                 children: [
                                     {
                                         index: true,
-                                        element: lazyElement(
-                                            CursoModulosPage
-                                        ),
+                                        element: lazyElement(CursoModulosPage),
                                     },
                                     {
                                         path: "modulos/:moduloId",
-                                        element: lazyElement(
-                                            ModuloDetallePublicPage
-                                        ),
+                                        element: lazyElement(ModuloDetallePublicPage),
                                     },
                                 ],
                             },
@@ -93,9 +132,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "verificar/:codigo",
-                        element: lazyElement(
-                            VerificarCertificadoPage
-                        ),
+                        element: lazyElement(VerificarCertificadoPage),
                     },
                     {
                         path: "*",
@@ -103,6 +140,7 @@ export const router = createBrowserRouter([
                     },
                 ],
             },
+
             {
                 path: "panel",
                 element: lazyElement(ProtectedRoute),
@@ -110,101 +148,94 @@ export const router = createBrowserRouter([
                 children: [
                     {
                         path: "cambiar-password",
-                        element: lazyElement(
-                            ChangePassword
-                        ),
+                        element: lazyElement(ChangePassword),
                     },
                     {
-                        element: lazyElement(
-                            DashboardLayout
-                        ),
+                        element: lazyElement(DashboardLayout),
                         errorElement: <RouteErrorBoundary />,
                         children: [
                             {
                                 index: true,
-                                element: (
-                                    <Navigate
-                                        to="inicio"
-                                        replace
-                                    />
-                                ),
+                                element: <Navigate to="inicio" replace />,
                             },
+
                             {
                                 path: "inicio",
-                                element: lazyElement(
-                                    InicioPage
-                                ),
+                                element: lazyElement(InicioPage),
                             },
+
                             {
                                 path: "perfil",
-                                element: lazyElement(
-                                    ProfilePage
-                                ),
+                                element: lazyElement(ProfilePage),
                             },
+
                             {
                                 path: "usuario",
+                                element: withPermission(
+                                    PERMISSIONS.USUARIOS.VER,
+                                    <Outlet />,
+                                    "No tienes permisos para ver los usuarios",
+                                ),
                                 children: [
                                     {
                                         index: true,
-                                        element: lazyElement(
-                                            UsuarioPage
-                                        ),
+                                        element: lazyElement(UsuarioPage),
                                     },
                                     {
                                         path: ":id",
-                                        element: lazyElement(
-                                            UsuarioDetallePage
-                                        ),
+                                        element: lazyElement(UsuarioDetallePage),
                                     },
                                 ],
                             },
+
                             {
                                 path: "cursos",
                                 children: [
                                     {
                                         index: true,
-                                        element: lazyElement(
-                                            CursosPage
+                                        element: withPermission(
+                                            PERMISSIONS.CURSOS.VER,
+                                            lazyElement(CursosPage),
+                                            "No tienes permisos para ver los cursos",
                                         ),
                                     },
+
                                     {
                                         path: "mis-cursos",
-                                        element: lazyElement(
-                                            MisCursosPage
-                                        ),
+                                        element: lazyElement(MisCursosPage),
                                     },
+
                                     {
                                         path: ":id",
                                         children: [
                                             {
                                                 index: true,
-                                                element: lazyElement(
-                                                    CursoDetallePage
-                                                ),
+                                                element: lazyElement(CursoDetallePage),
                                             },
+
                                             {
                                                 path: "modulos",
                                                 children: [
                                                     {
                                                         index: true,
-                                                        element: lazyElement(
-                                                            ModulosPage
+                                                        element: withPermission(
+                                                            PERMISSIONS.MODULOS.VER,
+                                                            lazyElement(ModulosPage),
+                                                            "No tienes permisos para ver los módulos",
                                                         ),
                                                     },
+
                                                     {
                                                         path: ":moduloId",
                                                         children: [
                                                             {
                                                                 index: true,
-                                                                element: lazyElement(
-                                                                    ModuloDetallePage
-                                                                ),
+                                                                element: lazyElement(ModuloDetallePage),
                                                             },
+
                                                             {
                                                                 path: "lecciones/:leccionId",
-                                                                element: lazyElement(
-                                                                    LeccionDetallePage
-                                                                ),
+                                                                element: lazyElement(LeccionDetallePage),
                                                             },
                                                         ],
                                                     },
@@ -214,62 +245,78 @@ export const router = createBrowserRouter([
                                     },
                                 ],
                             },
+
                             {
                                 path: "mis-cursos",
-                                element: lazyElement(
-                                    MisCursosPage
-                                ),
+                                element: lazyElement(MisCursosPage),
                             },
+
                             {
                                 path: "inscripciones",
                                 children: [
                                     {
                                         index: true,
-                                        element: lazyElement(
-                                            InscripcionesPage
+                                        element: withPermission(
+                                            PERMISSIONS.INSCRIPCIONES.VER,
+                                            lazyElement(InscripcionesPage),
+                                            "No tienes permisos para ver las inscripciones",
                                         ),
                                     },
+
                                     {
                                         path: "crear",
-                                        element: lazyElement(
-                                            CrearInscripcionPage
+                                        element: withPermission(
+                                            PERMISSIONS.INSCRIPCIONES.CREAR,
+                                            lazyElement(CrearInscripcionPage),
+                                            "No tienes permisos para crear inscripciones",
                                         ),
                                     },
+
                                     {
                                         path: "estudiante/:estudianteId",
-                                        element: lazyElement(
-                                            EditarInscripcionPage
+                                        element: withPermission(
+                                            PERMISSIONS.INSCRIPCIONES.EDITAR,
+                                            lazyElement(EditarInscripcionPage),
+                                            "No tienes permisos para editar inscripciones",
                                         ),
                                     },
                                 ],
                             },
+
                             {
                                 path: "certificados",
-                                element: lazyElement(
-                                    MisCertificados
-                                ),
+                                element: lazyElement(MisCertificados),
                             },
+
                             {
                                 path: "soporte",
-                                element: lazyElement(SupportPage)
+                                element: lazyElement(SupportPage),
                             },
+
                             {
                                 path: "leads",
+                                element: withPermission(
+                                    PERMISSIONS.LEADS.VER,
+                                    <Outlet />,
+                                    "No tienes permisos para ver los leads",
+                                ),
                                 children: [
                                     {
                                         index: true,
                                         element: lazyElement(LeadsPage),
                                     },
-                                    {
-                                        path: ":leadId",
-                                        element: lazyElement(LeadDetailPage),
-                                    },
+
                                     {
                                         path: "usuario/:usuarioId",
                                         element: lazyElement(LeadUserDetailPage),
                                     },
+
+                                    {
+                                        path: ":leadId",
+                                        element: lazyElement(LeadDetailPage),
+                                    },
                                 ],
-                            }
+                            },
                         ],
                     },
                 ],

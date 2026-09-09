@@ -4,8 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import { AppTitle } from "@/components/common/Apptittle";
-import { NoPermission } from "@/components/common/NoPermission";
+import { PageHeader } from "@/components/common/PageHeader";
 
 import { CursosList } from "@/features/Curso/Components/CursosList";
 import { CursosToolbar } from "@/features/Curso/Components/CursosToolbar";
@@ -13,6 +12,7 @@ import { DialogCurso } from "@/features/Curso/Components/DialogCurso";
 
 import type { CursoType } from "@/features/Curso/Schema/CursoSchema";
 
+import { useCrudDialog } from "@/hooks/useCrudDialog";
 import { useModulePermissions } from "@/hooks/useModulePermissions";
 import { PERMISSIONS } from "@/utils/constants";
 
@@ -22,28 +22,14 @@ export default function CursosPage() {
     const [search, setSearch] = useState("");
     const [categoria, setCategoria] = useState("");
 
-    const [open, setOpen] = useState(false);
-    const [mode, setMode] = useState<"create" | "edit">("create");
-    const [cursoSeleccionado, setCursoSeleccionado] = useState<CursoType | undefined>();
+    const dialog = useCrudDialog<CursoType>();
 
-    const { puedeVer, puedeCrear, puedeEditar, puedeEliminar } =
+    const { puedeCrear, puedeEditar, puedeEliminar } =
         useModulePermissions(PERMISSIONS.CURSOS);
 
     const limpiarFiltros = () => {
         setSearch("");
         setCategoria("");
-    };
-
-    const abrirCrear = () => {
-        setCursoSeleccionado(undefined);
-        setMode("create");
-        setOpen(true);
-    };
-
-    const abrirEditar = (curso: CursoType) => {
-        setCursoSeleccionado(curso);
-        setMode("edit");
-        setOpen(true);
     };
 
     const verCurso = (curso: CursoType) => {
@@ -52,47 +38,40 @@ export default function CursosPage() {
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex items-start justify-between gap-4">
-                <AppTitle
-                    title="Cursos"
-                    subtitle="Explora y administra los cursos disponibles."
-                />
+            <PageHeader
+                title="Cursos"
+                subtitle="Explora y administra los cursos disponibles."
+                action={
+                    puedeCrear ? (
+                        <Button type="button" onClick={dialog.openCreate}>
+                            Nuevo curso
+                        </Button>
+                    ) : undefined
+                }
+            />
 
-                {puedeCrear && (
-                    <Button type="button" onClick={abrirCrear}>
-                        Nuevo curso
-                    </Button>
-                )}
-            </div>
+            <CursosToolbar
+                search={search}
+                categoria={categoria}
+                onSearchChange={setSearch}
+                onCategoriaChange={setCategoria}
+                onClear={limpiarFiltros}
+            />
 
-            {!puedeVer ? (
-                <NoPermission message="No tienes permisos para ver los cursos" />
-            ) : (
-                <>
-                    <CursosToolbar
-                        search={search}
-                        categoria={categoria}
-                        onSearchChange={setSearch}
-                        onCategoriaChange={setCategoria}
-                        onClear={limpiarFiltros}
-                    />
-
-                    <CursosList
-                        search={search}
-                        categoria={categoria}
-                        onVer={verCurso}
-                        onEditar={abrirEditar}
-                        puedeEditar={puedeEditar}
-                        puedeEliminar={puedeEliminar}
-                    />
-                </>
-            )}
+            <CursosList
+                search={search}
+                categoria={categoria}
+                onVer={verCurso}
+                onEditar={dialog.openEdit}
+                puedeEditar={puedeEditar}
+                puedeEliminar={puedeEliminar}
+            />
 
             <DialogCurso
-                open={open}
-                onOpenChange={setOpen}
-                mode={mode}
-                initialData={cursoSeleccionado}
+                open={dialog.open}
+                onOpenChange={dialog.setOpen}
+                mode={dialog.mode}
+                initialData={dialog.selected}
             />
         </div>
     );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useNavigate, useParams } from "react-router-dom";
+
 import { QueryState } from "@/components/common/QueryState";
 import { UsuarioDetalle } from "@/features/Usuario/Components/UsuarioDetalle";
 import { useGetUser } from "@/features/Usuario/Hook/UsuarioHook";
@@ -9,12 +10,7 @@ export default function UsuarioDetallePage() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
 
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-    } = useGetUser(id ?? "", !!id);
+    const { data, isLoading, isError, error } = useGetUser(id ?? "", !!id);
 
     return (
         <div className="space-y-6 p-6">
@@ -27,9 +23,7 @@ export default function UsuarioDetallePage() {
                 {data && (
                     <UsuarioDetalle
                         usuario={data}
-                        onBack={() =>
-                            navigate("/panel/usuario")
-                        }
+                        onBack={() => navigate("/panel/usuario")}
                     />
                 )}
             </QueryState>

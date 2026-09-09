@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AppTitle } from "@/components/common/Apptittle";
 import { QueryState } from "@/components/common/QueryState";
-import { NoPermission } from "@/components/common/NoPermission";
 
 import {
   useEliminarCurso,
@@ -21,9 +20,6 @@ import type { CursoType } from "@/features/Inscripciones/Schema/InscripcionSchem
 import { CursoInscritoCard } from "@/features/Inscripciones/Components/CursoInscritoCard";
 import { AgregarCursoForm } from "@/features/Inscripciones/Components/AgregarCursoForm";
 import { DialogConfirmarEliminarModulo } from "@/features/Inscripciones/Components/DialogConfirmarEliminarModulo";
-
-import { useModulePermissions } from "@/hooks/useModulePermissions";
-import { PERMISSIONS } from "@/utils/constants";
 
 interface ModuloAEliminar {
   inscripcionId: string;
@@ -42,16 +38,17 @@ interface LocationState {
   nombreCompleto?: string;
 }
 
+type EliminacionSeleccionada =
+  | { tipo: "modulo"; data: ModuloAEliminar }
+  | { tipo: "curso"; data: CursoAEliminar }
+  | null;
+
 export default function EditarInscripcionPage() {
   const { estudianteId } = useParams<{ estudianteId: string }>();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const state = location.state as LocationState | null;
-  const nombreCompleto = state?.nombreCompleto ?? "";
-
-  const { puedeVer, puedeEditar } = useModulePermissions(PERMISSIONS.INSCRIPCIONES);
-  const puedeGestionar = puedeVer && puedeEditar;
+  const nombreCompleto = (location.state as LocationState | null)?.nombreCompleto ?? "";
 
   const {
     data: cursosInscritos = [],
@@ -60,46 +57,56 @@ export default function EditarInscripcionPage() {
     error,
   } = useGetInscripcionesPorEstudiante(estudianteId ?? "");
 
-  const eliminarModuloMutation = useEliminarModulo();
-  const eliminarCursoMutation = useEliminarCurso();
+  const eliminarModulo = useEliminarModulo();
+  const eliminarCurso = useEliminarCurso();
 
-  const [moduloAEliminar, setModuloAEliminar] = useState<ModuloAEliminar | null>(null);
-  const [cursoAEliminar, setCursoAEliminar] = useState<CursoAEliminar | null>(null);
+  const [eliminacion, setEliminacion] = useState<EliminacionSeleccionada>(null);
 
   const cursosInscritosIds = cursosInscritos.map((curso: CursoType) => curso.id);
 
-  const handleEliminarModulo = (modulo: ModuloAEliminar) => {
-    setModuloAEliminar(modulo);
-  };
+  const moduloAEliminar =
+    eliminacion?.tipo === "modulo" ? eliminacion.data : null;
 
-  const handleConfirmEliminarModulo = () => {
-    if (!moduloAEliminar) return;
+  const cursoAEliminar =
+    eliminacion?.tipo === "curso" ? eliminacion.data : null;
 
-    eliminarModuloMutation.mutate(
-      {
-        inscripcionId: moduloAEliminar.inscripcionId,
-        cursoId: moduloAEliminar.cursoId,
-        moduloId: moduloAEliminar.moduloId,
-      },
-      {
-        onSuccess: () => setModuloAEliminar(null),
-      },
-    );
-  };
+  const handleConfirmEliminar = () => {
+    if (!eliminacion) return;
 
-  const handleConfirmEliminarCurso = () => {
-    if (!cursoAEliminar || !estudianteId) return;
+    if (eliminacion.tipo === "modulo") {
+      const modulo = eliminacion.data;
 
-    eliminarCursoMutation.mutate(
+      eliminarModulo.mutate(
+        {
+          inscripcionId: modulo.inscripcionId,
+          cursoId: modulo.cursoId,
+          moduloId: modulo.moduloId,
+        },
+        {
+          onSuccess: () => setEliminacion(null),
+        },
+      );
+
+      return;
+    }
+
+    if (!estudianteId) return;
+
+    eliminarCurso.mutate(
       {
         estudianteId,
-        cursoId: cursoAEliminar.id,
+        cursoId: eliminacion.data.id,
       },
       {
-        onSuccess: () => setCursoAEliminar(null),
+        onSuccess: () => setEliminacion(null),
       },
     );
   };
+
+  const isPending =
+    eliminacion?.tipo === "modulo"
+      ? eliminarModulo.isPending
+      : eliminarCurso.isPending;
 
   return (
     <div className="space-y-6 p-6">
@@ -119,89 +126,85 @@ export default function EditarInscripcionPage() {
         />
       </div>
 
-      {!puedeGestionar ? (
-        <NoPermission message="No tienes permisos para editar las inscripciones" />
-      ) : (
-        <QueryState isLoading={isLoading} isError={isError} error={error}>
-          <div className="space-y-6">
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-base">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                  Cursos inscritos
-                  <span className="text-muted-foreground">
-                    ({cursosInscritos.length})
+      <QueryState
+        isLoading={isLoading}
+        isError={isError || !estudianteId}
+        error={error}
+        fallbackMessage="No se pudo cargar la inscripción."
+      >
+        <div className="space-y-6">
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <BookOpen className="h-4 w-4 text-primary" />
+
+                Cursos inscritos
+
+                <span className="text-muted-foreground">
+                  ({cursosInscritos.length})
+                </span>
+              </CardTitle>
+
+              {nombreCompleto && (
+                <p className="text-sm text-muted-foreground">
+                  Estudiante:{" "}
+                  <span className="font-medium text-foreground">
+                    {nombreCompleto}
                   </span>
-                </CardTitle>
+                </p>
+              )}
+            </CardHeader>
 
-                {nombreCompleto && (
-                  <p className="text-sm text-muted-foreground">
-                    Estudiante:{" "}
-                    <span className="font-medium text-foreground">
-                      {nombreCompleto}
-                    </span>
+            <CardContent>
+              {cursosInscritos.length === 0 ? (
+                <div className="rounded-lg border border-dashed py-8 text-center">
+                  <BookOpen className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+
+                  <p className="text-sm font-medium">
+                    No tiene cursos inscritos
                   </p>
-                )}
-              </CardHeader>
 
-              <CardContent>
-                {cursosInscritos.length === 0 ? (
-                  <div className="rounded-lg border border-dashed py-8 text-center">
-                    <BookOpen className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Puedes agregar un curso desde la sección inferior.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {cursosInscritos.map((curso: CursoType) => (
+                    <CursoInscritoCard
+                      key={curso.id}
+                      curso={curso}
+                      onEliminarCurso={(curso) =>
+                        setEliminacion({ tipo: "curso", data: curso, })
+                      }
+                      onEliminarModulo={(modulo) =>
+                        setEliminacion({ tipo: "modulo", data: modulo, })
+                      }
+                    />
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-                    <p className="text-sm font-medium">
-                      No tiene cursos inscritos
-                    </p>
-
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Puedes agregar un curso desde la sección inferior.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {cursosInscritos.map((curso: CursoType) => (
-                      <CursoInscritoCard
-                        key={curso.id}
-                        curso={curso}
-                        onEliminarCurso={setCursoAEliminar}
-                        onEliminarModulo={handleEliminarModulo}
-                      />
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {estudianteId && (
-              <AgregarCursoForm
-                estudianteId={estudianteId}
-                cursosInscritosIds={cursosInscritosIds}
-              />
-            )}
-          </div>
-        </QueryState>
-      )}
+          {estudianteId && (
+            <AgregarCursoForm
+              estudianteId={estudianteId}
+              cursosInscritosIds={cursosInscritosIds}
+            />
+          )}
+        </div>
+      </QueryState>
 
       <DialogConfirmarEliminarModulo
-        open={!!moduloAEliminar}
+        open={!!eliminacion}
         onOpenChange={(open) => {
-          if (!open) setModuloAEliminar(null);
+          if (!open) setEliminacion(null);
         }}
-        cursoNombre={moduloAEliminar?.cursoNombre ?? ""}
-        moduloNombre={moduloAEliminar?.moduloNombre ?? ""}
-        onConfirm={handleConfirmEliminarModulo}
-        isPending={eliminarModuloMutation.isPending}
-      />
-
-      <DialogConfirmarEliminarModulo
-        open={!!cursoAEliminar}
-        onOpenChange={(open) => {
-          if (!open) setCursoAEliminar(null);
-        }}
-        cursoNombre={cursoAEliminar?.nombre ?? ""}
-        moduloNombre="todos sus módulos"
-        onConfirm={handleConfirmEliminarCurso}
-        isPending={eliminarCursoMutation.isPending}
+        cursoNombre={moduloAEliminar?.cursoNombre ?? cursoAEliminar?.nombre ?? ""}
+        moduloNombre={moduloAEliminar?.moduloNombre ?? "todos sus módulos"}
+        onConfirm={handleConfirmEliminar}
+        isPending={isPending}
       />
     </div>
   );

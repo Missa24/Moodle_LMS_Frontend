@@ -8,6 +8,7 @@ import {
     faGraduationCap,
     faIdBadge,
     faCertificate,
+    faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
 export interface MenuItem {
@@ -59,7 +60,7 @@ export const menuItems: MenuItem[] = [
     },
     {
         title: "Leads",
-        icon: faUsersGear,
+        icon: faUserPlus,
         url: "/panel/leads",
         permission: PERMISSIONS.LEADS.VER,
     }

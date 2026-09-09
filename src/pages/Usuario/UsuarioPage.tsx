@@ -1,115 +1,81 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { AppTitle } from "@/components/common/Apptittle";
-import { NoPermission } from "@/components/common/NoPermission";
+import { PageHeader } from "@/components/common/PageHeader";
 import { QueryState } from "@/components/common/QueryState";
 import { DataTable } from "@/components/data-table/data-table";
 import { Button } from "@/components/ui/button";
 
 import { UsuarioColumns } from "@/features/Usuario/Components/usuario-columns";
 import { DialogUsuario } from "@/features/Usuario/Components/DialogUsuario";
+import { useGetUsers, useDeleteUser } from "@/features/Usuario/Hook/UsuarioHook";
+import type { UsuarioIndexType } from "@/features/Usuario/Schema/UsuarioSchema";
 
-import { useGetUsers, useDeleteUser, } from "@/features/Usuario/Hook/UsuarioHook";
-
-import type { UsuarioIndexType, } from "@/features/Usuario/Schema/UsuarioSchema";
-
+import { useCrudDialog } from "@/hooks/useCrudDialog";
 import { useModulePermissions } from "@/hooks/useModulePermissions";
 import { PERMISSIONS } from "@/utils/constants";
 
 export default function UsuarioPage() {
+    const navigate = useNavigate();
     const [page, setPage] = useState(1);
 
-    const [selectedUser, setSelectedUser,] = useState<UsuarioIndexType | undefined>(undefined);
-
-    const [dialogOpen, setDialogOpen,] = useState(false);
-
-    const navigate = useNavigate();
-
     const perPage = 10;
+    const dialog = useCrudDialog<UsuarioIndexType>();
 
-    const { puedeVer, puedeCrear, puedeEliminar, } = useModulePermissions(PERMISSIONS.USUARIOS,);
+    const { puedeCrear, puedeEliminar } = useModulePermissions(PERMISSIONS.USUARIOS);
 
-    const { data, isLoading, isError, error, } = useGetUsers(page, perPage,);
-
+    const { data, isLoading, isError, error } = useGetUsers(page, perPage);
     const deleteUser = useDeleteUser();
-    const handleCreate = () => {
-        setSelectedUser(undefined,);
 
-        setDialogOpen(true,);
-    };
-
-    const handleDelete = (id: string,) => {
-        deleteUser.mutate(id,);
-    };
-
-    const columns =
-        UsuarioColumns({
-            onView: (id: string,) =>
-                navigate(`/panel/usuario/${id}`,),
-
-            onDelete: handleDelete,
-
-            canDelete: puedeEliminar,
-        });
+    const columns = useMemo(
+        () =>
+            UsuarioColumns({
+                onView: (id: string) => navigate(`/panel/usuario/${id}`),
+                onDelete: (id: string) => deleteUser.mutate(id),
+                canDelete: puedeEliminar,
+            }),
+        [navigate, puedeEliminar, deleteUser],
+    );
 
     const usuarios = data?.data ?? [];
-
     const totalPages = data?.meta.totalPages ?? 1;
-
     const currentPage = data?.meta.page ?? page;
-
     const totalUsers = data?.meta.total ?? 0;
 
     return (
         <div className="space-y-6 p-6">
-            <div className="flex items-center justify-between">
-                <AppTitle
-                    title="Usuarios"
-                    subtitle="Administra y gestiona a los usuarios"
-                />
+            <PageHeader
+                title="Usuarios"
+                subtitle="Administra y gestiona a los usuarios"
+                action={
+                    puedeCrear ? (
+                        <Button onClick={dialog.openCreate}>
+                            Nuevo Usuario
+                        </Button>
+                    ) : undefined
+                }
+            />
 
-                {puedeCrear && (
-                    <Button
-                        onClick={handleCreate}
-                    >
-                        Nuevo Usuario
-                    </Button>
-                )}
-            </div>
-
-            {!puedeVer ? (
-                <NoPermission
-                    message="No tienes permisos para ver los usuarios"
+            <QueryState isLoading={isLoading} isError={isError} error={error}>
+                <DataTable
+                    columns={columns}
+                    data={usuarios}
+                    filterColumn="username"
+                    filterPlaceholder="Buscar usuario..."
+                    pageCount={totalPages}
+                    pageIndex={currentPage - 1}
+                    totalRows={totalUsers}
+                    onPaginationChange={(newPage) => setPage(newPage + 1)}
                 />
-            ) : (
-                <QueryState
-                    isLoading={isLoading}
-                    isError={isError}
-                    error={error}
-                >
-                    <DataTable
-                        columns={columns}
-                        data={usuarios}
-                        filterColumn="username"
-                        filterPlaceholder="Buscar usuario..."
-                        pageCount={totalPages}
-                        pageIndex={currentPage - 1}
-                        totalRows={totalUsers}
-                        onPaginationChange={(newPage,) =>
-                            setPage(newPage + 1,)
-                        }
-                    />
-                </QueryState>
-            )}
+            </QueryState>
 
             <DialogUsuario
-                open={dialogOpen}
-                onOpenChange={setDialogOpen}
-                mode={selectedUser ? "edit" : "create"}
-                userId={selectedUser?.id}
+                open={dialog.open}
+                onOpenChange={dialog.setOpen}
+                mode={dialog.mode}
+                userId={dialog.selected?.id}
             />
         </div>
     );
