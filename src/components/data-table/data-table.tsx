@@ -31,8 +31,11 @@ interface DataTableProps<TData, TValue> {
     pageCount?: number;
     pageIndex?: number;
     totalRows?: number;
-    onPaginationChange?: (pageIndex: number) => void;
+    onPaginationChange?: (pageIndex: number,) => void;
+    searchValue?: string;
+    onSearchChange?: (value: string,) => void;
 }
+
 export function DataTable<TData, TValue>({
     columns,
     data,

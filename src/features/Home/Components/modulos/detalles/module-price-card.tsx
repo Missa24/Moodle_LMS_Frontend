@@ -19,12 +19,23 @@ import {
 type ModulePriceCardProps = {
     cantidadLecciones: number;
     onBuy: () => void;
+    costo?: number | null;
 };
+
+const formatearCosto = (costo: number) =>
+    new Intl.NumberFormat("es-BO", {
+        style: "currency",
+        currency: "BOB",
+        minimumFractionDigits: 2,
+    }).format(costo);
 
 export const ModulePriceCard = ({
     cantidadLecciones,
     onBuy,
+    costo,
 }: ModulePriceCardProps) => {
+    const esGratis = !costo || costo <= 0;
+
     return (
         <Card className="rounded-2xl border-primary/30 sm:rounded-3xl">
             <CardHeader className="pb-4">
@@ -37,6 +48,10 @@ export const ModulePriceCard = ({
                     completo de este
                     módulo desde nuestra
                     plataforma educativa.
+                </p>
+
+                <p className={`mt-3 text-3xl font-bold tracking-tight sm:text-4xl ${esGratis ? "text-primary" : ""}`}>
+                    {esGratis ? "Gratis" : formatearCosto(costo!)}
                 </p>
             </CardHeader>
 

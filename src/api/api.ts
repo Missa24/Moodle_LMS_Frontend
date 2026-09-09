@@ -32,7 +32,7 @@ apiService.interceptors.response.use(
         ) {
             useAuthStore.getState().logout();
 
-            window.location.href = "/login";
+            window.location.href = "/";
         }
 
         return Promise.reject(error);

@@ -80,17 +80,24 @@ export function useLogin() {
 
 export function useLogout() {
     const logout = useAuthStore(
-        state => state.logout
+        (state) => state.logout
     );
+
     const navigate = useNavigate();
+
     return useMutation({
         mutationFn: LogoutUser,
+
         onSettled: () => {
             logout();
-            navigate("/login", { replace: true });
-        }
+
+            navigate("/", {
+                replace: true,
+            });
+        },
     });
 }
+
 
 export function useChangePassword() {
     const logout = useAuthStore(

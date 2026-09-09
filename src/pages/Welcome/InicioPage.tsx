@@ -191,7 +191,7 @@ export default function InicioPage() {
                             {cursos.map((curso) => (
                                 <Link
                                     key={curso.id}
-                                    to={`/cursos/${curso.id}`}
+                                    to={`/panel/cursos/${curso.id}`}
                                     className="group overflow-hidden rounded-xl border border-border/60 bg-card transition-all duration-200 hover:border-primary/30 hover:shadow-sm"
                                 >
                                     <div className="aspect-[3/4] w-full overflow-hidden bg-muted">

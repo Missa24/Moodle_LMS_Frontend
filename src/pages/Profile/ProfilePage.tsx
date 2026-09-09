@@ -31,25 +31,37 @@ export default function Profile() {
         >
             {usuario && (
                 <div className="space-y-6 p-6">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <h1 className="text-2xl font-semibold tracking-tight">
+                                Mi perfil
+                            </h1>
+
+                            <p className="text-sm text-muted-foreground">
+                                Administra tu información personal y seguridad.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-wrap gap-2">
+                            <Button
+                                onClick={() => setEditOpen(true)}
+                            >
+                                Editar perfil
+                            </Button>
+
+                            <Button
+                                variant="outline"
+                                onClick={() => setPasswordOpen(true)}
+                            >
+                                Cambiar contraseña
+                            </Button>
+                        </div>
+                    </div>
+
                     <UserProfile
                         usuario={usuario}
                         onChangePhoto={() => setPhotoOpen(true)}
                     />
-
-                    <div className="flex flex-wrap justify-end gap-2">
-                        <Button
-                            onClick={() => setEditOpen(true)}
-                        >
-                            Editar perfil
-                        </Button>
-
-                        <Button
-                            variant="outline"
-                            onClick={() => setPasswordOpen(true)}
-                        >
-                            Cambiar contraseña
-                        </Button>
-                    </div>
 
                     <EditProfileDialog
                         open={editOpen}

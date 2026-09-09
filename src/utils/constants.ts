@@ -65,6 +65,10 @@ export const PERMISSIONS = {
     CERTIFICADOS: {
         VER: "certificados.ver",
     },
+
+    LEADS: {
+        VER: "leads.ver",
+    }
 } as const;
 
 export const paises = [

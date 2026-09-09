@@ -8,6 +8,7 @@ export const InscripcionModuloSchema = z.object({
     fechaInscripcion: z.string(),
     estado: z.string(),
     estadoAcceso: z.string(),
+    monto: z.number(),
     porcentajeAvance: z.number(),
     fechaFinalizacion: z.string().nullable(),
     observaciones: z.string().nullable(),
@@ -21,6 +22,7 @@ export const ModuloSchema = z.object({
     nombre: z.string(),
     orden: z.number(),
     inscripcion: InscripcionModuloSchema.optional(),
+    monto: z.number().optional(),
 });
 
 export type ModuloType = z.infer<typeof ModuloSchema>;
@@ -57,3 +59,23 @@ export const CrearInscripcionSchema = z.object({
 });
 
 export type CrearInscripcionSchemaType = z.infer<typeof CrearInscripcionSchema>;
+
+export const MiInscripcionModuloSchema =
+    z.object({
+        inscrito: z.boolean(),
+        tieneAcceso: z.boolean(),
+        inscripcion: z.object({
+            id: z.string(),
+            moduloId: z.string(),
+            estudianteId: z.string(),
+            numeroInscripcion: z.string(),
+            fechaInscripcion: z.string(),
+            estado: z.string(),
+            estadoAcceso: z.string(),
+            monto: z.number().optional(),
+            porcentajeAvance: z.number(),
+            fechaFinalizacion: z.string().nullable(),
+        }).nullable(),
+    });
+
+export type MiInscripcionModuloType = z.infer<typeof MiInscripcionModuloSchema>;

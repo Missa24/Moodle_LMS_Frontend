@@ -1,6 +1,7 @@
 "use client";
 
 import { useNavigate, useParams } from "react-router-dom";
+
 import { QueryState } from "@/components/common/QueryState";
 import { UsuarioDetalle } from "@/features/Usuario/Components/UsuarioDetalle";
 import { useGetUser } from "@/features/Usuario/Hook/UsuarioHook";
@@ -19,7 +20,12 @@ export default function UsuarioDetallePage() {
                 error={error}
                 fallbackMessage="No se pudo cargar la información del usuario."
             >
-                {data && <UsuarioDetalle usuario={data} onBack={() => navigate("/usuario")} />}
+                {data && (
+                    <UsuarioDetalle
+                        usuario={data}
+                        onBack={() => navigate("/panel/usuario")}
+                    />
+                )}
             </QueryState>
         </div>
     );
