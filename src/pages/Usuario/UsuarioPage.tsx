@@ -4,87 +4,64 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { AppTitle } from "@/components/common/Apptittle";
+import { NoPermission } from "@/components/common/NoPermission";
+import { QueryState } from "@/components/common/QueryState";
 import { DataTable } from "@/components/data-table/data-table";
 import { Button } from "@/components/ui/button";
-import { QueryState } from "@/components/common/QueryState";
-import { MascotSinPermiso } from "@/components/common/mascots";
+
 import { UsuarioColumns } from "@/features/Usuario/Components/usuario-columns";
 import { DialogUsuario } from "@/features/Usuario/Components/DialogUsuario";
 
-import {
-    useGetUsers,
-    useDeleteUser,
-} from "@/features/Usuario/Hook/UsuarioHook";
-import { UsuarioIndexType } from "@/features/Usuario/Schema/UsuarioSchema";
+import { useGetUsers, useDeleteUser, } from "@/features/Usuario/Hook/UsuarioHook";
 
-import { usePermission } from "@/hooks/usePermission";
+import type { UsuarioIndexType, } from "@/features/Usuario/Schema/UsuarioSchema";
+
+import { useModulePermissions } from "@/hooks/useModulePermissions";
 import { PERMISSIONS } from "@/utils/constants";
 
 export default function UsuarioPage() {
     const [page, setPage] = useState(1);
 
-    const [selectedUser, setSelectedUser] =
-        useState<UsuarioIndexType | undefined>(
-            undefined
-        );
+    const [selectedUser, setSelectedUser,] = useState<UsuarioIndexType | undefined>(undefined);
 
-    const [dialogOpen, setDialogOpen] =
-        useState(false);
+    const [dialogOpen, setDialogOpen,] = useState(false);
 
     const navigate = useNavigate();
 
     const perPage = 10;
 
-    const { can } = usePermission();
+    const { puedeVer, puedeCrear, puedeEliminar, } = useModulePermissions(PERMISSIONS.USUARIOS,);
 
-    const puedeVer = can(
-        PERMISSIONS.USUARIOS.VER
-    );
-
-    const puedeCrear = can(
-        PERMISSIONS.USUARIOS.CREAR
-    );
-
-    const puedeEliminar = can(
-        PERMISSIONS.USUARIOS.ELIMINAR
-    );
-
-    const {
-        data,
-        isLoading,
-        isError,
-        error,
-    } = useGetUsers(page, perPage);
+    const { data, isLoading, isError, error, } = useGetUsers(page, perPage,);
 
     const deleteUser = useDeleteUser();
-
     const handleCreate = () => {
-        setSelectedUser(undefined);
-        setDialogOpen(true);
+        setSelectedUser(undefined,);
+
+        setDialogOpen(true,);
     };
 
-    const handleDelete = (id: string) => {
-        deleteUser.mutate(id);
+    const handleDelete = (id: string,) => {
+        deleteUser.mutate(id,);
     };
 
-    const columns = UsuarioColumns({
-        onView: (id: string) =>
-            navigate(`/panel/usuario/${id}`),
+    const columns =
+        UsuarioColumns({
+            onView: (id: string,) =>
+                navigate(`/panel/usuario/${id}`,),
 
-        onDelete: handleDelete,
-        canDelete: puedeEliminar,
-    });
+            onDelete: handleDelete,
+
+            canDelete: puedeEliminar,
+        });
 
     const usuarios = data?.data ?? [];
 
-    const totalPages =
-        data?.meta.totalPages ?? 1;
+    const totalPages = data?.meta.totalPages ?? 1;
 
-    const currentPage =
-        data?.meta.page ?? page;
+    const currentPage = data?.meta.page ?? page;
 
-    const totalUsers =
-        data?.meta.total ?? 0;
+    const totalUsers = data?.meta.total ?? 0;
 
     return (
         <div className="space-y-6 p-6">
@@ -95,27 +72,18 @@ export default function UsuarioPage() {
                 />
 
                 {puedeCrear && (
-                    <Button onClick={handleCreate}>
+                    <Button
+                        onClick={handleCreate}
+                    >
                         Nuevo Usuario
                     </Button>
                 )}
             </div>
 
             {!puedeVer ? (
-                <div className="flex min-h-[300px] flex-col items-center justify-center gap-3 rounded-xl border bg-muted/20 p-6 text-center">
-                    <MascotSinPermiso className="h-32 w-auto" />
-
-                    <div>
-                        <p className="text-sm font-medium">
-                            No tienes permisos para ver los usuarios
-                        </p>
-
-                        <p className="mt-1 text-xs text-muted-foreground">
-                            Si crees que es un error,
-                            contacta a un administrador.
-                        </p>
-                    </div>
-                </div>
+                <NoPermission
+                    message="No tienes permisos para ver los usuarios"
+                />
             ) : (
                 <QueryState
                     isLoading={isLoading}
@@ -128,16 +96,10 @@ export default function UsuarioPage() {
                         filterColumn="username"
                         filterPlaceholder="Buscar usuario..."
                         pageCount={totalPages}
-                        pageIndex={
-                            currentPage - 1
-                        }
+                        pageIndex={currentPage - 1}
                         totalRows={totalUsers}
-                        onPaginationChange={(
-                            newPage
-                        ) =>
-                            setPage(
-                                newPage + 1
-                            )
+                        onPaginationChange={(newPage,) =>
+                            setPage(newPage + 1,)
                         }
                     />
                 </QueryState>
@@ -146,14 +108,8 @@ export default function UsuarioPage() {
             <DialogUsuario
                 open={dialogOpen}
                 onOpenChange={setDialogOpen}
-                mode={
-                    selectedUser
-                        ? "edit"
-                        : "create"
-                }
-                userId={
-                    selectedUser?.id
-                }
+                mode={selectedUser ? "edit" : "create"}
+                userId={selectedUser?.id}
             />
         </div>
     );
