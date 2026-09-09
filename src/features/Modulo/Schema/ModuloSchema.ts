@@ -11,6 +11,7 @@ export const ModuloSchema = z.object({
     orden: z.number(),
     otorgaCertificacion: z.boolean(),
     estaPublicado: z.boolean(),
+    costo: z.number().nullable(),
     creadoEn: z.string(),
     actualizadoEn: z.string(),
 });
@@ -64,6 +65,8 @@ export const ModuloCreateSchema = z.object({
 
     otorgaCertificacion: z.boolean().optional(),
     estaPublicado: z.boolean().optional(),
+
+    costo: z.number().min(0, "El costo no puede ser negativo").optional(),
 });
 
 export type ModuloCreateType =

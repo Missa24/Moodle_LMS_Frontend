@@ -256,6 +256,10 @@ export default function ModuloPageContent() {
                                             ._count
                                             .lecciones
                                     }
+                                    costo={
+                                        modulo
+                                            .costo
+                                    }
                                     onBuy={
                                         handleAccessModule
                                     }

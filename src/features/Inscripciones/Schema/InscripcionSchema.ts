@@ -8,6 +8,7 @@ export const InscripcionModuloSchema = z.object({
     fechaInscripcion: z.string(),
     estado: z.string(),
     estadoAcceso: z.string(),
+    monto: z.number(),
     porcentajeAvance: z.number(),
     fechaFinalizacion: z.string().nullable(),
     observaciones: z.string().nullable(),
@@ -21,6 +22,7 @@ export const ModuloSchema = z.object({
     nombre: z.string(),
     orden: z.number(),
     inscripcion: InscripcionModuloSchema.optional(),
+    monto: z.number().optional(),
 });
 
 export type ModuloType = z.infer<typeof ModuloSchema>;
@@ -70,6 +72,7 @@ export const MiInscripcionModuloSchema =
             fechaInscripcion: z.string(),
             estado: z.string(),
             estadoAcceso: z.string(),
+            monto: z.number().optional(),
             porcentajeAvance: z.number(),
             fechaFinalizacion: z.string().nullable(),
         }).nullable(),
