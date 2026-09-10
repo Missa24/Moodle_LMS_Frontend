@@ -9,6 +9,7 @@ import {
     Trash2,
 } from "lucide-react";
 import { CursoType, ModuloType } from "../Schema/InscripcionSchema";
+import { formatearMoneda } from "@/utils/formatCurrency";
 
 interface CursoInscritoCardProps {
     curso: CursoType;
@@ -131,6 +132,10 @@ function ModuloInscritoItem({
                         <span className="flex items-center gap-1">
                             <BarChart3 className="h-3 w-3" />
                             {inscripcion.porcentajeAvance}% avance
+                        </span>
+
+                        <span className="flex items-center gap-1 font-medium text-foreground">
+                            {formatearMoneda(inscripcion.monto)}
                         </span>
 
                         <Badge

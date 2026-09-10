@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { formatearMoneda } from "@/utils/formatCurrency";
 
 interface InscripcionColumnsProps {
   onDelete: (inscripcion: InscripcionIndexType) => void;
@@ -66,6 +67,25 @@ export function InscripcionColumns({
             </Button>
           </div>
         );
+      },
+    },
+
+    {
+      id: "montoTotal",
+      header: "Monto total",
+      cell: ({ row }) => {
+        const ins = row.original;
+        const total = ins.cursos.reduce(
+          (acc, curso) =>
+            acc +
+            curso.modulos.reduce(
+              (subtotal, modulo) => subtotal + (modulo.monto ?? 0),
+              0,
+            ),
+          0,
+        );
+
+        return <span className="font-medium">{formatearMoneda(total)}</span>;
       },
     },
 

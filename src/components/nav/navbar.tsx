@@ -1,13 +1,6 @@
 import { useState } from "react";
-
-import { Link } from "react-router-dom";
-
-import {
-    CircleUserRound,
-    Menu,
-    Search,
-    X,
-} from "lucide-react";
+import { Link, NavLink } from "react-router-dom";
+import { CircleUserRound, Menu, Search, X } from "lucide-react";
 
 import { CourseSearch } from "@/features/Home/Components/Cursos/couse-search";
 import { cn } from "@/lib/utils";
@@ -30,20 +23,10 @@ const ITEMS = [
 export function Navbar() {
     const { token } = useAuthStore();
 
-    const openLoginDialog =
-        useAuthDialogStore(
-            (state) => state.open
-        );
+    const openLoginDialog = useAuthDialogStore((state) => state.open);
 
-    const [
-        mobileMenuOpen,
-        setMobileMenuOpen,
-    ] = useState(false);
-
-    const [
-        mobileSearchOpen,
-        setMobileSearchOpen,
-    ] = useState(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
     const closeMobilePanels = () => {
         setMobileMenuOpen(false);
@@ -59,7 +42,7 @@ export function Navbar() {
                     "border border-border/80",
                     "bg-background/90",
                     "shadow-sm backdrop-blur-xl",
-                    "transition-all duration-300"
+                    "transition-all duration-300",
                 )}
             >
                 {/* NAVBAR PRINCIPAL */}
@@ -69,11 +52,11 @@ export function Navbar() {
                         "sm:h-[70px] sm:px-4",
                         "lg:grid",
                         "lg:grid-cols-[auto_minmax(280px,430px)_auto]",
-                        "lg:gap-6 lg:px-5"
+                        "lg:gap-6 lg:px-5",
                     )}
                 >
                     {/* LOGO + LINKS */}
-                    <div className="flex min-w-0 items-center gap-4">
+                    <div className="flex min-w-0 items-center gap-5">
                         <Link
                             to="/"
                             onClick={closeMobilePanels}
@@ -88,25 +71,39 @@ export function Navbar() {
                         </Link>
 
                         {/* DESKTOP NAV */}
-                        <nav className="hidden items-center gap-1 lg:flex">
-                            {ITEMS.map(
-                                (item) => (
-                                    <Link
-                                        key={item.to}
-                                        to={item.to}
-                                        className={cn(
-                                            "relative rounded-full",
-                                            "px-3.5 py-2",
-                                            "text-sm font-medium",
-                                            "text-muted-foreground",
+                        <nav className="hidden items-center gap-6 lg:flex">
+                            {ITEMS.map((item) => (
+                                <NavLink
+                                    key={item.to}
+                                    to={item.to}
+                                    end={item.to === "/"}
+                                    className={({ isActive }) =>
+                                        cn(
+                                            "group relative py-2 text-sm font-medium",
                                             "transition-colors duration-200",
-                                            "hover:text-foreground"
-                                        )}
-                                    >
-                                        {item.label}
-                                    </Link>
-                                )
-                            )}
+                                            isActive
+                                                ? "text-foreground"
+                                                : "text-muted-foreground hover:text-foreground",
+                                        )
+                                    }
+                                >
+                                    {({ isActive }) => (
+                                        <>
+                                            {item.label}
+
+                                            <span
+                                                className={cn(
+                                                    "absolute bottom-0 left-0 h-[2px] bg-primary",
+                                                    "transition-all duration-300 ease-out",
+                                                    isActive
+                                                        ? "w-full"
+                                                        : "w-0 group-hover:w-full",
+                                                )}
+                                            />
+                                        </>
+                                    )}
+                                </NavLink>
+                            ))}
                         </nav>
                     </div>
 
@@ -124,11 +121,7 @@ export function Navbar() {
                         <button
                             type="button"
                             onClick={() => {
-                                setMobileSearchOpen(
-                                    (current) =>
-                                        !current
-                                );
-
+                                setMobileSearchOpen((current) => !current);
                                 setMobileMenuOpen(false);
                             }}
                             className={cn(
@@ -140,7 +133,7 @@ export function Navbar() {
                                 "hover:border-primary/30",
                                 "hover:bg-primary/5",
                                 "hover:text-primary",
-                                "lg:hidden"
+                                "lg:hidden",
                             )}
                             aria-label="Buscar cursos"
                         >
@@ -171,7 +164,7 @@ export function Navbar() {
                                     "hover:-translate-y-0.5",
                                     "hover:border-primary/30",
                                     "hover:shadow-md",
-                                    "sm:inline-flex"
+                                    "sm:inline-flex",
                                 )}
                             >
                                 <span
@@ -179,22 +172,18 @@ export function Navbar() {
                                         "flex size-7 items-center justify-center",
                                         "rounded-full",
                                         "bg-primary/10",
-                                        "text-primary"
+                                        "text-primary",
                                     )}
                                 >
                                     <CircleUserRound className="size-4" />
                                 </span>
 
-                                <span>
-                                    Mi cuenta
-                                </span>
+                                <span>Mi cuenta</span>
                             </Link>
                         ) : (
                             <button
                                 type="button"
-                                onClick={() =>
-                                    openLoginDialog()
-                                }
+                                onClick={() => openLoginDialog()}
                                 className={cn(
                                     "group hidden items-center gap-2",
                                     "rounded-full",
@@ -208,7 +197,7 @@ export function Navbar() {
                                     "hover:-translate-y-0.5",
                                     "hover:border-primary/30",
                                     "hover:shadow-md",
-                                    "sm:inline-flex"
+                                    "sm:inline-flex",
                                 )}
                             >
                                 <span
@@ -219,7 +208,7 @@ export function Navbar() {
                                         "text-primary",
                                         "transition-colors duration-300",
                                         "group-hover:bg-primary",
-                                        "group-hover:text-primary-foreground"
+                                        "group-hover:text-primary-foreground",
                                     )}
                                 >
                                     <CircleUserRound className="size-4" />
@@ -230,6 +219,7 @@ export function Navbar() {
                                     <span className="mx-1.5 text-border">
                                         |
                                     </span>
+
                                     <span className="text-muted-foreground transition-colors group-hover:text-foreground">
                                         Registrarse
                                     </span>
@@ -237,14 +227,11 @@ export function Navbar() {
                             </button>
                         )}
 
+                        {/* MENÚ MOBILE */}
                         <button
                             type="button"
                             onClick={() => {
-                                setMobileMenuOpen(
-                                    (current) =>
-                                        !current
-                                );
-
+                                setMobileMenuOpen((current) => !current);
                                 setMobileSearchOpen(false);
                             }}
                             className={cn(
@@ -256,7 +243,7 @@ export function Navbar() {
                                 "hover:border-primary/30",
                                 "hover:bg-primary/5",
                                 "hover:text-primary",
-                                "lg:hidden"
+                                "lg:hidden",
                             )}
                             aria-label={
                                 mobileMenuOpen
@@ -273,12 +260,13 @@ export function Navbar() {
                     </div>
                 </div>
 
+                {/* BUSCADOR MOBILE */}
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
                         mobileSearchOpen
                             ? "grid-rows-[1fr] border-t border-border opacity-100"
-                            : "grid-rows-[0fr] opacity-0"
+                            : "grid-rows-[0fr] opacity-0",
                     )}
                 >
                     <div className="overflow-hidden">
@@ -286,57 +274,53 @@ export function Navbar() {
                             <CourseSearch
                                 variant="navbar"
                                 onSearchComplete={() =>
-                                    setMobileSearchOpen(
-                                        false
-                                    )
+                                    setMobileSearchOpen(false)
                                 }
                             />
                         </div>
                     </div>
                 </div>
 
+                {/* MENÚ MOBILE */}
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
                         mobileMenuOpen
                             ? "grid-rows-[1fr] border-t border-border opacity-100"
-                            : "grid-rows-[0fr] opacity-0"
+                            : "grid-rows-[0fr] opacity-0",
                     )}
                 >
                     <div className="overflow-hidden">
                         <div className="p-3 sm:p-4">
                             <nav className="flex flex-col">
-                                {ITEMS.map(
-                                    (item) => (
-                                        <Link
-                                            key={item.to}
-                                            to={item.to}
-                                            onClick={
-                                                closeMobilePanels
-                                            }
-                                            className={cn(
-                                                "border-b border-border/60",
-                                                "px-2 py-3",
+                                {ITEMS.map((item) => (
+                                    <NavLink
+                                        key={item.to}
+                                        to={item.to}
+                                        end={item.to === "/"}
+                                        onClick={closeMobilePanels}
+                                        className={({ isActive }) =>
+                                            cn(
+                                                "relative border-b border-border/60 px-2 py-3",
                                                 "text-sm font-medium",
-                                                "text-muted-foreground",
                                                 "transition-colors duration-200",
                                                 "last:border-b-0",
-                                                "hover:text-foreground"
-                                            )}
-                                        >
-                                            {item.label}
-                                        </Link>
-                                    )
-                                )}
+                                                isActive
+                                                    ? "text-primary"
+                                                    : "text-muted-foreground hover:text-foreground",
+                                            )
+                                        }
+                                    >
+                                        {item.label}
+                                    </NavLink>
+                                ))}
                             </nav>
 
                             <div className="mt-3 border-t border-border pt-3 sm:hidden">
                                 {token ? (
                                     <Link
                                         to="/panel/inicio"
-                                        onClick={
-                                            closeMobilePanels
-                                        }
+                                        onClick={closeMobilePanels}
                                         className={cn(
                                             "flex w-full items-center gap-3",
                                             "rounded-xl",
@@ -347,7 +331,7 @@ export function Navbar() {
                                             "text-foreground",
                                             "transition-all duration-200",
                                             "hover:border-primary/30",
-                                            "hover:bg-primary/5"
+                                            "hover:bg-primary/5",
                                         )}
                                     >
                                         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
@@ -355,9 +339,7 @@ export function Navbar() {
                                         </span>
 
                                         <div className="text-left">
-                                            <p>
-                                                Mi cuenta
-                                            </p>
+                                            <p>Mi cuenta</p>
 
                                             <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
                                                 Accede a tu plataforma
@@ -380,7 +362,7 @@ export function Navbar() {
                                             "text-left",
                                             "transition-all duration-200",
                                             "hover:border-primary/30",
-                                            "hover:bg-primary/5"
+                                            "hover:bg-primary/5",
                                         )}
                                     >
                                         <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
