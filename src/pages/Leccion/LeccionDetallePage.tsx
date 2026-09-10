@@ -69,7 +69,7 @@ export default function LeccionDetallePage() {
     );
 
     const linkPago =
-        "https://facebook.com";
+        "https://www.paypal.com/invoice/p/#C3ZTFDS4KQX8CS2F";
 
     return (
         <div className="space-y-6 p-4 sm:p-6">

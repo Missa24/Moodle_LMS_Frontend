@@ -173,7 +173,7 @@ export default function ModuloDetallePage() {
                                         action={
                                             <BuyModuleButton
                                                 moduloId={modulo.id}
-                                                linkPago="https://facebook.com"
+                                                linkPago="https://www.paypal.com/invoice/p/#C3ZTFDS4KQX8CS2F"
                                             />
                                         }
                                         footer="El acceso será habilitado una vez confirmado el pago."
