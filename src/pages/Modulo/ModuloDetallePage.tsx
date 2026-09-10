@@ -158,7 +158,7 @@ export default function ModuloDetallePage() {
                                     <PricingCard
                                         title="Acceso al módulo"
                                         subtitle="Desbloquea el contenido completo y continúa con tu formación."
-                                        price="25"
+                                        price={modulo.costo !== null ? String(modulo.costo) : "0"}
                                         currency="USD"
                                         badge={modulo.otorgaCertificacion ? "Certifica" : undefined}
                                         highlight="Pago único"
@@ -173,13 +173,14 @@ export default function ModuloDetallePage() {
                                         action={
                                             <BuyModuleButton
                                                 moduloId={modulo.id}
-                                                linkPago="https://www.paypal.com/invoice/p/#C3ZTFDS4KQX8CS2F"
+                                                linkPago={modulo.urlPago}
+                                                precio={modulo.costo}
+                                                currency="USD"
                                             />
                                         }
                                         footer="El acceso será habilitado una vez confirmado el pago."
                                     />
                                 )}
-
                                 {!isLoadingAcceso && inscrito && tieneAcceso && (
                                     <div className="overflow-hidden rounded-3xl border bg-background shadow-sm">
                                         <div className="h-1 bg-primary" />

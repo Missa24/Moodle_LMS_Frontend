@@ -1,6 +1,16 @@
 import z from "zod";
 import { createPaginatedResponseSchema } from "@/utils/Schema/Response";
 
+const CategoriaResumenSchema = z.object({
+    nombre: z.string(),
+});
+
+const CursoResumenSchema = z.object({
+    id: z.string(),
+    nombre: z.string(),
+    categoria: CategoriaResumenSchema,
+});
+
 export const ModuloSchema = z.object({
     id: z.string(),
     cursoId: z.string(),
@@ -12,17 +22,12 @@ export const ModuloSchema = z.object({
     otorgaCertificacion: z.boolean(),
     estaPublicado: z.boolean(),
     costo: z.number().nullable(),
+    urlPago: z.string().nullable(),
     creadoEn: z.string(),
     actualizadoEn: z.string(),
 });
 
 export type ModuloType = z.infer<typeof ModuloSchema>;
-
-const CursoResumenSchema = z.object({
-    id: z.string(),
-    nombre: z.string(),
-    categoria: z.string().nullable(),
-});
 
 export const ModuloListItemSchema = ModuloSchema.extend({
     curso: CursoResumenSchema,
@@ -55,18 +60,36 @@ export type ModuloDetailType =
 
 export const ModuloCreateSchema = z.object({
     cursoId: z.string().min(1, "El curso es obligatorio"),
+
     nombre: z.string().min(1, "El nombre es obligatorio"),
+
     descripcion: z.string().optional(),
+
     fraseMotivacional: z.string().optional(),
 
     rutaImagen: z.instanceof(File).optional(),
 
-    orden: z.number().int().min(0, "El orden no puede ser negativo").optional(),
+    orden: z
+        .number()
+        .int()
+        .min(0, "El orden no puede ser negativo")
+        .optional(),
 
     otorgaCertificacion: z.boolean().optional(),
+
     estaPublicado: z.boolean().optional(),
 
-    costo: z.number().min(0, "El costo no puede ser negativo").optional(),
+    costo: z
+        .number()
+        .min(0, "El costo no puede ser negativo")
+        .optional(),
+
+    urlPago: z
+        .union([
+            z.string().url("Ingresa un enlace de pago válido"),
+            z.literal(""),
+        ])
+        .optional(),
 });
 
 export type ModuloCreateType =
