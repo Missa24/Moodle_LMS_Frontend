@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GoogleLogin } from "@react-oauth/google";
+import { LogIn, UserPlus } from "lucide-react";
 
 import {
     Dialog,
@@ -68,16 +69,25 @@ export function LoginDialog() {
         >
             <DialogContent
                 className={cn(
-                    "z-[201] w-[calc(100vw-1rem)] max-w-[480px] p-0",
-                    "max-h-[calc(100svh-1rem)] overflow-y-auto overscroll-contain",
-                    "[scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-                    "rounded-2xl border-border/80 bg-background/95",
+                    "z-[201] w-[calc(100vw-1rem)] max-w-[480px]",
+                    "max-h-[calc(100svh-1rem)] overflow-y-auto",
+                    "rounded-2xl border-border/80 bg-background/95 p-0",
                     "shadow-2xl backdrop-blur-xl",
                     "sm:w-full sm:max-h-[92svh] sm:rounded-[1.75rem]",
                 )}
             >
                 <div className="border-b border-border/70 px-4 pb-4 pt-5 sm:px-7 sm:pb-6 sm:pt-7">
                     <DialogHeader className="text-left">
+                        <div className="mb-3 flex items-center justify-between gap-3 pr-7">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary sm:size-10">
+                                {mode === "login" ? (
+                                    <LogIn className="size-4 sm:size-[18px]" />
+                                ) : (
+                                    <UserPlus className="size-4 sm:size-[18px]" />
+                                )}
+                            </div>
+                        </div>
+
                         <DialogTitle className="text-lg font-semibold tracking-[-0.03em] sm:text-2xl">
                             {mode === "login"
                                 ? "Bienvenido nuevamente"
@@ -149,9 +159,7 @@ export function LoginDialog() {
                                 });
                             }}
                             onError={() => {
-                                console.error(
-                                    "Error al iniciar sesión con Google",
-                                );
+                                console.error("Error al iniciar sesión con Google");
                             }}
                             text="continue_with"
                             shape="pill"
@@ -159,17 +167,10 @@ export function LoginDialog() {
                             width={googleButtonWidth}
                         />
                     </div>
-                    <p className="mx-auto max-w-sm px-2 text-center text-[9px] leading-relaxed text-muted-foreground sm:px-0 sm:text-[10px]">
-                        Al continuar, aceptas los términos de uso y nuestra{" "}
-                        <a
-                            href="/politica-de-privacidad"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="font-medium text-foreground underline underline-offset-2 hover:text-primary"
-                        >
-                            política de privacidad
-                        </a>
-                        .
+
+                    <p className="mx-auto max-w-sm px-2 text-center text-[9px] leading-relaxed text-muted-foreground sm:px-0 sm:text-[10px] sm:leading-[1.6]">
+                        Al continuar, aceptas los términos de uso y la política
+                        de privacidad de Élite Academy.
                     </p>
                 </div>
             </DialogContent>
