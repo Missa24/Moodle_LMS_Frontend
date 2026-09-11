@@ -21,6 +21,7 @@ import {
 
 import { FormField } from "@/components/common/form/FormField";
 import { useEffect } from "react";
+import { VideoUpload } from "@/components/common/form/VideoUpload";
 
 type FormValues = LeccionCreateType | LeccionUpdateType;
 
@@ -56,8 +57,10 @@ export function FormLeccion({ initialData, mode, moduloId, onSuccess, }: FormLec
                     tipoLeccion: initialData?.tipoLeccion ?? "video",
                     urlVideo: initialData?.urlVideo ?? "",
                     proveedorVideo: initialData?.proveedorVideo ?? "",
+                    video: undefined,
                     orden: initialData?.orden ?? 0,
-                    esVistaPrevia: initialData?.esVistaPrevia ?? false,
+                    esVistaPrevia:
+                        initialData?.esVistaPrevia ?? false,
                     requiereLeccionAnteriorCompletada:
                         initialData?.requiereLeccionAnteriorCompletada ?? true,
                     estaPublicada:
@@ -71,11 +74,12 @@ export function FormLeccion({ initialData, mode, moduloId, onSuccess, }: FormLec
                     tipoLeccion: "video",
                     urlVideo: "",
                     proveedorVideo: "",
+                    video: undefined,
                     orden: 0,
                     esVistaPrevia: false,
                     requiereLeccionAnteriorCompletada: true,
                     estaPublicada: true,
-                },
+                }
     });
 
     const onSubmit = (values: FormValues) => {
@@ -104,6 +108,7 @@ export function FormLeccion({ initialData, mode, moduloId, onSuccess, }: FormLec
                 leccionesExistentes.length + 1
             );
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mode, leccionesExistentes]);
 
     return (
@@ -166,23 +171,15 @@ export function FormLeccion({ initialData, mode, moduloId, onSuccess, }: FormLec
                         hint="Si eliges una posición ya ocupada, las demás lecciones se recorren automáticamente."
                     />
                 </div>
-
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <FormField
+                {form.watch("tipoLeccion") === "video" && (
+                    <VideoUpload
                         control={form.control}
-                        name="urlVideo"
-                        label="URL del video"
-                        placeholder="https://..."
+                        name="video"
+                        label="Video"
+                        existingVideo={undefined}
+                        hint="MP4, WebM o MOV · máximo 500 MB"
                     />
-
-                    <FormField
-                        control={form.control}
-                        name="proveedorVideo"
-                        label="Proveedor de video"
-                        placeholder="Ej: YouTube, Vimeo"
-                    />
-                </div>
-
+                )}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <FormField
                         control={form.control}
@@ -216,12 +213,8 @@ export function FormLeccion({ initialData, mode, moduloId, onSuccess, }: FormLec
                 disabled={isPending}
             >
                 {isPending
-                    ? mode === "edit"
-                        ? "Guardando..."
-                        : "Creando..."
-                    : mode === "edit"
-                        ? "Guardar cambios"
-                        : "Crear lección"}
+                    ? mode === "edit" ? "Guardando..." : "Creando..."
+                    : mode === "edit" ? "Guardar cambios" : "Crear lección"}
             </Button>
         </form>
     );

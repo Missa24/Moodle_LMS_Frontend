@@ -75,7 +75,7 @@ export default function InicioPage() {
                 description="Explora el catálogo completo o retoma un curso donde lo dejaste."
                 icon={<GraduationCap />}
                 ctaLabel="Ver catálogo completo"
-                ctaTo="/cursos"
+                ctaTo="/panel/cursos"
             />
 
             <div className="space-y-4">
