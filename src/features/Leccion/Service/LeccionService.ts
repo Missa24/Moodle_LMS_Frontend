@@ -41,13 +41,53 @@ export async function GetLeccionById(id: string): Promise<LeccionDetailType> {
     return response.data;
 }
 
-export async function CreateLeccion(data: LeccionCreateType): Promise<ResponseType> {
-    const response = await apiService.post("/lecciones", data);
+export async function CreateLeccion(
+    data: LeccionCreateType
+): Promise<ResponseType> {
+    const formData = buildFormData({
+        moduloId: data.moduloId,
+        nombre: data.nombre,
+        descripcion: data.descripcion,
+        contenidoHtml: data.contenidoHtml,
+        tipoLeccion: data.tipoLeccion,
+        urlVideo: data.urlVideo,
+        proveedorVideo: data.proveedorVideo,
+        video: data.video,
+        orden: data.orden,
+        esVistaPrevia: data.esVistaPrevia,
+        requiereLeccionAnteriorCompletada:
+            data.requiereLeccionAnteriorCompletada,
+        estaPublicada: data.estaPublicada,
+    });
+
+    const response = await apiService.post("/lecciones", formData,);
+
     return response.data;
 }
 
-export async function UpdateLeccion(id: string, data: LeccionUpdateType): Promise<ResponseType> {
-    const response = await apiService.patch(`/lecciones/${id}`, data);
+
+export async function UpdateLeccion(
+    id: string,
+    data: LeccionUpdateType
+): Promise<ResponseType> {
+    const formData = buildFormData({
+        moduloId: data.moduloId,
+        nombre: data.nombre,
+        descripcion: data.descripcion,
+        contenidoHtml: data.contenidoHtml,
+        tipoLeccion: data.tipoLeccion,
+        urlVideo: data.urlVideo,
+        proveedorVideo: data.proveedorVideo,
+        video: data.video,
+        orden: data.orden,
+        esVistaPrevia: data.esVistaPrevia,
+        requiereLeccionAnteriorCompletada:
+            data.requiereLeccionAnteriorCompletada,
+        estaPublicada: data.estaPublicada,
+    });
+
+    const response = await apiService.patch(`/lecciones/${id}`, formData,);
+
     return response.data;
 }
 

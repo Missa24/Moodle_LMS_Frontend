@@ -2,7 +2,7 @@ import z from "zod";
 
 export const EstadoLeadSchema = z.enum([
     "INTERESADO",
-    "PAGO_INICIADO",
+    "PAGO_COMPLETADO",
     "CONVERTIDO",
     "DESCARTADO",
 ]);

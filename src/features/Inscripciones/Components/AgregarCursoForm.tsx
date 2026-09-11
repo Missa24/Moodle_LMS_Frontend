@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Select, { SingleValue } from "react-select";
 import { Plus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -14,11 +13,19 @@ import {
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 import {
     useAgregarCurso,
     useCursos,
 } from "../Hook/InscripcionHook";
+
 import {
     CursoType,
     ModuloType,
@@ -27,11 +34,6 @@ import {
 interface AgregarCursoFormProps {
     cursosInscritosIds: string[];
     estudianteId: string;
-}
-
-interface SelectOption {
-    value: string;
-    label: string;
 }
 
 export function AgregarCursoForm({
@@ -43,50 +45,49 @@ export function AgregarCursoForm({
         isLoading: loadingCursos,
     } = useCursos();
 
-    const agregarCursoMutation = useAgregarCurso();
+    const agregarCursoMutation =
+        useAgregarCurso();
 
-    const [cursoIdSeleccionado, setCursoIdSeleccionado] =
-        useState<string | null>(null);
+    const [
+        cursoIdSeleccionado,
+        setCursoIdSeleccionado,
+    ] = useState<string>("");
 
-    const [moduloIdSeleccionado, setModuloIdSeleccionado] =
-        useState<string | null>(null);
+    const [
+        moduloIdSeleccionado,
+        setModuloIdSeleccionado,
+    ] = useState<string>("");
 
-    const cursosDisponibles = todosCursos.filter(
-        (curso: CursoType) =>
-            !cursosInscritosIds.includes(curso.id),
-    );
+    const cursosDisponibles =
+        todosCursos.filter(
+            (curso: CursoType) =>
+                !cursosInscritosIds.includes(
+                    curso.id,
+                ),
+        );
 
-    const cursoSeleccionado = todosCursos.find(
-        (curso: CursoType) =>
-            curso.id === cursoIdSeleccionado,
-    );
+    const cursoSeleccionado =
+        todosCursos.find(
+            (curso: CursoType) =>
+                curso.id ===
+                cursoIdSeleccionado,
+        );
 
     const modulos: ModuloType[] =
         cursoSeleccionado?.modulos ?? [];
 
-    const cursoOptions: SelectOption[] = cursosDisponibles.map(
-        (curso) => ({
-            value: curso.id,
-            label: curso.nombre,
-        }),
-    );
-    const moduloOptions: SelectOption[] =
-        modulos.map((modulo) => ({
-            value: modulo.id,
-            label: modulo.nombre,
-        }));
+    const handleCursoChange = (
+        value: string,
+    ) => {
+        setCursoIdSeleccionado(value);
+        setModuloIdSeleccionado("");
+    };
 
-    const cursoValue =
-        cursoOptions.find(
-            (option) =>
-                option.value === cursoIdSeleccionado,
-        ) ?? null;
-
-    const moduloValue =
-        moduloOptions.find(
-            (option) =>
-                option.value === moduloIdSeleccionado,
-        ) ?? null;
+    const handleModuloChange = (
+        value: string,
+    ) => {
+        setModuloIdSeleccionado(value);
+    };
 
     const handleAgregarCurso = () => {
         if (
@@ -98,39 +99,35 @@ export function AgregarCursoForm({
 
         agregarCursoMutation.mutate(
             {
-                cursoId: cursoIdSeleccionado,
-                moduloIds: [moduloIdSeleccionado],
-                estudianteIds: [estudianteId],
-                estadoAcceso: "habilitado",
+                cursoId:
+                    cursoIdSeleccionado,
+                moduloIds: [
+                    moduloIdSeleccionado,
+                ],
+                estudianteIds: [
+                    estudianteId,
+                ],
+                estadoAcceso:
+                    "habilitado",
             },
             {
                 onSuccess: () => {
-                    setCursoIdSeleccionado(null);
-                    setModuloIdSeleccionado(null);
+                    setCursoIdSeleccionado("");
+                    setModuloIdSeleccionado("");
                 },
             },
         );
     };
 
-    const handleCursoChange = (
-        option: SingleValue<SelectOption>,
-    ) => {
-        setCursoIdSeleccionado(option?.value ?? null);
-        setModuloIdSeleccionado(null);
-    };
-
-    const handleModuloChange = (
-        option: SingleValue<SelectOption>,
-    ) => {
-        setModuloIdSeleccionado(option?.value ?? null);
-    };
-
-    if (cursosDisponibles.length === 0) {
+    if (
+        cursosDisponibles.length ===
+        0
+    ) {
         return null;
     }
 
     return (
-        <Card>
+        <Card className="text-foreground">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-base">
                     <Plus className="h-4 w-4 text-primary" />
@@ -140,41 +137,113 @@ export function AgregarCursoForm({
 
             <CardContent>
                 <FieldGroup className="gap-4">
+                    {/* CURSO */}
                     <Field>
-                        <FieldLabel>Curso</FieldLabel>
+                        <FieldLabel>
+                            Curso
+                        </FieldLabel>
 
-                        <Select<SelectOption>
-                            options={cursoOptions}
-                            value={cursoValue}
-                            onChange={handleCursoChange}
-                            isLoading={loadingCursos}
-                            placeholder="Selecciona un curso"
-                            isClearable
-                        />
+                        <Select
+                            value={
+                                cursoIdSeleccionado
+                            }
+                            onValueChange={
+                                handleCursoChange
+                            }
+                            disabled={
+                                loadingCursos
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue
+                                    placeholder={
+                                        loadingCursos
+                                            ? "Cargando cursos..."
+                                            : "Selecciona un curso"
+                                    }
+                                />
+                            </SelectTrigger>
+
+                            <SelectContent className="z-[220]">
+                                {cursosDisponibles.map(
+                                    (
+                                        curso,
+                                    ) => (
+                                        <SelectItem
+                                            key={
+                                                curso.id
+                                            }
+                                            value={
+                                                curso.id
+                                            }
+                                        >
+                                            {
+                                                curso.nombre
+                                            }
+                                        </SelectItem>
+                                    ),
+                                )}
+                            </SelectContent>
+                        </Select>
                     </Field>
 
+                    {/* MODULO */}
                     <Field>
-                        <FieldLabel>Módulo</FieldLabel>
+                        <FieldLabel>
+                            Módulo
+                        </FieldLabel>
 
-                        <Select<SelectOption>
-                            options={moduloOptions}
-                            value={moduloValue}
-                            onChange={handleModuloChange}
-                            isLoading={loadingCursos}
-                            placeholder={
-                                cursoSeleccionado
-                                    ? "Selecciona un módulo"
-                                    : "Selecciona un curso primero"
+                        <Select
+                            value={
+                                moduloIdSeleccionado
                             }
-                            isDisabled={!cursoSeleccionado}
-                            isClearable
-                        />
+                            onValueChange={
+                                handleModuloChange
+                            }
+                            disabled={
+                                !cursoSeleccionado ||
+                                loadingCursos
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue
+                                    placeholder={
+                                        cursoSeleccionado
+                                            ? "Selecciona un módulo"
+                                            : "Selecciona un curso primero"
+                                    }
+                                />
+                            </SelectTrigger>
+
+                            <SelectContent className="z-[220]">
+                                {modulos.map(
+                                    (
+                                        modulo,
+                                    ) => (
+                                        <SelectItem
+                                            key={
+                                                modulo.id
+                                            }
+                                            value={
+                                                modulo.id
+                                            }
+                                        >
+                                            {
+                                                modulo.nombre
+                                            }
+                                        </SelectItem>
+                                    ),
+                                )}
+                            </SelectContent>
+                        </Select>
                     </Field>
 
                     <Field>
                         <Button
                             type="button"
-                            onClick={handleAgregarCurso}
+                            onClick={
+                                handleAgregarCurso
+                            }
                             disabled={
                                 !cursoIdSeleccionado ||
                                 !moduloIdSeleccionado ||

@@ -1,3 +1,5 @@
+"use client";
+
 import {
     useState,
 } from "react";
@@ -151,20 +153,15 @@ export function FormField<
                 field,
                 fieldState,
             }) => {
-                switch (
-                props.type
-                ) {
+                switch (props.type) {
+
                     case "password": {
                         return (
                             <Field
-                                data-invalid={
-                                    fieldState.invalid
-                                }
+                                data-invalid={fieldState.invalid}
                             >
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
                                 <div className="relative">
@@ -176,8 +173,7 @@ export function FormField<
                                                 : "password"
                                         }
                                         value={
-                                            field.value ??
-                                            ""
+                                            field.value ?? ""
                                         }
                                         placeholder={
                                             props.placeholder
@@ -185,16 +181,19 @@ export function FormField<
                                         autoComplete={
                                             props.autoComplete
                                         }
-                                        className="pr-10"
+                                        className="
+                                            pr-10
+                                            bg-background
+                                            text-foreground
+                                            placeholder:text-muted-foreground
+                                        "
                                     />
 
                                     <button
                                         type="button"
                                         onClick={() =>
                                             setShowPassword(
-                                                (
-                                                    current,
-                                                ) =>
+                                                (current) =>
                                                     !current,
                                             )
                                         }
@@ -223,9 +222,7 @@ export function FormField<
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
 
@@ -243,68 +240,52 @@ export function FormField<
                     case "number": {
                         return (
                             <Field
-                                data-invalid={
-                                    fieldState.invalid
-                                }
+                                data-invalid={fieldState.invalid}
                             >
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
                                 <Input
                                     type="number"
-                                    min={
-                                        props.min
-                                    }
-                                    max={
-                                        props.max
-                                    }
+                                    min={props.min}
+                                    max={props.max}
                                     placeholder={
                                         props.placeholder
                                     }
                                     value={
                                         props.allowEmpty
-                                            ? field.value ??
-                                            ""
-                                            : field.value ??
-                                            0
+                                            ? field.value ?? ""
+                                            : field.value ?? 0
                                     }
-                                    onChange={(
-                                        e,
-                                    ) => {
+                                    onChange={(e) => {
                                         const raw =
-                                            e
-                                                .target
-                                                .value;
+                                            e.target.value;
 
                                         if (
                                             props.allowEmpty
                                         ) {
                                             field.onChange(
-                                                raw ===
-                                                    ""
+                                                raw === ""
                                                     ? undefined
-                                                    : Number(
-                                                        raw,
-                                                    ),
+                                                    : Number(raw),
                                             );
                                         } else {
                                             field.onChange(
-                                                Number(
-                                                    raw,
-                                                ),
+                                                Number(raw),
                                             );
                                         }
                                     }}
+                                    className="
+                                        bg-background
+                                        text-foreground
+                                        placeholder:text-muted-foreground
+                                    "
                                 />
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
 
@@ -322,36 +303,36 @@ export function FormField<
                     case "textarea": {
                         return (
                             <Field
-                                data-invalid={
-                                    fieldState.invalid
-                                }
+                                data-invalid={fieldState.invalid}
                             >
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
                                 <Textarea
                                     {...field}
                                     value={
-                                        field.value ??
-                                        ""
+                                        field.value ?? ""
                                     }
                                     placeholder={
                                         props.placeholder
                                     }
                                     rows={
-                                        props.rows ??
-                                        3
+                                        props.rows ?? 3
                                     }
+                                    className="
+                                        bg-background
+                                        text-foreground
+                                        placeholder:text-muted-foreground
+                                        border-border
+                                        focus-visible:border-ring
+                                        focus-visible:ring-ring/50
+                                    "
                                 />
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
 
@@ -369,20 +350,15 @@ export function FormField<
                     case "select": {
                         return (
                             <Field
-                                data-invalid={
-                                    fieldState.invalid
-                                }
+                                data-invalid={fieldState.invalid}
                             >
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
                                 <Select
                                     value={
-                                        field.value ??
-                                        ""
+                                        field.value ?? ""
                                     }
                                     onValueChange={
                                         field.onChange
@@ -391,7 +367,13 @@ export function FormField<
                                         props.disabled
                                     }
                                 >
-                                    <SelectTrigger>
+                                    <SelectTrigger
+                                        className="
+                                            bg-background
+                                            text-foreground
+                                            border-border
+                                        "
+                                    >
                                         <SelectValue
                                             placeholder={
                                                 props.placeholder
@@ -399,11 +381,16 @@ export function FormField<
                                         />
                                     </SelectTrigger>
 
-                                    <SelectContent className="z-[220]">
+                                    <SelectContent
+                                        className="
+                                            z-[220]
+                                            bg-popover
+                                            text-popover-foreground
+                                            border-border
+                                        "
+                                    >
                                         {props.options.map(
-                                            (
-                                                opcion,
-                                            ) => (
+                                            (opcion) => (
                                                 <SelectItem
                                                     key={
                                                         opcion.value
@@ -411,6 +398,10 @@ export function FormField<
                                                     value={
                                                         opcion.value
                                                     }
+                                                    className="
+                                                        focus:bg-accent
+                                                        focus:text-accent-foreground
+                                                    "
                                                 >
                                                     {
                                                         opcion.label
@@ -423,9 +414,7 @@ export function FormField<
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
 
@@ -444,12 +433,19 @@ export function FormField<
                         return (
                             <Field>
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
-                                <label className="flex h-9 items-center gap-2 text-sm">
+                                <label
+                                    className="
+                                        flex
+                                        h-9
+                                        items-center
+                                        gap-2
+                                        text-sm
+                                        text-foreground
+                                    "
+                                >
                                     <input
                                         type="checkbox"
                                         checked={
@@ -457,28 +453,27 @@ export function FormField<
                                             props.defaultChecked ??
                                             false
                                         }
-                                        onChange={(
-                                            e,
-                                        ) =>
+                                        onChange={(e) =>
                                             field.onChange(
-                                                e
-                                                    .target
-                                                    .checked,
+                                                e.target.checked,
                                             )
                                         }
-                                        className="h-4 w-4 rounded border-border"
+                                        className="
+                                            h-4
+                                            w-4
+                                            rounded
+                                            border-border
+                                            bg-background
+                                            accent-primary
+                                        "
                                     />
 
-                                    {
-                                        props.description
-                                    }
+                                    {props.description}
                                 </label>
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
                             </Field>
@@ -488,20 +483,15 @@ export function FormField<
                     case "richtext": {
                         return (
                             <Field
-                                data-invalid={
-                                    fieldState.invalid
-                                }
+                                data-invalid={fieldState.invalid}
                             >
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
                                 <RichTextEditor
                                     value={
-                                        field.value ??
-                                        ""
+                                        field.value ?? ""
                                     }
                                     onChange={
                                         field.onChange
@@ -513,9 +503,7 @@ export function FormField<
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
 
@@ -533,25 +521,19 @@ export function FormField<
                     default: {
                         return (
                             <Field
-                                data-invalid={
-                                    fieldState.invalid
-                                }
+                                data-invalid={fieldState.invalid}
                             >
                                 <FieldLabel>
-                                    {
-                                        label
-                                    }
+                                    {label}
                                 </FieldLabel>
 
                                 <Input
                                     {...field}
                                     type={
-                                        props.type ??
-                                        "text"
+                                        props.type ?? "text"
                                     }
                                     value={
-                                        field.value ??
-                                        ""
+                                        field.value ?? ""
                                     }
                                     placeholder={
                                         props.placeholder
@@ -559,13 +541,16 @@ export function FormField<
                                     autoComplete={
                                         props.autoComplete
                                     }
+                                    className="
+                                        bg-background
+                                        text-foreground
+                                        placeholder:text-muted-foreground
+                                    "
                                 />
 
                                 {hint && (
                                     <p className="text-xs text-muted-foreground">
-                                        {
-                                            hint
-                                        }
+                                        {hint}
                                     </p>
                                 )}
 

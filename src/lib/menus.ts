@@ -3,11 +3,12 @@ import type { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 
 import {
     faHouse,
-    faUsersGear,
-    faBook,
+    faUserGroup,
+    faBookOpen,
     faGraduationCap,
-    faIdBadge,
-    faCertificate,
+    faClipboardList,
+    faAward,
+    faHeadset,
     faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -26,13 +27,13 @@ export const menuItems: MenuItem[] = [
     },
     {
         title: "Usuarios",
-        icon: faUsersGear,
+        icon: faUserGroup,
         url: "/panel/usuario",
         permission: PERMISSIONS.USUARIOS.VER,
     },
     {
         title: "Cursos",
-        icon: faBook,
+        icon: faBookOpen,
         url: "/panel/cursos",
         permission: PERMISSIONS.CURSOS.VER,
     },
@@ -44,18 +45,18 @@ export const menuItems: MenuItem[] = [
     },
     {
         title: "Inscripciones",
-        icon: faIdBadge,
+        icon: faClipboardList,
         url: "/panel/inscripciones",
         permission: PERMISSIONS.INSCRIPCIONES.VER,
     },
     {
         title: "Mis certificados",
-        icon: faCertificate,
+        icon: faAward,
         url: "/panel/certificados",
     },
     {
         title: "Soporte",
-        icon: faUsersGear,
+        icon: faHeadset,
         url: "/panel/soporte",
     },
     {
@@ -63,5 +64,5 @@ export const menuItems: MenuItem[] = [
         icon: faUserPlus,
         url: "/panel/leads",
         permission: PERMISSIONS.LEADS.VER,
-    }
+    },
 ];

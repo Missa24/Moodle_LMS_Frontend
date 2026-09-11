@@ -64,15 +64,13 @@ export default function LeccionDetallePage() {
 
     const {
         data: leccionesProgreso,
-    } = useGetLeccionesConProgreso(
-        moduloId!
-    );
+    } = useGetLeccionesConProgreso(moduloId!);
 
     const linkPago =
         "https://www.paypal.com/invoice/p/#C3ZTFDS4KQX8CS2F";
 
     return (
-        <div className="space-y-6 p-4 sm:p-6">
+        <div className="space-y-6 p-4 text-foreground sm:p-6">
             <Button
                 type="button"
                 variant="ghost"
@@ -82,7 +80,13 @@ export default function LeccionDetallePage() {
                         `/panel/cursos/${cursoId}/modulos/${moduloId}`
                     )
                 }
-                className="gap-1 px-0"
+                className="
+                    gap-1
+                    px-0
+                    text-muted-foreground
+                    hover:bg-accent
+                    hover:text-accent-foreground
+                "
             >
                 <ArrowLeft className="h-4 w-4" />
                 Volver al módulo
@@ -123,43 +127,38 @@ export default function LeccionDetallePage() {
                         onModuloCompletado={(
                             cursoCompletado
                         ) => {
-                            setShowModuloDialog(
-                                true
-                            );
+                            setShowModuloDialog(true);
 
-                            if (
-                                cursoCompletado
-                            ) {
-                                setShowCursoDialog(
-                                    true
-                                );
+                            if (cursoCompletado) {
+                                setShowCursoDialog(true);
                             }
                         }}
                     />
                 ) : null}
             </QueryState>
 
+            {/* =========================
+                MODULO COMPLETADO
+            ========================= */}
+
             <Dialog
                 open={showModuloDialog}
-                onOpenChange={
-                    setShowModuloDialog
-                }
+                onOpenChange={setShowModuloDialog}
             >
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="bg-background text-foreground sm:max-w-md">
                     <DialogHeader className="items-center text-center">
                         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                             <Trophy className="h-8 w-8 text-primary" />
                         </div>
 
-                        <DialogTitle className="text-xl">
+                        <DialogTitle className="text-xl text-foreground">
                             ¡Felicitaciones!
                         </DialogTitle>
 
-                        <DialogDescription>
-                            Has completado todas
-                            las lecciones del
-                            módulo. Se ha generado
-                            tu certificado de
+                        <DialogDescription className="text-muted-foreground">
+                            Has completado todas las
+                            lecciones del módulo. Se ha
+                            generado tu certificado de
                             participación.
                         </DialogDescription>
                     </DialogHeader>
@@ -169,9 +168,7 @@ export default function LeccionDetallePage() {
                             type="button"
                             variant="outline"
                             onClick={() =>
-                                setShowModuloDialog(
-                                    false
-                                )
+                                setShowModuloDialog(false)
                             }
                         >
                             Cerrar
@@ -181,9 +178,7 @@ export default function LeccionDetallePage() {
                             type="button"
                             className="gap-2"
                             onClick={() => {
-                                setShowModuloDialog(
-                                    false
-                                );
+                                setShowModuloDialog(false);
 
                                 navigate(
                                     "/panel/certificados"
@@ -197,26 +192,27 @@ export default function LeccionDetallePage() {
                 </DialogContent>
             </Dialog>
 
+            {/* =========================
+                CURSO COMPLETADO
+            ========================= */}
+
             <Dialog
                 open={showCursoDialog}
-                onOpenChange={
-                    setShowCursoDialog
-                }
+                onOpenChange={setShowCursoDialog}
             >
-                <DialogContent className="sm:max-w-md">
+                <DialogContent className="bg-background text-foreground sm:max-w-md">
                     <DialogHeader className="items-center text-center">
                         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
-                            <GraduationCap className="h-8 w-8 text-green-600" />
+                            <GraduationCap className="h-8 w-8 text-green-600 dark:text-green-400" />
                         </div>
 
-                        <DialogTitle className="text-xl">
+                        <DialogTitle className="text-xl text-foreground">
                             ¡Curso completado!
                         </DialogTitle>
 
-                        <DialogDescription>
-                            Has completado el curso.
-                            Se ha generado tu
-                            certificado de
+                        <DialogDescription className="text-muted-foreground">
+                            Has completado el curso. Se ha
+                            generado tu certificado de
                             aprobación.
                         </DialogDescription>
                     </DialogHeader>
@@ -226,9 +222,7 @@ export default function LeccionDetallePage() {
                             type="button"
                             variant="outline"
                             onClick={() =>
-                                setShowCursoDialog(
-                                    false
-                                )
+                                setShowCursoDialog(false)
                             }
                         >
                             Cerrar
@@ -238,9 +232,7 @@ export default function LeccionDetallePage() {
                             type="button"
                             className="gap-2"
                             onClick={() => {
-                                setShowCursoDialog(
-                                    false
-                                );
+                                setShowCursoDialog(false);
 
                                 navigate(
                                     "/panel/certificados"
@@ -296,25 +288,19 @@ function LeccionContenido({
 
     const estaCompletada =
         indexActual >= 0
-            ? leccionesProgreso![
-                indexActual
-            ].completada
+            ? leccionesProgreso![indexActual].completada
             : false;
 
     const esUltimaLeccion =
         indexActual >= 0 &&
         indexActual ===
-        (leccionesProgreso?.length ?? 0) -
-        1;
+        (leccionesProgreso?.length ?? 0) - 1;
 
     const siguienteLeccionId =
         indexActual >= 0 &&
             indexActual <
-            (leccionesProgreso?.length ?? 0) -
-            1
-            ? leccionesProgreso![
-                indexActual + 1
-            ].id
+            (leccionesProgreso?.length ?? 0) - 1
+            ? leccionesProgreso![indexActual + 1].id
             : undefined;
 
     const contenidoSeguro =
@@ -325,17 +311,15 @@ function LeccionContenido({
             : null;
 
     return (
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:min-h-[calc(100vh-200px)]">
+        <div className="flex flex-col gap-6 text-foreground lg:min-h-[calc(100vh-200px)] lg:flex-row lg:items-start">
             <div className="min-w-0 flex-1 space-y-6">
-                <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
+                <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
                     {leccion.nombre}
                 </h1>
 
                 {leccion.urlVideo && (
                     <LeccionVideoPlayer
-                        urlVideo={
-                            leccion.urlVideo
-                        }
+                        urlVideo={leccion.urlVideo}
                         proveedorVideo={
                             leccion.proveedorVideo
                         }
@@ -343,46 +327,58 @@ function LeccionContenido({
                 )}
 
                 {contenidoSeguro && (
-                    <div
-                        className="prose prose-sm max-w-none text-foreground sm:prose-base"
+                    <article
+                        className="
+                            prose
+                            prose-sm
+                            max-w-none
+                            text-foreground
+                            prose-headings:text-foreground
+                            prose-p:text-foreground
+                            prose-li:text-foreground
+                            prose-strong:text-foreground
+                            prose-a:text-primary
+                            prose-a:no-underline
+                            hover:prose-a:underline
+                            prose-blockquote:text-muted-foreground
+                            prose-code:text-foreground
+                            prose-pre:bg-muted
+                            prose-pre:text-foreground
+                            prose-hr:border-border
+                            sm:prose-base
+                            dark:prose-invert
+                        "
                         dangerouslySetInnerHTML={{
                             __html: contenidoSeguro,
                         }}
                     />
                 )}
 
-                {leccion.recursos.length >
-                    0 && (
-                        <div className="space-y-2">
-                            <p className="text-sm font-medium text-muted-foreground">
-                                Recursos
-                            </p>
+                {leccion.recursos.length > 0 && (
+                    <div className="space-y-2">
+                        <p className="text-sm font-medium text-muted-foreground">
+                            Recursos
+                        </p>
 
-                            <div className="space-y-3">
-                                {leccion.recursos.map(
-                                    (recurso) => (
-                                        <RecursoViewer
-                                            key={
-                                                recurso.id
-                                            }
-                                            recurso={
-                                                recurso
-                                            }
-                                        />
-                                    )
-                                )}
-                            </div>
+                        <div className="space-y-3">
+                            {leccion.recursos.map(
+                                (recurso) => (
+                                    <RecursoViewer
+                                        key={recurso.id}
+                                        recurso={recurso}
+                                    />
+                                )
+                            )}
                         </div>
-                    )}
+                    </div>
+                )}
 
                 <LeccionCheckpointForm
                     leccionId={leccion.id}
                     cursoId={cursoId}
                     moduloId={moduloId}
                     linkPago={linkPago}
-                    estaCompletada={
-                        estaCompletada
-                    }
+                    estaCompletada={estaCompletada}
                     siguienteLeccionId={
                         siguienteLeccionId
                     }
@@ -402,7 +398,18 @@ function LeccionContenido({
                 />
             </div>
 
-            <aside className="w-full shrink-0 lg:w-80 lg:sticky lg:top-6 lg:self-start lg:max-h-[calc(100vh-100px)] lg:overflow-y-auto">
+            <aside
+                className="
+                    w-full
+                    shrink-0
+                    lg:sticky
+                    lg:top-6
+                    lg:w-80
+                    lg:self-start
+                    lg:max-h-[calc(100vh-100px)]
+                    lg:overflow-y-auto
+                "
+            >
                 <div className="space-y-4">
                     <LeccionesTimeline
                         moduloId={moduloId}

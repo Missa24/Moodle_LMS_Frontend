@@ -2,9 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+
 import { FieldGroup } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { FormField } from "@/components/common/form/FormField";
+import { ImageUpload } from "@/components/common/form/ImageUpload";
+
 import {
     ModuloCreateSchema,
     ModuloCreateType,
@@ -12,10 +15,15 @@ import {
     ModuloUpdateType,
     ModuloDetailType,
 } from "../Schema/ModuloSchema";
-import { useCreateModulo, useUpdateModulo } from "../Hook/ModuloHook";
-import { ImageUpload } from "@/components/common/form/ImageUpload";
 
-type FormValues = ModuloCreateType | ModuloUpdateType;
+import {
+    useCreateModulo,
+    useUpdateModulo,
+} from "../Hook/ModuloHook";
+
+type FormValues =
+    | ModuloCreateType
+    | ModuloUpdateType;
 
 type FormModuloProps = {
     initialData?: ModuloDetailType;
@@ -24,61 +32,136 @@ type FormModuloProps = {
     onSuccess?: () => void;
 };
 
-export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModuloProps) {
-    const { mutate: createModulo, isPending: creating } = useCreateModulo();
-    const { mutate: updateModulo, isPending: updating } = useUpdateModulo();
+export function FormModulo({
+    initialData,
+    mode,
+    cursoId,
+    onSuccess,
+}: FormModuloProps) {
+    const {
+        mutate: createModulo,
+        isPending: creating,
+    } = useCreateModulo();
+
+    const {
+        mutate: updateModulo,
+        isPending: updating,
+    } = useUpdateModulo();
 
     const isPending = creating || updating;
 
     const form = useForm<FormValues>({
-        resolver: zodResolver(mode === "edit" ? ModuloUpdateSchema : ModuloCreateSchema),
+        resolver: zodResolver(
+            mode === "edit"
+                ? ModuloUpdateSchema
+                : ModuloCreateSchema,
+        ),
+
         defaultValues:
             mode === "edit"
                 ? {
-                    nombre: initialData?.nombre ?? "",
-                    descripcion: initialData?.descripcion ?? "",
-                    fraseMotivacional: initialData?.fraseMotivacional ?? "",
+                    nombre:
+                        initialData?.nombre ?? "",
+
+                    descripcion:
+                        initialData?.descripcion ?? "",
+
+                    fraseMotivacional:
+                        initialData?.fraseMotivacional ?? "",
+
                     rutaImagen: undefined,
-                    orden: initialData?.orden ?? 0,
-                    otorgaCertificacion: initialData?.otorgaCertificacion ?? false,
-                    estaPublicado: initialData?.estaPublicado ?? true,
-                    costo: initialData?.costo ?? undefined,
+
+                    orden:
+                        initialData?.orden ?? 0,
+
+                    otorgaCertificacion:
+                        initialData?.otorgaCertificacion ??
+                        false,
+
+                    estaPublicado:
+                        initialData?.estaPublicado ??
+                        true,
+
+                    costo:
+                        initialData?.costo ??
+                        undefined,
+
+                    urlPago:
+                        initialData?.urlPago ?? "",
                 }
                 : {
                     cursoId,
+
                     nombre: "",
+
                     descripcion: "",
+
                     fraseMotivacional: "",
+
                     rutaImagen: undefined,
+
                     orden: 0,
+
                     otorgaCertificacion: false,
+
                     estaPublicado: true,
+
                     costo: undefined,
+
+                    urlPago: "",
                 },
     });
 
-    const onSubmit = (values: FormValues) => {
+    const onSubmit = (
+        values: FormValues,
+    ) => {
         if (mode === "edit") {
-            updateModulo({ id: initialData!.id, data: values }, { onSuccess: () => onSuccess?.() });
+            updateModulo(
+                {
+                    id: initialData!.id,
+                    data: values,
+                },
+                {
+                    onSuccess: () =>
+                        onSuccess?.(),
+                },
+            );
+
             return;
         }
 
         createModulo(
-            { ...values, cursoId } as ModuloCreateType,
-            { onSuccess: () => { form.reset(); onSuccess?.(); } },
+            {
+                ...values,
+                cursoId,
+            } as ModuloCreateType,
+            {
+                onSuccess: () => {
+                    form.reset();
+                    onSuccess?.();
+                },
+            },
         );
     };
 
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6"
+        >
             <FieldGroup>
-                <FormField control={form.control} name="nombre" label="Nombre" placeholder="Ej: Inglés A2" />
+                <FormField
+                    control={form.control}
+                    name="nombre"
+                    label="Nombre"
+                    placeholder="Ej: Cosmetología Facial"
+                />
 
                 <FormField
                     control={form.control}
                     name="fraseMotivacional"
                     label="Frase motivacional"
-                    placeholder="Ej: ¡Ya casi dominas el idioma!"
+                    placeholder="Ej: ¡Continúa avanzando!"
                 />
 
                 <FormField
@@ -105,7 +188,13 @@ export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModulo
                         />
                     </div>
 
-                    <FormField type="number" control={form.control} name="orden" label="Orden" min={0} />
+                    <FormField
+                        type="number"
+                        control={form.control}
+                        name="orden"
+                        label="Orden"
+                        min={0}
+                    />
 
                     <FormField
                         type="number"
@@ -117,6 +206,16 @@ export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModulo
                         allowEmpty
                         hint="Cada cambio registra un nuevo precio en el historial"
                     />
+
+                    <div className="sm:col-span-2">
+                        <FormField
+                            control={form.control}
+                            name="urlPago"
+                            label="Enlace de pago"
+                            placeholder="https://www.paypal.com/..."
+                            hint="Enlace al que será dirigido el estudiante para realizar el pago"
+                        />
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -139,10 +238,18 @@ export function FormModulo({ initialData, mode, cursoId, onSuccess }: FormModulo
                 </div>
             </FieldGroup>
 
-            <Button type="submit" className="w-full" disabled={isPending}>
+            <Button
+                type="submit"
+                className="w-full"
+                disabled={isPending}
+            >
                 {isPending
-                    ? mode === "edit" ? "Guardando..." : "Creando..."
-                    : mode === "edit" ? "Guardar cambios" : "Crear módulo"}
+                    ? mode === "edit"
+                        ? "Guardando..."
+                        : "Creando..."
+                    : mode === "edit"
+                        ? "Guardar cambios"
+                        : "Crear módulo"}
             </Button>
         </form>
     );

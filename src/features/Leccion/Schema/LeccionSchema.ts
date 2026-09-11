@@ -80,21 +80,47 @@ export type LeccionesProgresoResponseType = z.infer<typeof LeccionesProgresoResp
 
 export const LeccionCreateSchema = z.object({
     moduloId: z.string().min(1, "El módulo es obligatorio"),
+
     nombre: z.string().min(1, "El nombre es obligatorio"),
+
     descripcion: z.string().optional(),
+
     contenidoHtml: z.string().optional(),
-    tipoLeccion: z.string().min(1, "El tipo de lección es obligatorio"),
+
+    tipoLeccion: z
+        .string()
+        .min(1, "El tipo de lección es obligatorio"),
+
+    // Lo dejamos por ahora para compatibilidad
+    // con las lecciones que ya tienen URL.
     urlVideo: z.string().optional(),
+
     proveedorVideo: z.string().optional(),
-    orden: z.number().int().min(0).optional(),
+
+    // NUEVO
+    video: z.instanceof(File).optional(),
+
+    orden: z
+        .number()
+        .int()
+        .min(0)
+        .optional(),
+
     esVistaPrevia: z.boolean().optional(),
-    requiereLeccionAnteriorCompletada: z.boolean().optional(),
-    estaPublicada: z.boolean().optional(),
+
+    requiereLeccionAnteriorCompletada:
+        z.boolean().optional(),
+
+    estaPublicada:
+        z.boolean().optional(),
 });
+
 export type LeccionCreateType = z.infer<typeof LeccionCreateSchema>;
 
 export const LeccionUpdateSchema = LeccionCreateSchema.partial();
+
 export type LeccionUpdateType = z.infer<typeof LeccionUpdateSchema>;
+
 
 
 export const OpcionFormularioPublicaSchema = z.object({
