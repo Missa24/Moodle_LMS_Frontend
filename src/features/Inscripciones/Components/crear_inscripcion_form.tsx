@@ -1,17 +1,23 @@
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Select, {
-    MultiValue,
-    SingleValue,
-} from "react-select";
+import { Plus } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
     Field,
     FieldGroup,
     FieldLabel,
 } from "@/components/ui/field";
-import { Plus } from "lucide-react";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+import { MultiSelect } from "@/components/common/form/MultiSelect";
 
 import {
     CrearInscripcionSchema,
@@ -56,7 +62,7 @@ export function CrearInscripcionForm({
     } = useEstudiantes();
 
     const [cursoId, setCursoId] =
-        useState<string | null>(null);
+        useState<string>("");
 
     const [openDialog, setOpenDialog] =
         useState(false);
@@ -67,7 +73,10 @@ export function CrearInscripcionForm({
         setValue,
         formState: { errors },
     } = useForm<CrearInscripcionSchemaType>({
-        resolver: zodResolver(CrearInscripcionSchema),
+        resolver: zodResolver(
+            CrearInscripcionSchema,
+        ),
+
         defaultValues: {
             estadoAcceso: "pendiente",
             cursoId: "",
@@ -76,28 +85,36 @@ export function CrearInscripcionForm({
         },
     });
 
-    const cursoSeleccionado = cursos.find(
-        (curso: CursoType) => curso.id === cursoId,
-    );
+    const cursoSeleccionado =
+        cursos.find(
+            (curso: CursoType) =>
+                curso.id === cursoId,
+        );
 
     const modulos: ModuloType[] =
         cursoSeleccionado?.modulos ?? [];
 
     const cursoOptions: SelectOption[] =
-        cursos.map((curso: CursoType) => ({
-            value: curso.id,
-            label: curso.nombre,
-        }));
+        cursos.map(
+            (curso: CursoType) => ({
+                value: curso.id,
+                label: curso.nombre,
+            }),
+        );
 
     const moduloOptions: SelectOption[] =
-        modulos.map((modulo: ModuloType) => ({
-            value: modulo.id,
-            label: modulo.nombre,
-        }));
+        modulos.map(
+            (modulo: ModuloType) => ({
+                value: modulo.id,
+                label: modulo.nombre,
+            }),
+        );
 
     const estudianteOptions: SelectOption[] =
         estudiantes.map(
-            (estudiante: EstudianteType) => ({
+            (
+                estudiante: EstudianteType,
+            ) => ({
                 value: estudiante.id,
                 label: estudiante.username,
             }),
@@ -106,170 +123,183 @@ export function CrearInscripcionForm({
     const onSubmit = (
         data: CrearInscripcionSchemaType,
     ) => {
-        crearInscripcionMutation.mutate(data);
+        crearInscripcionMutation.mutate(
+            data,
+        );
     };
 
     return (
         <div className="flex flex-col gap-6">
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form
+                onSubmit={handleSubmit(
+                    onSubmit,
+                )}
+            >
                 <FieldGroup className="gap-3">
+                    {/* CURSO */}
                     <Field>
-                        <FieldLabel htmlFor="cursoId">
+                        <FieldLabel>
                             Curso
                         </FieldLabel>
 
                         <Controller
                             name="cursoId"
                             control={control}
-                            render={({ field }) => {
-                                const value =
-                                    cursoOptions.find(
-                                        (option) =>
-                                            option.value ===
-                                            field.value,
-                                    ) ?? null;
+                            render={({
+                                field,
+                            }) => (
+                                <Select
+                                    value={
+                                        field.value ||
+                                        ""
+                                    }
+                                    onValueChange={(
+                                        value,
+                                    ) => {
+                                        field.onChange(
+                                            value,
+                                        );
 
-                                return (
-                                    <Select<SelectOption>
-                                        options={cursoOptions}
-                                        value={value}
-                                        onChange={(
-                                            option: SingleValue<SelectOption>,
-                                        ) => {
-                                            const nuevoCursoId =
-                                                option?.value ?? "";
+                                        setCursoId(
+                                            value,
+                                        );
 
-                                            field.onChange(
-                                                nuevoCursoId,
-                                            );
+                                        setValue(
+                                            "moduloIds",
+                                            [],
+                                        );
+                                    }}
+                                    disabled={
+                                        loadingCursos
+                                    }
+                                >
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue
+                                            placeholder={
+                                                loadingCursos
+                                                    ? "Cargando cursos..."
+                                                    : "Selecciona un curso"
+                                            }
+                                        />
+                                    </SelectTrigger>
 
-                                            setCursoId(
-                                                option?.value ?? null,
-                                            );
-
-                                            setValue(
-                                                "moduloIds",
-                                                [],
-                                            );
-                                        }}
-                                        isLoading={
-                                            loadingCursos
-                                        }
-                                        placeholder="Selecciona un curso"
-                                        isClearable
-                                    />
-                                );
-                            }}
+                                    <SelectContent className="z-[220]">
+                                        {cursoOptions.map(
+                                            (
+                                                option,
+                                            ) => (
+                                                <SelectItem
+                                                    key={
+                                                        option.value
+                                                    }
+                                                    value={
+                                                        option.value
+                                                    }
+                                                >
+                                                    {
+                                                        option.label
+                                                    }
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            )}
                         />
 
                         {errors.cursoId && (
-                            <span className="text-sm text-red-500">
-                                {errors.cursoId.message}
+                            <span className="text-sm text-destructive">
+                                {
+                                    errors
+                                        .cursoId
+                                        .message
+                                }
                             </span>
                         )}
                     </Field>
 
+                    {/* MÓDULOS */}
                     <Field>
-                        <FieldLabel htmlFor="moduloIds">
+                        <FieldLabel>
                             Módulos
                         </FieldLabel>
 
                         <Controller
                             name="moduloIds"
                             control={control}
-                            render={({ field }) => {
-                                const value =
-                                    moduloOptions.filter(
-                                        (option) =>
-                                            field.value.includes(
-                                                option.value,
-                                            ),
-                                    );
-
-                                return (
-                                    <Select<SelectOption, true>
-                                        options={moduloOptions}
-                                        value={value}
-                                        onChange={(
-                                            option: MultiValue<SelectOption>,
-                                        ) => {
-                                            field.onChange(
-                                                option.map(
-                                                    (option) =>
-                                                        option.value,
-                                                ),
-                                            );
-                                        }}
-                                        isLoading={
-                                            loadingCursos
-                                        }
-                                        placeholder={
-                                            cursoSeleccionado
-                                                ? "Selecciona un módulo"
-                                                : "Selecciona un curso primero"
-                                        }
-                                        isDisabled={
-                                            !cursoSeleccionado
-                                        }
-                                        isMulti
-                                        isClearable
-                                    />
-                                );
-                            }}
+                            render={({
+                                field,
+                            }) => (
+                                <MultiSelect
+                                    options={
+                                        moduloOptions
+                                    }
+                                    value={
+                                        field.value ??
+                                        []
+                                    }
+                                    onChange={
+                                        field.onChange
+                                    }
+                                    loading={
+                                        loadingCursos
+                                    }
+                                    disabled={
+                                        !cursoSeleccionado
+                                    }
+                                    placeholder={
+                                        cursoSeleccionado
+                                            ? "Selecciona módulos"
+                                            : "Selecciona un curso primero"
+                                    }
+                                />
+                            )}
                         />
 
                         {errors.moduloIds && (
-                            <span className="text-sm text-red-500">
-                                {errors.moduloIds.message}
+                            <span className="text-sm text-destructive">
+                                {
+                                    errors
+                                        .moduloIds
+                                        .message
+                                }
                             </span>
                         )}
                     </Field>
 
+                    {/* ESTUDIANTES */}
                     <Field>
-                        <FieldLabel htmlFor="estudianteIds">
+                        <FieldLabel>
                             Estudiantes
                         </FieldLabel>
 
                         <div className="flex w-full gap-2">
                             <Controller
                                 name="estudianteIds"
-                                control={control}
-                                render={({ field }) => {
-                                    const value =
-                                        estudianteOptions.filter(
-                                            (option) =>
-                                                field.value.includes(
-                                                    option.value,
-                                                ),
-                                        );
-
-                                    return (
-                                        <Select<SelectOption, true>
-                                            className="flex-1"
-                                            options={
-                                                estudianteOptions
-                                            }
-                                            value={value}
-                                            onChange={(
-                                                options: MultiValue<SelectOption>,
-                                            ) => {
-                                                field.onChange(
-                                                    options.map(
-                                                        (
-                                                            option,
-                                                        ) =>
-                                                            option.value,
-                                                    ),
-                                                );
-                                            }}
-                                            isLoading={
-                                                loadingEstudiantes
-                                            }
-                                            isMulti
-                                            placeholder="Selecciona estudiantes"
-                                        />
-                                    );
-                                }}
+                                control={
+                                    control
+                                }
+                                render={({
+                                    field,
+                                }) => (
+                                    <MultiSelect
+                                        className="flex-1"
+                                        options={
+                                            estudianteOptions
+                                        }
+                                        value={
+                                            field.value ??
+                                            []
+                                        }
+                                        onChange={
+                                            field.onChange
+                                        }
+                                        loading={
+                                            loadingEstudiantes
+                                        }
+                                        placeholder="Selecciona estudiantes"
+                                    />
+                                )}
                             />
 
                             <Button
@@ -277,24 +307,28 @@ export function CrearInscripcionForm({
                                 variant="outline"
                                 size="icon"
                                 onClick={() =>
-                                    setOpenDialog(true)
+                                    setOpenDialog(
+                                        true,
+                                    )
                                 }
-                                className="cursor-pointer"
+                                className="shrink-0"
                             >
                                 <Plus className="size-4" />
                             </Button>
                         </div>
 
                         {errors.estudianteIds && (
-                            <span className="text-sm text-red-500">
+                            <span className="text-sm text-destructive">
                                 {
-                                    errors.estudianteIds
+                                    errors
+                                        .estudianteIds
                                         .message
                                 }
                             </span>
                         )}
                     </Field>
 
+                    {/* SUBMIT */}
                     <Field>
                         <Button
                             type="submit"
@@ -312,7 +346,9 @@ export function CrearInscripcionForm({
 
             <DialogEstudiante
                 open={openDialog}
-                onOpenChange={setOpenDialog}
+                onOpenChange={
+                    setOpenDialog
+                }
             />
         </div>
     );
