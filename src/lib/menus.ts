@@ -10,6 +10,7 @@ import {
     faAward,
     faHeadset,
     faUserPlus,
+    faTags,
 } from "@fortawesome/free-solid-svg-icons";
 
 export interface MenuItem {
@@ -64,5 +65,11 @@ export const menuItems: MenuItem[] = [
         icon: faUserPlus,
         url: "/panel/leads",
         permission: PERMISSIONS.LEADS.VER,
+    },
+    {
+        title: "Descuentos",
+        icon: faTags,
+        url: "/panel/descuentos",
+        permission: PERMISSIONS.DESCUENTOS.VER,
     },
 ];

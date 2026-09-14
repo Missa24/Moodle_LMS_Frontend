@@ -1,110 +1,84 @@
 "use client";
-import {
-    Table as ReactTable,
-} from "@tanstack/react-table";
+
+import { Table as ReactTable } from "@tanstack/react-table";
 import {
     ChevronLeft,
     ChevronRight,
     ChevronsLeft,
     ChevronsRight,
 } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 
 interface DataTablePaginationProps<TData> {
     table: ReactTable<TData>;
     totalRows?: number;
 }
+
 export function DataTablePagination<TData>({
     table,
     totalRows,
 }: DataTablePaginationProps<TData>) {
     const { pageIndex, pageSize } = table.getState().pagination;
     const rowCount = totalRows ?? table.getFilteredRowModel().rows.length;
+
     const from = rowCount === 0 ? 0 : pageIndex * pageSize + 1;
-    const to = (pageIndex + 1) * pageSize;
+    const to = Math.min((pageIndex + 1) * pageSize, rowCount);
 
     return (
         <div className="flex items-center justify-between px-2">
             <div className="flex-1 text-sm text-muted-foreground">
                 Mostrando {from} a {to} de {rowCount} registro(s)
             </div>
+
             <div className="flex items-center space-x-6 lg:space-x-8">
                 <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-                    Página{" "}
-                    {
-                        table.getState()
-                            .pagination.pageIndex + 1
-                    }
-                    {" de "}
-                    {
-                        table.getPageCount()
-                    }
+                    Página {table.getState().pagination.pageIndex + 1} de{" "}
+                    {Math.max(table.getPageCount(), 1)}
                 </div>
+
                 <div className="flex items-center space-x-2">
                     <Button
                         variant="outline"
                         size="icon"
                         className="hidden size-8 lg:flex"
-                        onClick={() =>
-                            table.setPageIndex(0)
-                        }
-                        disabled={
-                            !table.getCanPreviousPage()
-                        }
+                        onClick={() => table.setPageIndex(0)}
+                        disabled={!table.getCanPreviousPage()}
                     >
-                        <span className="sr-only">
-                            Primera página
-                        </span>
+                        <span className="sr-only">Primera página</span>
                         <ChevronsLeft />
                     </Button>
+
                     <Button
                         variant="outline"
                         size="icon"
                         className="size-8"
-                        onClick={() =>
-                            table.previousPage()
-                        }
-                        disabled={
-                            !table.getCanPreviousPage()
-                        }
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
                     >
-                        <span className="sr-only">
-                            Página anterior
-                        </span>
+                        <span className="sr-only">Página anterior</span>
                         <ChevronLeft />
                     </Button>
+
                     <Button
                         variant="outline"
                         size="icon"
                         className="size-8"
-                        onClick={() =>
-                            table.nextPage()
-                        }
-                        disabled={
-                            !table.getCanNextPage()
-                        }
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
                     >
-                        <span className="sr-only">
-                            Página siguiente
-                        </span>
+                        <span className="sr-only">Página siguiente</span>
                         <ChevronRight />
                     </Button>
+
                     <Button
                         variant="outline"
                         size="icon"
                         className="hidden size-8 lg:flex"
-                        onClick={() =>
-                            table.setPageIndex(
-                                table.getPageCount() - 1
-                            )
-                        }
-                        disabled={
-                            !table.getCanNextPage()
-                        }
+                        onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                        disabled={!table.getCanNextPage()}
                     >
-                        <span className="sr-only">
-                            Última página
-                        </span>
+                        <span className="sr-only">Última página</span>
                         <ChevronsRight />
                     </Button>
                 </div>

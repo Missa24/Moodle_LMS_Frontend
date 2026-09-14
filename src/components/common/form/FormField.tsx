@@ -502,7 +502,7 @@ export function FormField<
                                 />
 
                                 {hint && (
-                                    <p className="text-xs text-muted-foreground">
+                                    <p className="text-xl text-muted-foreground">
                                         {hint}
                                     </p>
                                 )}

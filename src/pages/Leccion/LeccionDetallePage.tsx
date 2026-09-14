@@ -66,8 +66,7 @@ export default function LeccionDetallePage() {
         data: leccionesProgreso,
     } = useGetLeccionesConProgreso(moduloId!);
 
-    const linkPago =
-        "https://www.paypal.com/invoice/p/#C3ZTFDS4KQX8CS2F";
+
 
     return (
         <div className="space-y-6 p-4 text-foreground sm:p-6">
@@ -107,7 +106,6 @@ export default function LeccionDetallePage() {
                         }
                         cursoId={cursoId!}
                         moduloId={moduloId!}
-                        linkPago={linkPago}
                     />
                 ) : leccion ? (
                     <LeccionContenido
@@ -136,10 +134,6 @@ export default function LeccionDetallePage() {
                     />
                 ) : null}
             </QueryState>
-
-            {/* =========================
-                MODULO COMPLETADO
-            ========================= */}
 
             <Dialog
                 open={showModuloDialog}
@@ -191,10 +185,6 @@ export default function LeccionDetallePage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-
-            {/* =========================
-                CURSO COMPLETADO
-            ========================= */}
 
             <Dialog
                 open={showCursoDialog}

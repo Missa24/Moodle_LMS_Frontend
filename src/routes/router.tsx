@@ -74,6 +74,7 @@ const LeadUserDetailPage = lazy(() => import("@/pages/Lead/LeadUserDetailPage"))
 
 const PrivacyPage = lazy(() => import("@/pages/Privacy/PrivacyPolicyPage"));
 
+const DescuentosPage = lazy(() => import("@/pages/Descuentos/DescuentosPage"));
 
 const lazyElement = (
     Component: LazyExoticComponent<ComponentType>,
@@ -299,7 +300,14 @@ export const router = createBrowserRouter([
                                 path: "soporte",
                                 element: lazyElement(SupportPage),
                             },
-
+                            {
+                                path: "descuentos",
+                                element: withPermission(
+                                    PERMISSIONS.DESCUENTOS.VER,
+                                    lazyElement(DescuentosPage),
+                                    "No tienes permisos para ver los descuentos",
+                                ),
+                            },
                             {
                                 path: "leads",
                                 element: withPermission(
