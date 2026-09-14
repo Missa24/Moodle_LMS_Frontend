@@ -1,11 +1,9 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Bell } from "lucide-react";
 
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,15 +22,10 @@ import {
 import { cn } from "@/lib/utils";
 
 const formatearFecha = (fecha?: string) => {
-  if (!fecha) {
-    return "";
-  }
+  if (!fecha) return "";
 
   const date = new Date(fecha);
-
-  if (Number.isNaN(date.getTime())) {
-    return "";
-  }
+  if (Number.isNaN(date.getTime())) return "";
 
   return date.toLocaleString("es-BO", {
     day: "2-digit",
@@ -48,7 +41,7 @@ export const NotificationBell = () => {
   const [open, setOpen] = useState(false);
 
   const {
-    data: notificaciones,
+    data: notificaciones = [],
     isLoading,
   } = useGetNotificaciones();
 
@@ -58,31 +51,33 @@ export const NotificationBell = () => {
 
   const marcarComoLeida = useMarcarComoLeida();
 
+  const navegarNotificacion = (urlAccion?: string | null) => {
+    setOpen(false);
+
+    if (urlAccion) {
+      navigate(urlAccion);
+    }
+  };
+
   const handleNotificacionClick = (
     id: string,
-    leida: boolean
+    leidaEn: string | null,
+    urlAccion?: string | null,
   ) => {
-    // Si ya está leída, solo cerramos y navegamos
-    if (leida) {
-      setOpen(false);
-      navigate("/panel/certificados");
+    if (leidaEn) {
+      navegarNotificacion(urlAccion);
       return;
     }
 
-    // Si no está leída, primero la marcamos
     marcarComoLeida.mutate(id, {
       onSuccess: () => {
-        setOpen(false);
-        navigate("/panel/certificados");
+        navegarNotificacion(urlAccion);
       },
     });
   };
 
   return (
-    <DropdownMenu
-      open={open}
-      onOpenChange={setOpen}
-    >
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
@@ -114,10 +109,7 @@ export const NotificationBell = () => {
             </span>
 
             {noLeidas > 0 && (
-              <Badge
-                variant="secondary"
-                className="text-xs"
-              >
+              <Badge variant="secondary" className="text-xs">
                 {noLeidas} nuevas
               </Badge>
             )}
@@ -129,33 +121,30 @@ export const NotificationBell = () => {
             <div className="flex items-center justify-center py-8 text-sm text-muted-foreground">
               Cargando...
             </div>
-          ) : !notificaciones ||
-            notificaciones.length === 0 ? (
+          ) : notificaciones.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
               <Bell className="mb-2 h-8 w-8 opacity-50" />
-
               <p className="text-sm">
                 No tienes notificaciones
               </p>
             </div>
           ) : (
             notificaciones.map((notificacion) => {
-              const fecha = formatearFecha(
-                notificacion.fechaCreacion
-              );
+              const fecha = formatearFecha(notificacion.creadoEn);
+              const leida = !!notificacion.leidaEn;
 
               return (
                 <DropdownMenuItem
                   key={notificacion.id}
                   className={cn(
                     "flex cursor-pointer flex-col items-start gap-1 px-4 py-3",
-                    !notificacion.leida &&
-                    "bg-muted/50"
+                    !leida && "bg-muted/50",
                   )}
                   onClick={() =>
                     handleNotificacionClick(
                       notificacion.id,
-                      notificacion.leida
+                      notificacion.leidaEn,
+                      notificacion.urlAccion,
                     )
                   }
                 >
@@ -164,13 +153,13 @@ export const NotificationBell = () => {
                       {notificacion.titulo}
                     </span>
 
-                    {!notificacion.leida && (
+                    {!leida && (
                       <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
                     )}
                   </div>
 
                   <p className="line-clamp-2 text-xs text-muted-foreground">
-                    {notificacion.mensaje}
+                    {notificacion.contenido}
                   </p>
 
                   {fecha && (
@@ -184,24 +173,16 @@ export const NotificationBell = () => {
           )}
         </div>
 
-        {notificaciones &&
-          notificaciones.length > 0 && (
-            <>
-              <DropdownMenuSeparator />
+        {notificaciones.length > 0 && (
+          <>
+            <DropdownMenuSeparator />
 
-              <div className="px-2 py-2">
-                <DropdownMenuItem
-                  className="cursor-pointer justify-center text-xs text-muted-foreground"
-                  onClick={() => {
-                    setOpen(false);
-                    navigate("/panel/certificados");
-                  }}
-                >
-                  Ver todas las notificaciones
-                </DropdownMenuItem>
-              </div>
-            </>
-          )}
+            <div className="px-4 py-2 text-center text-[11px] text-muted-foreground">
+              {notificaciones.length} notificación
+              {notificaciones.length !== 1 ? "es" : ""}
+            </div>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

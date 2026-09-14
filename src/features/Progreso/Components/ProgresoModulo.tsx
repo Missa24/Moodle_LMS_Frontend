@@ -1,13 +1,10 @@
 import {
-    Check,
+    CheckCircle2,
     Circle,
 } from "lucide-react";
 
 import { QueryState } from "@/components/common/QueryState";
-
-import {
-    useProgresoQuery,
-} from "@/features/Progreso/Hook/ProgresoHook";
+import { useProgresoQuery } from "@/features/Progreso/Hook/ProgresoHook";
 import { useGetMiInscripcionModulo } from "@/features/Inscripciones/Hook/InscripcionHook";
 
 interface ProgresoModuloProps {
@@ -22,8 +19,10 @@ export function ProgresoModulo({
         isLoading: isLoadingAcceso,
         isError: isErrorAcceso,
         error: errorAcceso,
-    } =
-        useGetMiInscripcionModulo(moduloId, !!moduloId,);
+    } = useGetMiInscripcionModulo(
+        moduloId,
+        !!moduloId,
+    );
 
     const puedeConsultarProgreso =
         accesoModulo?.inscrito ===
@@ -36,11 +35,12 @@ export function ProgresoModulo({
         isLoading,
         isError,
         error,
-    } = useProgresoQuery(moduloId, puedeConsultarProgreso,);
+    } = useProgresoQuery(
+        moduloId,
+        puedeConsultarProgreso,
+    );
 
-    if (
-        isLoadingAcceso
-    ) {
+    if (isLoadingAcceso) {
         return (
             <QueryState
                 isLoading
@@ -52,16 +52,12 @@ export function ProgresoModulo({
         );
     }
 
-    if (
-        isErrorAcceso
-    ) {
+    if (isErrorAcceso) {
         return (
             <QueryState
                 isLoading={false}
                 isError
-                error={
-                    errorAcceso
-                }
+                error={errorAcceso}
                 minHeight="min-h-[80px]"
             >
                 {null}
@@ -78,85 +74,69 @@ export function ProgresoModulo({
 
     return (
         <QueryState
-            isLoading={
-                isLoading
-            }
-            isError={
-                isError
-            }
-            error={
-                error
-            }
+            isLoading={isLoading}
+            isError={isError}
+            error={error}
             minHeight="min-h-[80px]"
         >
             {data && (
-                <div className="space-y-3">
-                    <div className="flex items-center gap-1">
-                        {Array.from({
-                            length:
-                                Math.min(
-                                    data.leccionesTotales,
-                                    10,
-                                ),
-                        }).map(
-                            (
-                                _,
-                                i,
-                            ) => {
-                                const isCompleted =
-                                    i <
-                                    data.leccionesCompletadas;
-
-                                return (
-                                    <div
-                                        key={
-                                            i
-                                        }
-                                        className={`h-1 flex-1 rounded-full transition-all ${isCompleted
-                                            ? "bg-primary"
-                                            : "bg-muted"
-                                            }`}
-                                    />
-                                );
-                            },
-                        )}
-
-                        {data.leccionesTotales >
-                            10 && (
-                                <span className="ml-1 text-[10px] text-muted-foreground">
-                                    +
-                                    {data.leccionesTotales -
-                                        10}
-                                </span>
-                            )}
-                    </div>
-
+                <div className="space-y-3 rounded-lg border bg-background p-4">
                     <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                                <Check className="h-3 w-3 text-emerald-500" />
+                        <div>
+                            <p className="text-sm font-medium">
+                                Tu progreso
+                            </p>
 
+                            <p className="text-xs text-muted-foreground">
                                 {
                                     data.leccionesCompletadas
-                                }
-                            </span>
-
-                            <span className="h-1 w-1 rounded-full bg-muted-foreground/30" />
-
-                            <span className="flex items-center gap-1">
-                                <Circle className="h-3 w-3" />
-
+                                }{" "}
+                                de{" "}
                                 {
-                                    data.leccionesPendientes
-                                }
-                            </span>
+                                    data.leccionesTotales
+                                }{" "}
+                                lecciones
+                            </p>
                         </div>
 
-                        <span className="text-sm font-semibold text-primary">
-                            {
-                                data.porcentaje
-                            }
+                        <span className="text-lg font-semibold text-primary">
+                            {Math.round(
+                                data.porcentaje,
+                            )}
                             %
+                        </span>
+                    </div>
+
+                    <div className="h-2 overflow-hidden rounded-full bg-muted">
+                        <div
+                            className="h-full rounded-full bg-primary transition-all duration-500"
+                            style={{
+                                width: `${Math.min(
+                                    Math.max(
+                                        data.porcentaje,
+                                        0,
+                                    ),
+                                    100,
+                                )}%`,
+                            }}
+                        />
+                    </div>
+
+                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                        <span className="flex items-center gap-1.5">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-primary" />
+                            {
+                                data.leccionesCompletadas
+                            }{" "}
+                            completadas
+                        </span>
+
+                        <span className="flex items-center gap-1.5">
+                            <Circle className="h-3.5 w-3.5" />
+                            {
+                                data.leccionesPendientes
+                            }{" "}
+                            pendientes
                         </span>
                     </div>
                 </div>

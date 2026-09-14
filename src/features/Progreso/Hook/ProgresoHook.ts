@@ -1,5 +1,11 @@
-import { getProgresoByModuloId, getProgresoMe } from "../Service/ProgresoService";
-import { useQuery } from "@tanstack/react-query";
+import {
+    getProgresoByModuloId,
+    getProgresoMe,
+} from "../Service/ProgresoService";
+
+import {
+    useQuery,
+} from "@tanstack/react-query";
 
 export function useProgresoQuery(
     moduloId: string,
@@ -11,16 +17,13 @@ export function useProgresoQuery(
             "modulo",
             moduloId,
         ],
-
         queryFn: () =>
             getProgresoByModuloId(
                 moduloId,
             ),
-
         enabled:
             enabled &&
             !!moduloId,
-
         staleTime:
             1000 * 60 * 2,
     });
@@ -28,7 +31,11 @@ export function useProgresoQuery(
 
 export function useProgresoMeQuery() {
     return useQuery({
-        queryKey: ["progreso", "me"],
-        queryFn: () => getProgresoMe(),
+        queryKey: [
+            "progreso",
+            "me",
+        ],
+        queryFn: () =>
+            getProgresoMe(),
     });
 }

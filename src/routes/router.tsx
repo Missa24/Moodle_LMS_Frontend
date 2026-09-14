@@ -76,6 +76,9 @@ const PrivacyPage = lazy(() => import("@/pages/Privacy/PrivacyPolicyPage"));
 
 const DescuentosPage = lazy(() => import("@/pages/Descuentos/DescuentosPage"));
 
+const VentasPage = lazy(() => import("@/pages/Ventas/VentasPage"));
+
+
 const lazyElement = (
     Component: LazyExoticComponent<ComponentType>,
     fallback: ReactNode = <Loading />,
@@ -299,6 +302,10 @@ export const router = createBrowserRouter([
                             {
                                 path: "soporte",
                                 element: lazyElement(SupportPage),
+                            },
+                            {
+                                path: "ventas",
+                                element: lazyElement(VentasPage)
                             },
                             {
                                 path: "descuentos",

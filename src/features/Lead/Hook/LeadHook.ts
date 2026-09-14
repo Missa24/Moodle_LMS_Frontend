@@ -128,40 +128,25 @@ export function useGetLead(
 }
 
 export function useUpdateLeadEstado() {
-    const queryClient =
-        useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({
-            id,
-            data,
-        }: {
-            id: string;
-            data: UpdateLeadEstadoType;
-        }) =>
-            UpdateLeadEstado(
-                id,
-                data,
-            ),
+        mutationFn: ({ id, data }: { id: string; data: UpdateLeadEstadoType }) =>
+            UpdateLeadEstado(id, data),
 
-        onSuccess: async (
-            response,
-        ) => {
-            await queryClient.invalidateQueries({
-                queryKey: [
-                    "leads",
-                ],
-            });
+        onSuccess: async (response) => {
+            await Promise.all([
+                queryClient.invalidateQueries({ queryKey: ["leads"] }),
+                queryClient.invalidateQueries({ queryKey: ["ventas"] }),
+                queryClient.invalidateQueries({ queryKey: ["inscripciones"] }),
+                queryClient.invalidateQueries({ queryKey: ["notificaciones"] }),
+            ]);
 
-            toast.success(
-                `Estado actualizado a ${response.estado}`,
-            );
+            toast.success(`Estado actualizado a ${response.estado}`);
         },
 
         onError: () => {
-            toast.error(
-                "No se pudo actualizar el estado del lead",
-            );
+            toast.error("No se pudo actualizar el estado del lead");
         },
     });
 }
