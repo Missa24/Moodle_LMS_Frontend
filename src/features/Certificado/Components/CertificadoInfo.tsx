@@ -2,6 +2,7 @@ import {
     CalendarDays,
     GraduationCap,
     Hash,
+    IdCard,
     User,
 } from "lucide-react";
 
@@ -12,15 +13,27 @@ interface CertificadoInfoProps {
         titulo: string;
         numeroCertificado: string;
         fechaEmision: string;
-        codigoVerificacion: string;
-        usuario: {
-            username: string;
+
+        estudiante: {
+            nombreCompleto: string;
+            tipoDocumentoIdentidad:
+            | string
+            | null;
+            numeroDocumento:
+            | string
+            | null;
         };
+
         curso?: {
             nombre: string;
         } | null;
+
         modulo?: {
             nombre: string;
+        } | null;
+
+        inscripcion?: {
+            numeroInscripcion: string;
         } | null;
     };
 }
@@ -28,6 +41,17 @@ interface CertificadoInfoProps {
 export function CertificadoInfo({
     certificado,
 }: CertificadoInfoProps) {
+    const documento =
+        certificado.estudiante
+            .numeroDocumento
+            ? `${certificado.estudiante
+                .tipoDocumentoIdentidad ??
+            "Documento"
+            }: ${certificado.estudiante
+                .numeroDocumento
+            }`
+            : "No registrado";
+
     return (
         <div className="p-6 sm:p-8">
             <div className="mb-8 text-center">
@@ -36,89 +60,139 @@ export function CertificadoInfo({
                 </p>
 
                 <h2 className="mt-2 text-2xl font-bold">
-                    {certificado.titulo}
+                    {
+                        certificado.titulo
+                    }
                 </h2>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
-                <InfoCard
-                    icon={<User className="h-5 w-5" />}
+            <div className="grid gap-x-8 gap-y-6 sm:grid-cols-2">
+                <InfoItem
+                    icon={
+                        <User className="size-5" />
+                    }
                     label="Estudiante"
-                    value={certificado.usuario.username}
-                />
-
-                <InfoCard
-                    icon={<GraduationCap className="h-5 w-5" />}
-                    label={certificado.curso ? "Curso" : "Módulo"}
                     value={
-                        certificado.curso?.nombre ??
-                        certificado.modulo?.nombre ??
-                        "-"
+                        certificado
+                            .estudiante
+                            .nombreCompleto ||
+                        "No registrado"
                     }
                 />
 
-                <InfoCard
-                    icon={<CalendarDays className="h-5 w-5" />}
+                <InfoItem
+                    icon={
+                        <IdCard className="size-5" />
+                    }
+                    label="Documento"
+                    value={
+                        documento
+                    }
+                />
+
+                {certificado.curso && (
+                    <InfoItem
+                        icon={
+                            <GraduationCap className="size-5" />
+                        }
+                        label="Curso"
+                        value={
+                            certificado
+                                .curso
+                                .nombre
+                        }
+                    />
+                )}
+
+                {certificado.modulo && (
+                    <InfoItem
+                        icon={
+                            <GraduationCap className="size-5" />
+                        }
+                        label="Módulo"
+                        value={
+                            certificado
+                                .modulo
+                                .nombre
+                        }
+                    />
+                )}
+
+                <InfoItem
+                    icon={
+                        <CalendarDays className="size-5" />
+                    }
                     label="Fecha de emisión"
                     value={new Date(
                         certificado.fechaEmision
-                    ).toLocaleDateString("es-ES", {
-                        day: "2-digit",
-                        month: "long",
-                        year: "numeric",
-                    })}
+                    ).toLocaleDateString(
+                        "es-BO",
+                        {
+                            day: "2-digit",
+                            month: "long",
+                            year: "numeric",
+                        }
+                    )}
                 />
 
-                <InfoCard
-                    icon={<Hash className="h-5 w-5" />}
+                <InfoItem
+                    icon={
+                        <Hash className="size-5" />
+                    }
                     label="N.º de certificado"
-                    value={certificado.numeroCertificado}
+                    value={
+                        certificado
+                            .numeroCertificado
+                    }
                     valueClassName="font-mono text-sm font-semibold"
                 />
-            </div>
 
-            <div className="mt-6 rounded-xl border border-dashed p-5 text-center">
-                <p className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                    Código de verificación
-                </p>
-
-                <p className="mt-2 font-mono text-lg font-bold tracking-widest">
-                    {certificado.codigoVerificacion}
-                </p>
+                {certificado.inscripcion && (
+                    <InfoItem
+                        icon={
+                            <Hash className="size-5" />
+                        }
+                        label="N.º de inscripción"
+                        value={
+                            certificado
+                                .inscripcion
+                                .numeroInscripcion
+                        }
+                        valueClassName="font-mono text-sm font-semibold"
+                    />
+                )}
             </div>
         </div>
     );
 }
 
-interface InfoCardProps {
+interface InfoItemProps {
     icon: React.ReactNode;
     label: string;
     value: string;
     valueClassName?: string;
 }
 
-function InfoCard({
+function InfoItem({
     icon,
     label,
     value,
     valueClassName,
-}: InfoCardProps) {
+}: InfoItemProps) {
     return (
-        <div className="rounded-xl border bg-muted/30 p-4">
-            <div className="flex items-center gap-3">
-                <div className="text-primary">
-                    {icon}
-                </div>
-
-                <InfoField
-                    label={label}
-                    value={value}
-                    valueClassName={
-                        valueClassName ??
-                        "mt-1 text-sm font-semibold text-neutral-900 dark:text-neutral-200"
-                    }
-                />
+        <div className="flex items-start gap-3 border-b border-border/70 pb-4">
+            <div className="mt-0.5 text-primary">
+                {icon}
             </div>
+
+            <InfoField
+                label={label}
+                value={value}
+                valueClassName={
+                    valueClassName ??
+                    "mt-1 text-sm font-semibold text-foreground"
+                }
+            />
         </div>
     );
 }
