@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { Loader2, XCircle } from "lucide-react";
+import { ArrowLeft, Loader2, XCircle } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -25,6 +25,14 @@ export default function VerificarCertificadoPage() {
     if (isLoading) {
         return (
             <div className="flex min-h-[70vh] items-center justify-center px-4">
+                <Link
+                    to="/"
+                    className="fixed left-5 top-5 z-50 flex items-center gap-2 rounded-full border border-border bg-background/90 px-4 py-2 text-sm font-medium text-foreground shadow-sm backdrop-blur-md transition-colors hover:bg-muted sm:left-8 sm:top-8"
+                >
+                    <ArrowLeft className="size-4" />
+
+                    Ir al sitio web
+                </Link>
                 <div className="flex flex-col items-center gap-4 text-center">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
                         <Loader2 className="h-8 w-8 animate-spin text-primary" />

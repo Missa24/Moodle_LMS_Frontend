@@ -3,8 +3,14 @@ import { AuthSchemaType, LoginResponseType, ResetPasswordSchemaType, UserMeRespo
 import { ResponseType } from "@/utils/Schema/Response";
 import { RegisterPayload } from "../Schema/RegisterSchema";
 
-export async function LoginUser(data: AuthSchemaType): Promise<LoginResponseType> {
-    const response = await apiService.post("/auth/login", data);
+export async function LoginUser(data: AuthSchemaType,): Promise<LoginResponseType> {
+    const response = await apiService.post("/auth/login", data,
+        {
+            skipAuth: true,
+            skipAuthRedirect: true,
+        },
+    );
+
     return response.data;
 }
 
@@ -26,8 +32,13 @@ export async function MeProfile(): Promise<UserMeResponseType> {
     return response.data;
 }
 
-export async function RegisterUser(payload: RegisterPayload): Promise<LoginResponseType> {
-    const { data } = await apiService.post<LoginResponseType>("/auth/register", payload);
+export async function RegisterUser(payload: RegisterPayload,): Promise<LoginResponseType> {
+    const { data, } = await apiService.post<LoginResponseType>("/auth/register", payload,
+        {
+            skipAuth: true,
+            skipAuthRedirect: true,
+        },
+    );
 
     return data;
 }

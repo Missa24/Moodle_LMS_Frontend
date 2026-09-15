@@ -9,6 +9,10 @@ import { useAuthStore } from "@/store/authStore";
 
 import { ModeToggle } from "../ModeToggle";
 
+import {
+    isJwtExpired,
+} from "@/utils/auth/jwt";
+
 const ITEMS = [
     {
         label: "Inicio",
@@ -21,7 +25,9 @@ const ITEMS = [
 ];
 
 export function Navbar() {
-    const { token } = useAuthStore();
+    const token = useAuthStore((state) => state.token,);
+
+    const sesionActiva = Boolean(token) && !isJwtExpired(token!,);
 
     const openLoginDialog = useAuthDialogStore((state) => state.open);
 
@@ -45,7 +51,6 @@ export function Navbar() {
                     "transition-all duration-300",
                 )}
             >
-                {/* NAVBAR PRINCIPAL */}
                 <div
                     className={cn(
                         "flex h-16 items-center gap-3 px-3",
@@ -55,7 +60,6 @@ export function Navbar() {
                         "lg:gap-6 lg:px-5",
                     )}
                 >
-                    {/* LOGO + LINKS */}
                     <div className="flex min-w-0 items-center gap-5">
                         <Link
                             to="/"
@@ -70,7 +74,6 @@ export function Navbar() {
                             />
                         </Link>
 
-                        {/* DESKTOP NAV */}
                         <nav className="hidden items-center gap-6 lg:flex">
                             {ITEMS.map((item) => (
                                 <NavLink
@@ -107,7 +110,6 @@ export function Navbar() {
                         </nav>
                     </div>
 
-                    {/* BUSCADOR DESKTOP */}
                     <div className="hidden min-w-0 lg:block">
                         <CourseSearch
                             variant="navbar"
@@ -115,9 +117,7 @@ export function Navbar() {
                         />
                     </div>
 
-                    {/* ACCIONES */}
                     <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5 lg:ml-0 lg:gap-2">
-                        {/* BUSCAR MOBILE */}
                         <button
                             type="button"
                             onClick={() => {
@@ -144,11 +144,9 @@ export function Navbar() {
                             )}
                         </button>
 
-                        {/* TEMA */}
                         <ModeToggle />
 
-                        {/* SESIÓN DESKTOP/TABLET */}
-                        {token ? (
+                        {sesionActiva ? (
                             <Link
                                 to="/panel/inicio"
                                 className={cn(
@@ -227,7 +225,6 @@ export function Navbar() {
                             </button>
                         )}
 
-                        {/* MENÚ MOBILE */}
                         <button
                             type="button"
                             onClick={() => {
@@ -260,7 +257,6 @@ export function Navbar() {
                     </div>
                 </div>
 
-                {/* BUSCADOR MOBILE */}
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
@@ -281,7 +277,6 @@ export function Navbar() {
                     </div>
                 </div>
 
-                {/* MENÚ MOBILE */}
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
@@ -317,7 +312,7 @@ export function Navbar() {
                             </nav>
 
                             <div className="mt-3 border-t border-border pt-3 sm:hidden">
-                                {token ? (
+                                {sesionActiva ? (
                                     <Link
                                         to="/panel/inicio"
                                         onClick={closeMobilePanels}

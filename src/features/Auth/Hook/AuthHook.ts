@@ -5,58 +5,71 @@ import { toast } from "sonner";
 import { useAuthStore } from "@/store/authStore";
 import { useNavigate } from "react-router-dom";
 import { RegisterPayload } from "../Schema/RegisterSchema";
+import { AxiosError, } from "axios";
 
 const POST_LOGIN_REDIRECT_KEY =
     "elite_post_login_redirect";
 
 export function useLogin() {
-    const login = useAuthStore(
-        (state) => state.login
-    );
+    const login =
+        useAuthStore(
+            (state) =>
+                state.login,
+        );
 
-    const navigate = useNavigate();
+    const navigate =
+        useNavigate();
 
     return useMutation({
-        mutationFn: LoginUser,
+        mutationFn:
+            LoginUser,
 
         onSuccess: (
-            response: LoginResponseType
+            response:
+                LoginResponseType,
         ) => {
-            login(response);
+            login(
+                response,
+            );
 
             if (
-                response.usuario.estado ===
+                response.usuario
+                    .estado ===
                 "pendiente"
             ) {
                 navigate(
                     "/panel/cambiar-password",
                     {
-                        replace: true,
-                    }
+                        replace:
+                            true,
+                    },
                 );
 
                 return;
             }
 
             toast.success(
-                "Bienvenido a Elite Academy"
+                "Bienvenido a Elite Academy",
             );
 
             const redirectPath =
                 sessionStorage.getItem(
-                    POST_LOGIN_REDIRECT_KEY
+                    POST_LOGIN_REDIRECT_KEY,
                 );
 
-            if (redirectPath) {
+            if (
+                redirectPath
+            ) {
                 sessionStorage.removeItem(
-                    POST_LOGIN_REDIRECT_KEY
+                    POST_LOGIN_REDIRECT_KEY,
                 );
 
                 navigate(
                     redirectPath,
                     {
-                        replace: true,
-                    }
+                        replace:
+                            true,
+                    },
                 );
 
                 return;
@@ -65,14 +78,25 @@ export function useLogin() {
             navigate(
                 "/panel/inicio",
                 {
-                    replace: true,
-                }
+                    replace:
+                        true,
+                },
             );
         },
 
-        onError: () => {
+        onError: (
+            error: AxiosError<{
+                message?: string;
+            }>,
+        ) => {
+            const message =
+                error.response
+                    ?.data
+                    ?.message ??
+                "Credenciales incorrectas";
+
             toast.error(
-                "Credenciales incorrectas"
+                message,
             );
         },
     });
