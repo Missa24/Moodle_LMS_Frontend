@@ -301,7 +301,6 @@ export default function ModuloDetallePage() {
                                 lg:h-fit
                             ">
 
-                                {/* SIN INSCRIPCIÓN */}
 
                                 {!isLoadingAcceso &&
                                     !inscrito && (
@@ -309,24 +308,43 @@ export default function ModuloDetallePage() {
                                             title="Acceso al módulo"
                                             subtitle="Desbloquea el contenido completo y continúa con tu formación."
                                             price={
-                                                modulo.costo !==
-                                                    null
-                                                    ? String(
-                                                        modulo.costo
-                                                    )
-                                                    : "0"
+                                                modulo.precioFinal !== null
+                                                    ? modulo.precioFinal
+                                                    : 0
+                                            }
+                                            originalPrice={
+                                                modulo.descuento
+                                                    ? modulo.costo
+                                                    : null
                                             }
                                             currency="USD"
+                                            currencySymbol="$"
                                             badge={
                                                 modulo.otorgaCertificacion
                                                     ? "Certifica"
                                                     : undefined
                                             }
-                                            highlight="Pago único"
+                                            discountLabel={
+                                                modulo.descuento
+                                                    ? modulo.descuento.tipo ===
+                                                        "PORCENTAJE"
+                                                        ? `${modulo.descuento.valor}% de descuento`
+                                                        : `$${modulo.descuento.valor} de descuento`
+                                                    : undefined
+                                            }
+                                            discountEndsAt={
+                                                modulo.descuento?.finalizaEn
+                                            }
+                                            highlight={
+                                                modulo.descuento
+                                                    ? `Ahorras $${modulo.montoDescuento}`
+                                                    : "Pago único"
+                                            }
                                             features={[
                                                 "Acceso a todas las lecciones",
                                                 "Material y recursos digitales",
                                                 "Progreso guardado automáticamente",
+
                                                 ...(modulo.otorgaCertificacion
                                                     ? [
                                                         "Acceso a certificación al cumplir los requisitos",
@@ -335,14 +353,10 @@ export default function ModuloDetallePage() {
                                             ]}
                                             action={
                                                 <BuyModuleButton
-                                                    moduloId={
-                                                        modulo.id
-                                                    }
-                                                    linkPago={
-                                                        modulo.urlPago
-                                                    }
+                                                    moduloId={modulo.id}
+                                                    linkPago={modulo.urlPago}
                                                     precio={
-                                                        modulo.costo
+                                                        modulo.precioFinal
                                                     }
                                                     currency="USD"
                                                 />

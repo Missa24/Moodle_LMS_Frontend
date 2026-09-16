@@ -1,9 +1,9 @@
 "use client";
 
 import { Image } from "@/components/ui/image";
+import { RotatingWord } from "../../ui/rotating-word";
+import { CourseSearch } from "../Cursos/couse-search";
 
-import { RotatingWord } from "../ui/rotating-word";
-import { CourseSearch } from "./Cursos/couse-search";
 
 const ROTATING_WORDS = [
     "aprendizaje",

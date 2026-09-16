@@ -2,10 +2,10 @@ import z from "zod";
 
 export const CertificadoSchema = z.object({
     idCertificado: z.string(),
-    idInscripcion: z.string(),
-    idModulo: z.string(),
+    idInscripcion: z.string().nullable(),
+    idModulo: z.string().nullable(),
     idUsuario: z.string(),
-    idCurso: z.string(),
+    idCurso: z.string().nullable(),
     nombre: z.string(),
     descripcion: z.string(),
     tipo: z.string(),
@@ -14,8 +14,9 @@ export const CertificadoSchema = z.object({
     numeroCertificado: z.string(),
 });
 
-export type Certificado = z.infer<typeof CertificadoSchema>;
-
+export type Certificado = z.infer<
+    typeof CertificadoSchema
+>;
 
 export const VerificarCertificadoSchema = z.object({
     valido: z.boolean(),
@@ -29,9 +30,13 @@ export const VerificarCertificadoSchema = z.object({
         estado: z.string(),
         fechaEmision: z.string(),
 
-        usuario: z.object({
-            id: z.string(),
-            username: z.string(),
+        estudiante: z.object({
+            nombreCompleto: z.string(),
+            nombre: z.string().nullable(),
+            apellidoPaterno: z.string().nullable(),
+            apellidoMaterno: z.string().nullable(),
+            tipoDocumentoIdentidad: z.string().nullable(),
+            numeroDocumento: z.string().nullable(),
         }),
 
         curso: z
@@ -49,10 +54,17 @@ export const VerificarCertificadoSchema = z.object({
                 cursoId: z.string(),
             })
             .nullable(),
+
+        inscripcion: z
+            .object({
+                numeroInscripcion: z.string(),
+                fechaInscripcion: z.string(),
+                fechaFinalizacion: z.string().nullable(),
+            })
+            .nullable(),
     }),
 });
 
 export type VerificarCertificado = z.infer<
     typeof VerificarCertificadoSchema
 >;
-

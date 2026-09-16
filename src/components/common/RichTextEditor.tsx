@@ -61,7 +61,7 @@ export function RichTextEditor({ value, onChange, onBlur, minHeight = "150px" }:
                 </Button>
             </div>
 
-            <EditorContent editor={editor} />
+            <EditorContent editor={editor} className="rounded-md border bg-background text-foreground" />
         </div>
     );
 }

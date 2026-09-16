@@ -1,5 +1,7 @@
 import axios from "axios";
+
 import { useAuthStore } from "@/store/authStore";
+import { isJwtExpired } from "@/utils/auth/jwt";
 
 declare module "axios" {
     interface AxiosRequestConfig {
@@ -8,35 +10,74 @@ declare module "axios" {
     }
 }
 
-const apiService = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-});
+const apiService =
+    axios.create({
+        baseURL:
+            import.meta.env
+                .VITE_API_URL,
+    });
 
-apiService.interceptors.request.use((config) => {
-    const token = useAuthStore.getState().token;
+apiService.interceptors.request.use(
+    (config) => {
+        const {
+            token,
+            logout,
+        } =
+            useAuthStore.getState();
 
-    // Solo enviar token cuando la petición lo necesita
-    if (token && !config.skipAuth) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-
-    return config;
-});
-
-apiService.interceptors.response.use(
-    (response) => response,
-    (error) => {
         if (
-            error.response?.status === 401 &&
-            !error.config?.skipAuthRedirect
+            config.skipAuth
         ) {
-            useAuthStore.getState().logout();
-
-            window.location.href = "/";
+            return config;
         }
 
-        return Promise.reject(error);
-    }
+        if (!token) {
+            return config;
+        }
+
+        if (
+            isJwtExpired(token)
+        ) {
+            logout();
+
+            return config;
+        }
+
+        config.headers.Authorization =
+            `Bearer ${token}`;
+
+        return config;
+    },
 );
 
-export { apiService };
+apiService.interceptors.response.use(
+    (response) =>
+        response,
+
+    (error) => {
+        const status =
+            error.response?.status;
+
+        const skipAuthRedirect =
+            error.config
+                ?.skipAuthRedirect ===
+            true;
+
+        if (
+            status === 401 &&
+            !skipAuthRedirect
+        ) {
+            useAuthStore
+                .getState()
+                .logout();
+        }
+
+        return Promise.reject(
+            error,
+        );
+    },
+);
+
+export {
+    apiService,
+};

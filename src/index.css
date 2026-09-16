@@ -19,6 +19,26 @@
   --font-sans: "Manrope", sans-serif;
 }
 
+.tiptap {
+  color: hsl(var(--foreground));
+  background-color: hsl(var(--background));
+}
+
+.tiptap p {
+  color: hsl(var(--foreground));
+}
+
+.tiptap h1,
+.tiptap h2,
+.tiptap h3 {
+  color: hsl(var(--foreground));
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: hsl(var(--muted-foreground));
+}
+
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

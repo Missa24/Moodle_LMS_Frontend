@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 
-import { CourseCard } from "./Cursos/course-card";
+import { CourseCard } from "../Cursos/course-card";
 import { Skeleton } from "@/components/ui/skeleton";
 
-import { useCursos } from "./Cursos/service";
+import { useCursos } from "../Cursos/service";
 
 export const FeaturedCourses = () => {
     const { data, isLoading } = useCursos({

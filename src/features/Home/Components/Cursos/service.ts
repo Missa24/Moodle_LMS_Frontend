@@ -39,6 +39,7 @@ export type GetCursosParams = {
     limit?: number;
     search?: string;
     categoriaId?: string;
+    conDescuento?: boolean;
 };
 
 export async function getCursos(

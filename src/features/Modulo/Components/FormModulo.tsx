@@ -2,6 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Percent, Tag } from "lucide-react";
 
 import { FieldGroup } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
@@ -20,10 +21,10 @@ import {
     useCreateModulo,
     useUpdateModulo,
 } from "../Hook/ModuloHook";
+import { useGetDescuentos } from "@/features/Descuentos/Hook/DescuentoHook";
 
-type FormValues =
-    | ModuloCreateType
-    | ModuloUpdateType;
+
+type FormValues = ModuloCreateType | ModuloUpdateType;
 
 type FormModuloProps = {
     initialData?: ModuloDetailType;
@@ -38,15 +39,11 @@ export function FormModulo({
     cursoId,
     onSuccess,
 }: FormModuloProps) {
-    const {
-        mutate: createModulo,
-        isPending: creating,
-    } = useCreateModulo();
+    const { mutate: createModulo, isPending: creating } = useCreateModulo();
+    const { mutate: updateModulo, isPending: updating } = useUpdateModulo();
 
-    const {
-        mutate: updateModulo,
-        isPending: updating,
-    } = useUpdateModulo();
+    const { data: descuentos = [], isLoading: loadingDescuentos } =
+        useGetDescuentos();
 
     const isPending = creating || updating;
 
@@ -56,74 +53,86 @@ export function FormModulo({
                 ? ModuloUpdateSchema
                 : ModuloCreateSchema,
         ),
-
         defaultValues:
             mode === "edit"
                 ? {
-                    nombre:
-                        initialData?.nombre ?? "",
-
-                    descripcion:
-                        initialData?.descripcion ?? "",
-
+                    nombre: initialData?.nombre ?? "",
+                    descripcion: initialData?.descripcion ?? "",
                     fraseMotivacional:
                         initialData?.fraseMotivacional ?? "",
-
                     rutaImagen: undefined,
-
-                    orden:
-                        initialData?.orden ?? 0,
-
                     otorgaCertificacion:
-                        initialData?.otorgaCertificacion ??
-                        false,
-
+                        initialData?.otorgaCertificacion ?? false,
                     estaPublicado:
-                        initialData?.estaPublicado ??
-                        true,
-
+                        initialData?.estaPublicado ?? true,
                     costo:
-                        initialData?.costo ??
-                        undefined,
-
+                        initialData?.costo ?? undefined,
                     urlPago:
                         initialData?.urlPago ?? "",
+                    urlPagoBolivia:
+                        initialData?.urlPagoBolivia ?? "",
+                    descuentoId:
+                        initialData?.descuentoId ?? "",
                 }
                 : {
                     cursoId,
-
                     nombre: "",
-
                     descripcion: "",
-
                     fraseMotivacional: "",
-
                     rutaImagen: undefined,
-
-                    orden: 0,
-
                     otorgaCertificacion: false,
-
                     estaPublicado: true,
-
                     costo: undefined,
-
                     urlPago: "",
+                    urlPagoBolivia: "",
+                    descuentoId: "",
                 },
     });
 
-    const onSubmit = (
-        values: FormValues,
-    ) => {
+    // eslint-disable-next-line react-hooks/incompatible-library
+    const descuentoId = form.watch("descuentoId");
+
+    const descuentoSeleccionado = descuentos.find(
+        (descuento) => descuento.id === descuentoId,
+    );
+
+    const descuentosDisponibles = descuentos.filter(
+        (descuento) =>
+            descuento.habilitado &&
+            new Date(descuento.finalizaEn) >= new Date(),
+    );
+
+    const descuentoOptions = [
+        {
+            value: "SIN_DESCUENTO",
+            label: "Sin descuento",
+        },
+        ...descuentosDisponibles.map((descuento) => ({
+            value: descuento.id,
+            label:
+                descuento.tipo === "PORCENTAJE"
+                    ? `${descuento.nombre} · ${descuento.valor}%`
+                    : `${descuento.nombre} · ${descuento.valor} de descuento`,
+        })),
+    ];
+
+    const onSubmit = (values: FormValues) => {
+        const data = {
+            ...values,
+            descuentoId:
+                values.descuentoId === "SIN_DESCUENTO"
+                    ? ""
+                    : values.descuentoId,
+        };
+
         if (mode === "edit") {
             updateModulo(
                 {
                     id: initialData!.id,
-                    data: values,
+                    data,
                 },
                 {
-                    onSuccess: () =>
-                        onSuccess?.(),
+                    onSuccess: () => onSuccess?.(),
                 },
             );
 
@@ -132,7 +141,7 @@ export function FormModulo({
 
         createModulo(
             {
-                ...values,
+                ...data,
                 cursoId,
             } as ModuloCreateType,
             {
@@ -173,49 +182,123 @@ export function FormModulo({
                     rows={3}
                 />
 
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                    <div className="sm:col-span-2">
-                        <ImageUpload
-                            control={form.control}
-                            name="rutaImagen"
-                            label="Imagen del módulo"
-                            existingImage={
-                                mode === "edit"
-                                    ? initialData?.rutaImagen
-                                    : null
-                            }
-                            hint="JPG, PNG o WEBP · máximo 5 MB"
-                        />
+                <ImageUpload
+                    control={form.control}
+                    name="rutaImagen"
+                    label="Imagen del módulo"
+                    existingImage={
+                        mode === "edit"
+                            ? initialData?.rutaImagen
+                            : null
+                    }
+                    hint="JPG, PNG o WEBP · máximo 5 MB"
+                />
+
+                <div className="space-y-4">
+                    <div>
+                        <p className="text-sm font-medium">
+                            Precio y pagos
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Define el precio base y los medios de pago disponibles.
+                        </p>
                     </div>
 
                     <FormField
                         type="number"
                         control={form.control}
-                        name="orden"
-                        label="Orden"
-                        min={0}
-                    />
-
-                    <FormField
-                        type="number"
-                        control={form.control}
                         name="costo"
-                        label="Precio"
+                        label="Precio base"
                         placeholder="0.00"
                         min={0}
                         allowEmpty
                         hint="Cada cambio registra un nuevo precio en el historial"
                     />
 
-                    <div className="sm:col-span-2">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <FormField
                             control={form.control}
                             name="urlPago"
-                            label="Enlace de pago"
+                            label="Pago internacional"
                             placeholder="https://www.paypal.com/..."
-                            hint="Enlace al que será dirigido el estudiante para realizar el pago"
+                            hint="PayPal u otro medio para estudiantes internacionales"
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="urlPagoBolivia"
+                            label="Pago Bolivia"
+                            placeholder="https://..."
+                            hint="Medio de pago para estudiantes de Bolivia"
                         />
                     </div>
+                </div>
+
+                <div className="space-y-4 rounded-xl border p-4">
+                    <div>
+                        <p className="text-sm font-medium">
+                            Promoción
+                        </p>
+                        <p className="mt-1 text-xs text-muted-foreground">
+                            Puedes aplicar una promoción existente al módulo.
+                        </p>
+                    </div>
+
+                    <FormField
+                        type="select"
+                        control={form.control}
+                        name="descuentoId"
+                        label="Descuento"
+                        placeholder={
+                            loadingDescuentos
+                                ? "Cargando descuentos..."
+                                : "Selecciona un descuento"
+                        }
+                        disabled={loadingDescuentos}
+                        options={descuentoOptions}
+                    />
+
+                    {descuentoSeleccionado && (
+                        <div className="rounded-lg bg-muted/50 p-4">
+                            <div className="flex items-start gap-3">
+                                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                                    {descuentoSeleccionado.tipo ===
+                                        "PORCENTAJE" ? (
+                                        <Percent className="size-4" />
+                                    ) : (
+                                        <Tag className="size-4" />
+                                    )}
+                                </div>
+
+                                <div className="min-w-0">
+                                    <p className="text-sm font-medium">
+                                        {descuentoSeleccionado.nombre}
+                                    </p>
+
+                                    <p className="mt-1 text-sm text-muted-foreground">
+                                        {descuentoSeleccionado.tipo ===
+                                            "PORCENTAJE"
+                                            ? `${descuentoSeleccionado.valor}% de descuento`
+                                            : `${descuentoSeleccionado.valor} de descuento fijo`}
+                                    </p>
+
+                                    <p className="mt-1 text-xs text-muted-foreground">
+                                        Vigente hasta{" "}
+                                        {new Intl.DateTimeFormat(
+                                            "es-BO",
+                                            {
+                                                dateStyle: "medium",
+                                            },
+                                        ).format(
+                                            new Date(
+                                                descuentoSeleccionado.finalizaEn,
+                                            ),
+                                        )}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">

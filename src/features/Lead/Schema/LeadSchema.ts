@@ -11,6 +11,9 @@ export type EstadoLeadType = z.infer<
     typeof EstadoLeadSchema
 >;
 
+export const MedioPagoSchema = z.enum(["PAYPAL", "BOLIVIA"]);
+export type MedioPagoType = z.infer<typeof MedioPagoSchema>;
+
 export const CreateLeadSchema = z.object({
     moduloId: z
         .string()
@@ -233,11 +236,21 @@ export type LeadDetailType = z.infer<
 
 export const UpdateLeadEstadoSchema = z.object({
     estado: EstadoLeadSchema,
+    medioPago: MedioPagoSchema.optional(),
+    moneda: z.enum(["USD", "BOB"]).optional(),
+    referenciaPago: z.string().optional(),
+    observaciones: z.string().optional(),
+}).superRefine((data, ctx) => {
+    if (data.estado === "PAGO_COMPLETADO" && !data.medioPago) {
+        ctx.addIssue({
+            code: "custom",
+            path: ["medioPago"],
+            message: "El medio de pago es obligatorio",
+        });
+    }
 });
 
-export type UpdateLeadEstadoType = z.infer<
-    typeof UpdateLeadEstadoSchema
->;
+export type UpdateLeadEstadoType = z.infer<typeof UpdateLeadEstadoSchema>;
 
 export const UpdateLeadEstadoResponseSchema =
     z.object({
