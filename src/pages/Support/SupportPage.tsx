@@ -7,7 +7,6 @@ import {
 } from "@/store/authStore";
 
 import { SupportForm } from "@/features/Support/Componentes/SupportForm";
-import BuyModuleButton from "@/features/Lead/Components/BuyModuleButton";
 
 export default function SupportPage() {
     const usuario = useAuthStore(
@@ -34,20 +33,9 @@ export default function SupportPage() {
                 </div>
             </div>
 
-            <div className="flex items-center">
-                <BuyModuleButton
-                    moduloId="MODULO_ID_PRUEBA"
-                    linkPago="https://example.com"
-                />
-            </div>
-
             <SupportForm
-                nombre={
-                    usuario?.username ?? ""
-                }
-                correo={
-                    usuario?.correo ?? ""
-                }
+                nombre={usuario?.username ?? ""}
+                correo={usuario?.correo ?? ""}
             />
         </div>
     );

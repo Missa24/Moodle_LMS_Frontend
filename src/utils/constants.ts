@@ -76,6 +76,12 @@ export const PERMISSIONS = {
         EDITAR: "descuentos.editar",
         ELIMINAR: "descuentos.eliminar",
     },
+    VENTAS: {
+        VER: "ventas.ver",
+        CREAR: "ventas.crear",
+        EDITAR: "ventas.editar",
+        ELIMINAR: "ventas.eliminar",
+    },
 } as const;
 
 export const paises = [
