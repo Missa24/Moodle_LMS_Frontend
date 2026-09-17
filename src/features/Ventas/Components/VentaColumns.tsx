@@ -1,59 +1,96 @@
-"use client";
+import { useState, } from "react";
 
-import { useState } from "react";
-import type { ColumnDef } from "@tanstack/react-table";
-import { Loader2 } from "lucide-react";
+import type { ColumnDef, } from "@tanstack/react-table";
+
+import { Loader2, } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 
-import type { VentaType } from "../Schema/VentaSchema";
-import { useUpdateVentaComision } from "../Hook/VentaHook";
+import type { VentaType, } from "../Schema/VentaSchema";
 
-const dinero = (valor: number) =>
-    new Intl.NumberFormat("es-BO", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(valor);
+import { useUpdateVentaComision, } from "../Hook/VentaHook";
 
-function ComisionCell({ venta }: { venta: VentaType }) {
-    const actualizar = useUpdateVentaComision();
-    const [valor, setValor] = useState(venta.comision.toString());
-    const [modificado, setModificado] = useState(false);
+const dinero = (valor: number,) =>
+    new Intl.NumberFormat(
+        "es-BO",
+        {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        },
+    ).format(valor);
 
+interface ComisionCellProps {
+    venta: VentaType;
+    puedeEditar: boolean;
+}
+
+function ComisionCell({
+    venta,
+    puedeEditar,
+}: ComisionCellProps) {
+    const actualizar =
+        useUpdateVentaComision();
+
+    const [valor, setValor,] = useState(venta.comision.toString(),);
+
+    const [modificado, setModificado,] = useState(false);
     const restaurar = () => {
-        setValor(venta.comision.toString());
-        setModificado(false);
+        setValor(venta.comision.toString(),);
+
+        setModificado(false,);
     };
 
     const guardar = () => {
-        if (!modificado || actualizar.isPending) return;
-
-        const comision = Number(valor.replace(",", "."));
-
-        if (
-            !Number.isFinite(comision) ||
-            comision < 0 ||
-            comision > venta.montoCobrado
-        ) {
-            restaurar();
+        if (!puedeEditar || !modificado || actualizar.isPending) {
             return;
         }
 
-        actualizar.mutate(
+        const comision =
+            Number(valor.replace(",", ".",),
+            );
+
+        if (!Number.isFinite(comision,) || comision < 0 || comision > venta.montoCobrado) {
+            restaurar();
+
+            return;
+        }
+
+        actualizar.mutate({
+            id: venta.id, data: { comision, },
+        },
             {
-                id: venta.id,
-                data: { comision },
-            },
-            {
-                onSuccess: (ventaActualizada) => {
-                    setValor(ventaActualizada.comision.toString());
-                    setModificado(false);
+                onSuccess: (ventaActualizada,) => {
+                    setValor(ventaActualizada.comision.toString(),);
+
+                    setModificado(false,);
                 },
+
                 onError: restaurar,
             },
         );
     };
+
+    if (!puedeEditar) {
+        return (
+            <div className="min-w-[110px]">
+                <p className="whitespace-nowrap font-medium">
+                    {dinero(
+                        venta.comision,
+                    )}{" "}
+                    {
+                        venta.moneda
+                    }
+                </p>
+
+                <p className="mt-1 text-[10px] text-muted-foreground">
+                    {venta.comisionConfirmada
+                        ? "Confirmada"
+                        : "Pendiente"}
+                </p>
+            </div>
+        );
+    }
 
     return (
         <div className="min-w-[125px]">
@@ -61,22 +98,48 @@ function ComisionCell({ venta }: { venta: VentaType }) {
                 <Input
                     type="number"
                     min="0"
-                    max={venta.montoCobrado}
+                    max={
+                        venta.montoCobrado
+                    }
                     step="0.01"
-                    value={valor}
-                    disabled={actualizar.isPending}
-                    onChange={(event) => {
-                        setValor(event.target.value);
-                        setModificado(true);
+                    value={
+                        valor
+                    }
+                    disabled={
+                        actualizar.isPending
+                    }
+                    onChange={(
+                        event,
+                    ) => {
+                        setValor(
+                            event
+                                .target
+                                .value,
+                        );
+
+                        setModificado(
+                            true,
+                        );
                     }}
-                    onBlur={guardar}
-                    onKeyDown={(event) => {
-                        if (event.key === "Enter") {
+                    onBlur={
+                        guardar
+                    }
+                    onKeyDown={(
+                        event,
+                    ) => {
+                        if (
+                            event.key ===
+                            "Enter"
+                        ) {
                             event.currentTarget.blur();
                         }
 
-                        if (event.key === "Escape") {
+                        if (
+                            event.key ===
+                            "Escape"
+                        ) {
                             restaurar();
+
                             event.currentTarget.blur();
                         }
                     }}
@@ -88,7 +151,9 @@ function ComisionCell({ venta }: { venta: VentaType }) {
                         <Loader2 className="size-4 animate-spin text-muted-foreground" />
                     ) : (
                         <span className="text-[10px] text-muted-foreground">
-                            {venta.moneda}
+                            {
+                                venta.moneda
+                            }
                         </span>
                     )}
                 </div>
@@ -103,93 +168,193 @@ function ComisionCell({ venta }: { venta: VentaType }) {
     );
 }
 
-export function VentaColumns(): ColumnDef<VentaType>[] {
+interface VentaColumnsOptions {
+    puedeEditar: boolean;
+}
+
+export function VentaColumns({
+    puedeEditar,
+}: VentaColumnsOptions): ColumnDef<VentaType>[] {
     return [
         {
-            accessorKey: "creadoEn",
-            header: "Fecha",
-            cell: ({ row }) =>
-                new Date(row.original.creadoEn).toLocaleString(
+            accessorKey:
+                "creadoEn",
+
+            header:
+                "Fecha",
+
+            cell: ({
+                row,
+            }) =>
+                new Date(
+                    row.original.creadoEn,
+                ).toLocaleString(
                     "es-BO",
                     {
-                        dateStyle: "short",
-                        timeStyle: "short",
+                        dateStyle:
+                            "short",
+
+                        timeStyle:
+                            "short",
                     },
                 ),
         },
+
         {
-            id: "estudiante",
-            header: "Estudiante",
-            accessorFn: (row) => row.usuario.correo,
-            cell: ({ row }) => {
-                const venta = row.original;
+            id:
+                "estudiante",
+
+            header:
+                "Estudiante",
+
+            accessorFn: (
+                row,
+            ) =>
+                row.usuario.correo,
+
+            cell: ({
+                row,
+            }) => {
+                const venta =
+                    row.original;
 
                 const nombre = [
-                    venta.usuario.perfil?.nombre,
-                    venta.usuario.perfil?.apellidoPaterno,
-                    venta.usuario.perfil?.apellidoMaterno,
+                    venta.usuario
+                        .perfil
+                        ?.nombre,
+
+                    venta.usuario
+                        .perfil
+                        ?.apellidoPaterno,
+
+                    venta.usuario
+                        .perfil
+                        ?.apellidoMaterno,
                 ]
-                    .filter(Boolean)
-                    .join(" ");
+                    .filter(
+                        Boolean,
+                    )
+                    .join(
+                        " ",
+                    );
 
                 return (
                     <div className="min-w-[170px]">
                         <p className="font-medium">
-                            {nombre || venta.usuario.username}
+                            {nombre ||
+                                venta
+                                    .usuario
+                                    .username}
                         </p>
 
                         <p className="text-xs text-muted-foreground">
-                            {venta.usuario.correo}
+                            {
+                                venta
+                                    .usuario
+                                    .correo
+                            }
                         </p>
                     </div>
                 );
             },
         },
+
         {
-            id: "formacion",
-            header: "Formación",
-            accessorFn: (row) =>
+            id:
+                "formacion",
+
+            header:
+                "Formación",
+
+            accessorFn: (
+                row,
+            ) =>
                 `${row.modulo.curso.nombre} ${row.modulo.nombre}`,
-            cell: ({ row }) => (
+
+            cell: ({
+                row,
+            }) => (
                 <div className="min-w-[180px]">
                     <p className="font-medium">
-                        {row.original.modulo.curso.nombre}
+                        {
+                            row.original
+                                .modulo
+                                .curso
+                                .nombre
+                        }
                     </p>
 
                     <p className="text-xs text-muted-foreground">
-                        {row.original.modulo.nombre}
+                        {
+                            row.original
+                                .modulo
+                                .nombre
+                        }
                     </p>
                 </div>
             ),
         },
+
         {
-            accessorKey: "medioPago",
-            header: "Medio",
-            cell: ({ row }) => (
+            accessorKey:
+                "medioPago",
+
+            header:
+                "Medio",
+
+            cell: ({
+                row,
+            }) => (
                 <Badge variant="outline">
-                    {row.original.medioPago === "PAYPAL"
+                    {row.original
+                        .medioPago ===
+                        "PAYPAL"
                         ? "PayPal"
                         : "QR Bolivia"}
                 </Badge>
             ),
         },
+
         {
-            accessorKey: "precioBase",
-            header: "Precio base",
-            cell: ({ row }) => (
+            accessorKey:
+                "precioBase",
+
+            header:
+                "Precio base",
+
+            cell: ({
+                row,
+            }) => (
                 <span className="whitespace-nowrap">
-                    {dinero(row.original.precioBase)}{" "}
-                    {row.original.moneda}
+                    {dinero(
+                        row.original
+                            .precioBase,
+                    )}{" "}
+                    {
+                        row.original
+                            .moneda
+                    }
                 </span>
             ),
         },
-        {
-            accessorKey: "montoDescuento",
-            header: "Descuento",
-            cell: ({ row }) => {
-                const venta = row.original;
 
-                if (venta.montoDescuento <= 0) {
+        {
+            accessorKey:
+                "montoDescuento",
+
+            header:
+                "Descuento",
+
+            cell: ({
+                row,
+            }) => {
+                const venta =
+                    row.original;
+
+                if (
+                    venta.montoDescuento <=
+                    0
+                ) {
                     return (
                         <span className="text-muted-foreground">
                             Sin descuento
@@ -200,50 +365,96 @@ export function VentaColumns(): ColumnDef<VentaType>[] {
                 return (
                     <div className="min-w-[110px]">
                         <p className="whitespace-nowrap">
-                            -{dinero(venta.montoDescuento)}{" "}
-                            {venta.moneda}
+                            -
+                            {dinero(
+                                venta.montoDescuento,
+                            )}{" "}
+                            {
+                                venta.moneda
+                            }
                         </p>
 
                         {venta.descuentoNombre && (
                             <p className="text-xs text-muted-foreground">
-                                {venta.descuentoNombre}
+                                {
+                                    venta.descuentoNombre
+                                }
                             </p>
                         )}
                     </div>
                 );
             },
         },
+
         {
-            accessorKey: "montoCobrado",
-            header: "Cobrado",
-            cell: ({ row }) => (
+            accessorKey:
+                "montoCobrado",
+
+            header:
+                "Cobrado",
+
+            cell: ({
+                row,
+            }) => (
                 <span className="whitespace-nowrap font-medium">
-                    {dinero(row.original.montoCobrado)}{" "}
-                    {row.original.moneda}
+                    {dinero(
+                        row.original
+                            .montoCobrado,
+                    )}{" "}
+                    {
+                        row.original
+                            .moneda
+                    }
                 </span>
             ),
         },
+
         {
-            id: "comision",
-            header: "Comisión",
-            cell: ({ row }) => {
-                const venta = row.original;
+            id:
+                "comision",
+
+            header:
+                "Comisión",
+
+            cell: ({
+                row,
+            }) => {
+                const venta =
+                    row.original;
 
                 return (
                     <ComisionCell
                         key={`${venta.id}-${venta.comision}-${venta.comisionConfirmada}`}
-                        venta={venta}
+                        venta={
+                            venta
+                        }
+                        puedeEditar={
+                            puedeEditar
+                        }
                     />
                 );
             },
         },
+
         {
-            accessorKey: "totalRecibido",
-            header: "Neto recibido",
-            cell: ({ row }) => (
+            accessorKey:
+                "totalRecibido",
+
+            header:
+                "Neto recibido",
+
+            cell: ({
+                row,
+            }) => (
                 <span className="whitespace-nowrap font-semibold">
-                    {dinero(row.original.totalRecibido)}{" "}
-                    {row.original.moneda}
+                    {dinero(
+                        row.original
+                            .totalRecibido,
+                    )}{" "}
+                    {
+                        row.original
+                            .moneda
+                    }
                 </span>
             ),
         },
