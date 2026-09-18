@@ -355,10 +355,8 @@ export default function ModuloDetallePage() {
                                                 <BuyModuleButton
                                                     moduloId={modulo.id}
                                                     linkPago={modulo.urlPago}
-                                                    precio={
-                                                        modulo.precioFinal
-                                                    }
-                                                    currency="USD"
+                                                    qrPagoBolivia={modulo.urlPagoBolivia}
+                                                    precio={modulo.precioFinal}
                                                 />
                                             }
                                             footer="El acceso será habilitado una vez confirmado el pago."

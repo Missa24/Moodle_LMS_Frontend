@@ -21,6 +21,7 @@ export const LoginResponseSchema = z.object({
         rol: z.array(z.string()),
         permisos: z.array(z.string()),
         requiereCompletarPerfil: z.boolean(),
+        paisCodigo: z.string().nullable(),
         menus: z.array(
             z.object({
                 id: z.string(),

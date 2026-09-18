@@ -266,14 +266,6 @@ export default function LeadDetailPage() {
                                             <SelectItem value="PAGO_COMPLETADO">
                                                 Pago completado
                                             </SelectItem>
-
-                                            <SelectItem value="CONVERTIDO">
-                                                Convertido
-                                            </SelectItem>
-
-                                            <SelectItem value="DESCARTADO">
-                                                Descartado
-                                            </SelectItem>
                                         </SelectContent>
                                     </Select>
 

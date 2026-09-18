@@ -27,7 +27,7 @@ type ModulePriceCardProps = {
 const formatearCosto = (costo: number) =>
     new Intl.NumberFormat("es-BO", {
         style: "currency",
-        currency: "BOB",
+        currency: "Usd",
         minimumFractionDigits: 2,
     }).format(costo);
 

@@ -34,7 +34,7 @@ export default function MisCursosPage() {
         description="Explora nuestro catálogo de cursos y encuentra nuevas oportunidades de aprendizaje."
         icon={<GraduationCap />}
         ctaLabel="Ver Cursos"
-        ctaTo="/cursos"
+        ctaTo="/panel/cursos"
       />
 
       <PageHeader
