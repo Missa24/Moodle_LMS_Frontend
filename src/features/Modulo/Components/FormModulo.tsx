@@ -69,8 +69,7 @@ export function FormModulo({
                         initialData?.costo ?? undefined,
                     urlPago:
                         initialData?.urlPago ?? "",
-                    urlPagoBolivia:
-                        initialData?.urlPagoBolivia ?? "",
+                    qrPagoBolivia: undefined,
                     descuentoId:
                         initialData?.descuentoId ?? "",
                 }
@@ -84,7 +83,7 @@ export function FormModulo({
                     estaPublicado: true,
                     costo: undefined,
                     urlPago: "",
-                    urlPagoBolivia: "",
+                    qrPagoBolivia: undefined,
                     descuentoId: "",
                 },
     });
@@ -208,7 +207,7 @@ export function FormModulo({
                         type="number"
                         control={form.control}
                         name="costo"
-                        label="Precio base"
+                        label="Precio base en USD"
                         placeholder="0.00"
                         min={0}
                         allowEmpty
@@ -223,13 +222,16 @@ export function FormModulo({
                             placeholder="https://www.paypal.com/..."
                             hint="PayPal u otro medio para estudiantes internacionales"
                         />
-
-                        <FormField
+                        <ImageUpload
                             control={form.control}
-                            name="urlPagoBolivia"
-                            label="Pago Bolivia"
-                            placeholder="https://..."
-                            hint="Medio de pago para estudiantes de Bolivia"
+                            name="qrPagoBolivia"
+                            label="QR de pago Bolivia"
+                            existingImage={
+                                mode === "edit"
+                                    ? initialData?.urlPagoBolivia
+                                    : null
+                            }
+                            hint="JPG, PNG o WEBP · imagen del QR para pagos en Bolivia"
                         />
                     </div>
                 </div>
