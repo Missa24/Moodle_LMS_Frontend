@@ -23,6 +23,7 @@ import { useCategorias } from "../Categoria/service/category.service";
 import { CourseListCard } from "./course-list-card";
 import { CourseListCardSkeleton } from "./CourseListCardSkeleton";
 import { CoursePagination } from "./course-pagination";
+import { SEO } from "@/components/common/SEO";
 
 export default function CursosPageContent() {
     const [
@@ -85,11 +86,24 @@ export default function CursosPageContent() {
         limit: 10,
     });
 
-    const cursos =
-        cursosResponse?.data ?? [];
+    const cursos = cursosResponse?.data ?? [];
 
-    const meta =
-        cursosResponse?.meta;
+    const meta = cursosResponse?.meta;
+
+    const siteUrl = import.meta.env.VITE_SITE_URL || "https://moodle-lms-frontend-eight.vercel.app";
+
+    const cursosStructuredData = {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        name: "Cursos y certificaciones de Elite Academy",
+        itemListElement: cursos.map((curso, index) => ({
+            "@type": "ListItem",
+            position: index + 1,
+            url: `${siteUrl}/cursos/${curso.slug}`,
+            name: curso.nombre,
+        })),
+    };
+
 
     const categoriaSeleccionada =
         categorias.find(
@@ -233,368 +247,320 @@ export default function CursosPageContent() {
         hasCatalogFilters;
 
     return (
-        <main className="min-h-screen pb-20 pt-28 sm:pt-32 lg:pb-28 lg:pt-40">
-            {/* HERO */}
+        <>
+            <SEO
+                title="Cursos y certificaciones"
+                description="Explora los cursos, certificaciones y programas de formación profesional disponibles en Elite Academy."
+                url="/cursos"
+                structuredData={cursos.length > 0 ? cursosStructuredData : undefined}
+            />
 
-            <section className="px-5 sm:px-8 lg:px-[50px]">
-                <div className="mx-auto max-w-[1800px]">
-                    <div className="max-w-4xl">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
-                            {conDescuento
-                                ? "Promociones disponibles"
-                                : "Explora nuestra formación"}
-                        </p>
+            <main className="min-h-screen pb-20 pt-28 sm:pt-32 lg:pb-28 lg:pt-40">
 
-                        <h1 className="mt-3 text-3xl font-medium leading-[1.02] tracking-[-0.045em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
-                            {conDescuento
-                                ? "Cursos con módulos en promoción"
-                                : "Encuentra el curso que quieres aprender"}
-                        </h1>
+                <section className="px-5 sm:px-8 lg:px-[50px]">
+                    <div className="mx-auto max-w-[1800px]">
+                        <div className="max-w-4xl">
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
+                                {conDescuento
+                                    ? "Promociones disponibles"
+                                    : "Explora nuestra formación"}
+                            </p>
 
-                        <p className="mt-4 max-w-2xl text-sm leading-[1.6] text-muted-foreground sm:text-base">
-                            {conDescuento
-                                ? "Descubre formaciones que actualmente cuentan con módulos con descuentos activos."
-                                : "Busca por nombre o explora nuestras áreas de aprendizaje."}
-                        </p>
-                    </div>
+                            <h1 className="mt-3 text-3xl font-medium leading-[1.02] tracking-[-0.045em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+                                {conDescuento
+                                    ? "Cursos con módulos en promoción"
+                                    : "Encuentra el curso que quieres aprender"}
+                            </h1>
 
-                    {/* BUSCADOR */}
-
-                    <form
-                        onSubmit={
-                            handleSearch
-                        }
-                        className="mt-8 max-w-3xl"
-                    >
-                        <div className="group flex items-center rounded-2xl border border-border bg-background p-1.5 shadow-sm transition-all duration-200 hover:border-primary/30 focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10">
-                            <div className="flex size-10 shrink-0 items-center justify-center text-muted-foreground sm:size-11">
-                                <Search className="size-4 transition-colors group-focus-within:text-primary sm:size-5" />
-                            </div>
-
-                            <input
-                                value={
-                                    query
-                                }
-                                onChange={(
-                                    event,
-                                ) =>
-                                    setQuery(
-                                        event
-                                            .target
-                                            .value,
-                                    )
-                                }
-                                type="search"
-                                placeholder="Buscar cursos..."
-                                className="h-10 min-w-0 flex-1 bg-transparent px-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/70 sm:h-11 sm:text-base"
-                            />
-
-                            <button
-                                type="submit"
-                                className="h-10 shrink-0 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:h-11 sm:px-5"
-                            >
-                                Buscar
-                            </button>
+                            <p className="mt-4 max-w-2xl text-sm leading-[1.6] text-muted-foreground sm:text-base">
+                                {conDescuento
+                                    ? "Descubre formaciones que actualmente cuentan con módulos con descuentos activos."
+                                    : "Busca por nombre o explora nuestras áreas de aprendizaje."}
+                            </p>
                         </div>
-                    </form>
-                </div>
-            </section>
 
-            {/* FILTROS */}
+                        {/* BUSCADOR */}
 
-            <section className="mt-10 border-y border-border sm:mt-12">
-                <div className="px-5 sm:px-8 lg:px-[50px]">
-                    <div className="mx-auto max-w-[1800px] py-5 sm:py-6">
-                        {/* CABECERA */}
+                        <form
+                            onSubmit={
+                                handleSearch
+                            }
+                            className="mt-8 max-w-3xl"
+                        >
+                            <div className="group flex items-center rounded-2xl border border-border bg-background p-1.5 shadow-sm transition-all duration-200 hover:border-primary/30 focus-within:border-primary/50 focus-within:ring-4 focus-within:ring-primary/10">
+                                <div className="flex size-10 shrink-0 items-center justify-center text-muted-foreground sm:size-11">
+                                    <Search className="size-4 transition-colors group-focus-within:text-primary sm:size-5" />
+                                </div>
 
-                        <div className="flex flex-wrap items-end justify-between gap-4">
-                            <div>
-                                <p className="text-sm font-semibold text-foreground">
-                                    Filtrar cursos
-                                </p>
+                                <input
+                                    value={
+                                        query
+                                    }
+                                    onChange={(
+                                        event,
+                                    ) =>
+                                        setQuery(
+                                            event
+                                                .target
+                                                .value,
+                                        )
+                                    }
+                                    type="search"
+                                    placeholder="Buscar cursos..."
+                                    className="h-10 min-w-0 flex-1 bg-transparent px-2 text-sm text-foreground outline-none placeholder:text-muted-foreground/70 sm:h-11 sm:text-base"
+                                />
 
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                    Selecciona una categoría o revisa los cursos con descuento.
-                                </p>
+                                <button
+                                    type="submit"
+                                    className="h-10 shrink-0 rounded-xl bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:h-11 sm:px-5"
+                                >
+                                    Buscar
+                                </button>
                             </div>
+                        </form>
+                    </div>
+                </section>
+
+                {/* FILTROS */}
+
+                <section className="mt-10 border-y border-border sm:mt-12">
+                    <div className="px-5 sm:px-8 lg:px-[50px]">
+                        <div className="mx-auto max-w-[1800px] py-5 sm:py-6">
+                            {/* CABECERA */}
+
+                            <div className="flex flex-wrap items-end justify-between gap-4">
+                                <div>
+                                    <p className="text-sm font-semibold text-foreground">
+                                        Filtrar cursos
+                                    </p>
+
+                                    <p className="mt-1 text-xs text-muted-foreground">
+                                        Selecciona una categoría o revisa los cursos con descuento.
+                                    </p>
+                                </div>
+
+                                {hasCatalogFilters && (
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            clearCatalogFilters
+                                        }
+                                        className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                                    >
+                                        Restablecer filtros
+                                    </button>
+                                )}
+                            </div>
+
+                            {/* FILTROS PRINCIPALES */}
+
+                            <div className="mt-5 flex flex-col gap-5 xl:flex-row xl:items-end xl:gap-10">
+                                {/* CATEGORÍAS */}
+
+                                <div className="min-w-0 flex-1">
+                                    <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                                        Categoría
+                                    </p>
+
+                                    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleCategoria(
+                                                    null,
+                                                )
+                                            }
+                                            className={cn(
+                                                "shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
+
+                                                !categoriaId
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
+                                            )}
+                                        >
+                                            Todas
+                                        </button>
+
+                                        {isLoadingCategorias ? (
+                                            Array.from({
+                                                length: 5,
+                                            }).map(
+                                                (
+                                                    _,
+                                                    index,
+                                                ) => (
+                                                    <Skeleton
+                                                        key={
+                                                            index
+                                                        }
+                                                        className="h-9 w-24 shrink-0 rounded-full"
+                                                    />
+                                                ),
+                                            )
+                                        ) : (
+                                            categorias.map(
+                                                (
+                                                    categoria,
+                                                ) => (
+                                                    <button
+                                                        key={
+                                                            categoria.id
+                                                        }
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleCategoria(
+                                                                categoria.id,
+                                                            )
+                                                        }
+                                                        className={cn(
+                                                            "shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
+
+                                                            categoriaId ===
+                                                                categoria.id
+                                                                ? "bg-primary text-primary-foreground"
+                                                                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
+                                                        )}
+                                                    >
+                                                        {
+                                                            categoria.nombre
+                                                        }
+                                                    </button>
+                                                ),
+                                            )
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* OFERTAS */}
+
+                                <div className="shrink-0">
+                                    <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                                        Ofertas
+                                    </p>
+
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleDescuento(
+                                                    false,
+                                                )
+                                            }
+                                            className={cn(
+                                                "rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
+
+                                                !conDescuento
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
+                                            )}
+                                        >
+                                            Todos
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleDescuento(
+                                                    true,
+                                                )
+                                            }
+                                            className={cn(
+                                                "rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
+
+                                                conDescuento
+                                                    ? "bg-primary text-primary-foreground"
+                                                    : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
+                                            )}
+                                        >
+                                            Con descuento
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* FILTROS ACTIVOS */}
 
                             {hasCatalogFilters && (
-                                <button
-                                    type="button"
-                                    onClick={
-                                        clearCatalogFilters
-                                    }
-                                    className="text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
-                                >
-                                    Restablecer filtros
-                                </button>
-                            )}
-                        </div>
+                                <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4">
+                                    <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                        Activos
+                                    </span>
 
-                        {/* FILTROS PRINCIPALES */}
+                                    {categoriaId && (
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleCategoria(
+                                                    null,
+                                                )
+                                            }
+                                            className="flex items-center gap-1.5 text-xs font-medium text-foreground transition-colors hover:text-primary"
+                                        >
+                                            {categoriaSeleccionada?.nombre ??
+                                                "Categoría"}
 
-                        <div className="mt-5 flex flex-col gap-5 xl:flex-row xl:items-end xl:gap-10">
-                            {/* CATEGORÍAS */}
+                                            <X className="size-3" />
+                                        </button>
+                                    )}
 
-                            <div className="min-w-0 flex-1">
-                                <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                                    Categoría
-                                </p>
+                                    {conDescuento && (
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleDescuento(
+                                                    false,
+                                                )
+                                            }
+                                            className="flex items-center gap-1.5 text-xs font-medium text-foreground transition-colors hover:text-primary"
+                                        >
+                                            Con descuento
 
-                                <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleCategoria(
-                                                null,
-                                            )
-                                        }
-                                        className={cn(
-                                            "shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
-
-                                            !categoriaId
-                                                ? "bg-primary text-primary-foreground"
-                                                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
-                                        )}
-                                    >
-                                        Todas
-                                    </button>
-
-                                    {isLoadingCategorias ? (
-                                        Array.from({
-                                            length: 5,
-                                        }).map(
-                                            (
-                                                _,
-                                                index,
-                                            ) => (
-                                                <Skeleton
-                                                    key={
-                                                        index
-                                                    }
-                                                    className="h-9 w-24 shrink-0 rounded-full"
-                                                />
-                                            ),
-                                        )
-                                    ) : (
-                                        categorias.map(
-                                            (
-                                                categoria,
-                                            ) => (
-                                                <button
-                                                    key={
-                                                        categoria.id
-                                                    }
-                                                    type="button"
-                                                    onClick={() =>
-                                                        handleCategoria(
-                                                            categoria.id,
-                                                        )
-                                                    }
-                                                    className={cn(
-                                                        "shrink-0 rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
-
-                                                        categoriaId ===
-                                                            categoria.id
-                                                            ? "bg-primary text-primary-foreground"
-                                                            : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
-                                                    )}
-                                                >
-                                                    {
-                                                        categoria.nombre
-                                                    }
-                                                </button>
-                                            ),
-                                        )
+                                            <X className="size-3" />
+                                        </button>
                                     )}
                                 </div>
-                            </div>
-
-                            {/* OFERTAS */}
-
-                            <div className="shrink-0">
-                                <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                                    Ofertas
-                                </p>
-
-                                <div className="flex gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleDescuento(
-                                                false,
-                                            )
-                                        }
-                                        className={cn(
-                                            "rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
-
-                                            !conDescuento
-                                                ? "bg-primary text-primary-foreground"
-                                                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
-                                        )}
-                                    >
-                                        Todos
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleDescuento(
-                                                true,
-                                            )
-                                        }
-                                        className={cn(
-                                            "rounded-full px-4 py-2 text-xs font-medium transition-colors sm:text-sm",
-
-                                            conDescuento
-                                                ? "bg-primary text-primary-foreground"
-                                                : "bg-muted/60 text-muted-foreground hover:bg-muted hover:text-foreground",
-                                        )}
-                                    >
-                                        Con descuento
-                                    </button>
-                                </div>
-                            </div>
+                            )}
                         </div>
-
-                        {/* FILTROS ACTIVOS */}
-
-                        {hasCatalogFilters && (
-                            <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-border pt-4">
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                                    Activos
-                                </span>
-
-                                {categoriaId && (
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleCategoria(
-                                                null,
-                                            )
-                                        }
-                                        className="flex items-center gap-1.5 text-xs font-medium text-foreground transition-colors hover:text-primary"
-                                    >
-                                        {categoriaSeleccionada?.nombre ??
-                                            "Categoría"}
-
-                                        <X className="size-3" />
-                                    </button>
-                                )}
-
-                                {conDescuento && (
-                                    <button
-                                        type="button"
-                                        onClick={() =>
-                                            handleDescuento(
-                                                false,
-                                            )
-                                        }
-                                        className="flex items-center gap-1.5 text-xs font-medium text-foreground transition-colors hover:text-primary"
-                                    >
-                                        Con descuento
-
-                                        <X className="size-3" />
-                                    </button>
-                                )}
-                            </div>
-                        )}
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* RESULTADOS */}
+                {/* RESULTADOS */}
 
-            <section className="px-5 py-10 sm:px-8 sm:py-12 lg:px-[50px] lg:py-14">
-                <div className="mx-auto max-w-[1800px]">
-                    <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-                        <div>
-                            {search ? (
-                                <p className="text-sm text-muted-foreground">
-                                    Resultados para{" "}
-                                    <span className="font-semibold text-foreground">
-                                        "
+                <section className="px-5 py-10 sm:px-8 sm:py-12 lg:px-[50px] lg:py-14">
+                    <div className="mx-auto max-w-[1800px]">
+                        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+                            <div>
+                                {search ? (
+                                    <p className="text-sm text-muted-foreground">
+                                        Resultados para{" "}
+                                        <span className="font-semibold text-foreground">
+                                            "
+                                            {
+                                                search
+                                            }
+                                            "
+                                        </span>
+                                    </p>
+                                ) : (
+                                    <p className="text-sm font-medium text-foreground">
+                                        {conDescuento
+                                            ? "Cursos con promociones"
+                                            : "Cursos disponibles"}
+                                    </p>
+                                )}
+
+                                {meta && (
+                                    <p className="mt-1 text-xs text-muted-foreground">
                                         {
-                                            search
-                                        }
-                                        "
-                                    </span>
-                                </p>
-                            ) : (
-                                <p className="text-sm font-medium text-foreground">
-                                    {conDescuento
-                                        ? "Cursos con promociones"
-                                        : "Cursos disponibles"}
-                                </p>
-                            )}
-
-                            {meta && (
-                                <p className="mt-1 text-xs text-muted-foreground">
-                                    {
-                                        meta.total
-                                    }{" "}
-                                    {meta.total ===
-                                        1
-                                        ? "curso encontrado"
-                                        : "cursos encontrados"}
-                                </p>
-                            )}
-                        </div>
-
-                        {hasFilters && (
-                            <button
-                                type="button"
-                                onClick={
-                                    clearFilters
-                                }
-                                className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
-                            >
-                                <X className="size-4" />
-
-                                Limpiar todo
-                            </button>
-                        )}
-                    </div>
-
-                    {isLoading ? (
-                        <div className="space-y-4">
-                            {Array.from({
-                                length: 5,
-                            }).map(
-                                (
-                                    _,
-                                    index,
-                                ) => (
-                                    <CourseListCardSkeleton
-                                        key={
-                                            index
-                                        }
-                                    />
-                                ),
-                            )}
-                        </div>
-                    ) : isError ? (
-                        <div className="border-y border-border py-14 text-center">
-                            <p className="text-sm text-muted-foreground">
-                                No pudimos cargar los cursos.
-                            </p>
-                        </div>
-                    ) : cursos.length ===
-                        0 ? (
-                        <div className="border-y border-border py-16 text-center">
-                            <Search className="mx-auto size-7 text-muted-foreground/50" />
-
-                            <h2 className="mt-4 text-xl font-semibold text-foreground">
-                                {conDescuento
-                                    ? "No hay promociones disponibles"
-                                    : "No encontramos cursos"}
-                            </h2>
-
-                            <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                                {conDescuento
-                                    ? "Actualmente no encontramos cursos con módulos en promoción que coincidan con estos filtros."
-                                    : "Prueba con otra búsqueda o selecciona una categoría diferente."}
-                            </p>
+                                            meta.total
+                                        }{" "}
+                                        {meta.total ===
+                                            1
+                                            ? "curso encontrado"
+                                            : "cursos encontrados"}
+                                    </p>
+                                )}
+                            </div>
 
                             {hasFilters && (
                                 <button
@@ -602,55 +568,111 @@ export default function CursosPageContent() {
                                     onClick={
                                         clearFilters
                                     }
-                                    className="mt-5 text-sm font-medium text-primary transition-opacity hover:opacity-70"
+                                    className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground sm:text-sm"
                                 >
-                                    Ver todos los cursos
+                                    <X className="size-4" />
+
+                                    Limpiar todo
                                 </button>
                             )}
                         </div>
-                    ) : (
-                        <>
-                            <div
-                                className={cn(
-                                    "space-y-4 transition-opacity duration-200",
 
-                                    isFetching &&
-                                    "opacity-60",
-                                )}
-                            >
-                                {cursos.map(
+                        {isLoading ? (
+                            <div className="space-y-4">
+                                {Array.from({
+                                    length: 5,
+                                }).map(
                                     (
-                                        curso,
+                                        _,
+                                        index,
                                     ) => (
-                                        <CourseListCard
+                                        <CourseListCardSkeleton
                                             key={
-                                                curso.id
-                                            }
-                                            curso={
-                                                curso
+                                                index
                                             }
                                         />
                                     ),
                                 )}
                             </div>
+                        ) : isError ? (
+                            <div className="border-y border-border py-14 text-center">
+                                <p className="text-sm text-muted-foreground">
+                                    No pudimos cargar los cursos.
+                                </p>
+                            </div>
+                        ) : cursos.length ===
+                            0 ? (
+                            <div className="border-y border-border py-16 text-center">
+                                <Search className="mx-auto size-7 text-muted-foreground/50" />
 
-                            {meta && (
-                                <CoursePagination
-                                    page={
-                                        meta.page
-                                    }
-                                    totalPages={
-                                        meta.totalPages
-                                    }
-                                    onPageChange={
-                                        handlePageChange
-                                    }
-                                />
-                            )}
-                        </>
-                    )}
-                </div>
-            </section>
-        </main>
+                                <h2 className="mt-4 text-xl font-semibold text-foreground">
+                                    {conDescuento
+                                        ? "No hay promociones disponibles"
+                                        : "No encontramos cursos"}
+                                </h2>
+
+                                <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted-foreground">
+                                    {conDescuento
+                                        ? "Actualmente no encontramos cursos con módulos en promoción que coincidan con estos filtros."
+                                        : "Prueba con otra búsqueda o selecciona una categoría diferente."}
+                                </p>
+
+                                {hasFilters && (
+                                    <button
+                                        type="button"
+                                        onClick={
+                                            clearFilters
+                                        }
+                                        className="mt-5 text-sm font-medium text-primary transition-opacity hover:opacity-70"
+                                    >
+                                        Ver todos los cursos
+                                    </button>
+                                )}
+                            </div>
+                        ) : (
+                            <>
+                                <div
+                                    className={cn(
+                                        "space-y-4 transition-opacity duration-200",
+
+                                        isFetching &&
+                                        "opacity-60",
+                                    )}
+                                >
+                                    {cursos.map(
+                                        (
+                                            curso,
+                                        ) => (
+                                            <CourseListCard
+                                                key={
+                                                    curso.id
+                                                }
+                                                curso={
+                                                    curso
+                                                }
+                                            />
+                                        ),
+                                    )}
+                                </div>
+
+                                {meta && (
+                                    <CoursePagination
+                                        page={
+                                            meta.page
+                                        }
+                                        totalPages={
+                                            meta.totalPages
+                                        }
+                                        onPageChange={
+                                            handlePageChange
+                                        }
+                                    />
+                                )}
+                            </>
+                        )}
+                    </div>
+                </section>
+            </main>
+        </>
     );
 }

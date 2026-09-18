@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
+import { SEO } from "@/components/common/SEO";
 
 const sections = [
     {
@@ -165,66 +166,74 @@ const sections = [
 
 export default function PrivacyPolicyPage() {
     return (
-        <main className="min-h-screen bg-background">
-            <div className="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14 lg:py-20">
-                <Link
-                    to="/"
-                    className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-                >
-                    <ArrowLeft className="size-4" />
-                    Volver al inicio
-                </Link>
+        <>
+            <SEO
+                title="Política de Privacidad"
+                description="Consulta la Política de Privacidad de Elite Academy y conoce cómo recopilamos, utilizamos y protegemos la información de nuestros usuarios."
+                url="/politica-de-privacidad"
+            />
 
-                <header className="mt-10 border-b border-border pb-10">
-                    <p className="text-sm font-medium text-primary">
-                        Élite Academy
-                    </p>
+            <main className="min-h-screen bg-background">
+                <div className="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14 lg:py-20">
+                    <Link
+                        to="/"
+                        className="inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                        <ArrowLeft className="size-4" />
+                        Volver al inicio
+                    </Link>
 
-                    <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-4xl lg:text-5xl">
-                        Política de Privacidad
-                    </h1>
+                    <header className="mt-10 border-b border-border pb-10">
+                        <p className="text-sm font-medium text-primary">
+                            Élite Academy
+                        </p>
 
-                    <p className="mt-4 text-sm text-muted-foreground">
-                        Última actualización: 9 de septiembre de 2026
-                    </p>
+                        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-4xl lg:text-5xl">
+                            Política de Privacidad
+                        </h1>
 
-                    <p className="mt-6 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
-                        En Élite Academy valoramos la privacidad de nuestros
-                        estudiantes y usuarios. Esta política explica cómo
-                        recopilamos, utilizamos y protegemos la información
-                        proporcionada al utilizar nuestra plataforma educativa.
-                    </p>
-                </header>
+                        <p className="mt-4 text-sm text-muted-foreground">
+                            Última actualización: 9 de septiembre de 2026
+                        </p>
 
-                <div className="divide-y divide-border">
-                    {sections.map((section) => (
-                        <section
-                            key={section.title}
-                            className="py-8 sm:py-10"
-                        >
-                            <h2 className="text-lg font-semibold tracking-[-0.02em] text-foreground sm:text-xl">
-                                {section.title}
-                            </h2>
+                        <p className="mt-6 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
+                            En Élite Academy valoramos la privacidad de nuestros
+                            estudiantes y usuarios. Esta política explica cómo
+                            recopilamos, utilizamos y protegemos la información
+                            proporcionada al utilizar nuestra plataforma educativa.
+                        </p>
+                    </header>
 
-                            <div className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
-                                {section.content}
-                            </div>
-                        </section>
-                    ))}
-                </div>
+                    <div className="divide-y divide-border">
+                        {sections.map((section) => (
+                            <section
+                                key={section.title}
+                                className="py-8 sm:py-10"
+                            >
+                                <h2 className="text-lg font-semibold tracking-[-0.02em] text-foreground sm:text-xl">
+                                    {section.title}
+                                </h2>
 
-                <section className="border-t border-border pt-10">
-                    <h2 className="text-lg font-semibold text-foreground">
-                        Contacto
-                    </h2>
-
-                    <div className="mt-4 text-sm leading-7 text-muted-foreground">
-                        <p>Élite Academy</p>
-                        <p>La Paz, Bolivia</p>
-                        <p>Correo: TU_CORREO@DOMINIO.COM</p>
+                                <div className="mt-4 text-sm leading-7 text-muted-foreground sm:text-base">
+                                    {section.content}
+                                </div>
+                            </section>
+                        ))}
                     </div>
-                </section>
-            </div>
-        </main>
+
+                    <section className="border-t border-border pt-10">
+                        <h2 className="text-lg font-semibold text-foreground">
+                            Contacto
+                        </h2>
+
+                        <div className="mt-4 text-sm leading-7 text-muted-foreground">
+                            <p>Élite Academy</p>
+                            <p>La Paz, Bolivia</p>
+                            <p>Correo: TU_CORREO@DOMINIO.COM</p>
+                        </div>
+                    </section>
+                </div>
+            </main>
+        </>
     );
 }
