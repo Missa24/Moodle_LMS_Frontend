@@ -15,7 +15,7 @@ export const CourseListCard = ({
         curso.rutaPortada?.trim() ||
         "/cursos/curso-default.webp";
 
-    const rutaCurso = `/cursos/${curso.id}`;
+    const rutaCurso = `/cursos/${curso.slug}`;
 
     return (
         <Link

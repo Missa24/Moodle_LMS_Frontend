@@ -129,7 +129,7 @@ export const router =
                                 },
 
                                 {
-                                    path: ":cursoId",
+                                    path: ":slug",
 
                                     children: [
                                         {

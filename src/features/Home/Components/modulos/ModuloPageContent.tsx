@@ -1,16 +1,8 @@
 import { useState } from "react";
+import { ArrowLeft, BookOpen } from "lucide-react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
-import {
-    ArrowLeft,
-    BookOpen,
-} from "lucide-react";
-
-import {
-    Link,
-    useNavigate,
-    useParams,
-} from "react-router-dom";
-
+import { SEO } from "@/components/common/SEO";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import { useAuthDialogStore } from "@/store/authDialogStore";
@@ -24,76 +16,47 @@ import { ModulePlatformVideo } from "./detalles/module-platform-video";
 import { ModulePriceCard } from "./detalles/module-price-card";
 import { LessonPurchaseDialog } from "./detalles/lesson-purchase-dialog";
 
-const POST_LOGIN_REDIRECT_KEY =
-    "elite_post_login_redirect";
+const POST_LOGIN_REDIRECT_KEY = "elite_post_login_redirect";
 
 export default function ModuloPageContent() {
     const navigate = useNavigate();
 
-    const {
-        cursoId,
-        moduloId,
-    } = useParams<{
-        cursoId: string;
+    const { slug, moduloId } = useParams<{
+        slug: string;
         moduloId: string;
     }>();
 
-    const token = useAuthStore(
-        (state) => state.token
-    );
+    const token = useAuthStore((state) => state.token);
+    const openLoginDialog = useAuthDialogStore((state) => state.open);
 
-    const openLoginDialog =
-        useAuthDialogStore(
-            (state) => state.open
-        );
-
-    const [
-        purchaseOpen,
-        setPurchaseOpen,
-    ] = useState(false);
-
-    const [
-        selectedLesson,
-        setSelectedLesson,
-    ] = useState<string | null>(
-        null
-    );
+    const [purchaseOpen, setPurchaseOpen] = useState(false);
+    const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
 
     const {
         data: modulo,
         isLoading: isLoadingModulo,
         isError: isErrorModulo,
-    } = useModulo(
-        moduloId ?? ""
-    );
+    } = useModulo(moduloId ?? "");
 
     const {
         data: lecciones = [],
-        isLoading:
-        isLoadingLecciones,
-        isError:
-        isErrorLecciones,
-    } = useLecciones(
-        moduloId ?? "",
-        {
-            estaPublicada: true,
-        }
-    );
+        isLoading: isLoadingLecciones,
+        isError: isErrorLecciones,
+    } = useLecciones(moduloId ?? "", {
+        estaPublicada: true,
+    });
 
-    const handleLessonClick = (
-        nombre: string
-    ) => {
+    const handleLessonClick = (nombre: string) => {
         setSelectedLesson(nombre);
         setPurchaseOpen(true);
     };
 
     const handleAccessModule = () => {
-        if (!cursoId || !moduloId) {
+        if (!modulo || !moduloId) {
             return;
         }
 
-        const privatePath =
-            `/panel/cursos/${cursoId}/modulos/${moduloId}`;
+        const privatePath = `/panel/cursos/${modulo.curso.id}/modulos/${moduloId}`;
 
         if (token) {
             setPurchaseOpen(false);
@@ -101,14 +64,10 @@ export default function ModuloPageContent() {
             return;
         }
 
-        sessionStorage.setItem(
-            POST_LOGIN_REDIRECT_KEY,
-            privatePath
-        );
+        sessionStorage.setItem(POST_LOGIN_REDIRECT_KEY, privatePath);
 
         setPurchaseOpen(false);
         setSelectedLesson(null);
-
         openLoginDialog();
     };
 
@@ -122,9 +81,7 @@ export default function ModuloPageContent() {
                         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-14">
                             <div className="min-w-0">
                                 <Skeleton className="h-3 w-28" />
-
                                 <Skeleton className="mt-4 h-14 w-full max-w-4xl sm:h-16 md:h-20" />
-
                                 <Skeleton className="mt-4 h-5 w-64" />
 
                                 <div className="mt-6 space-y-3">
@@ -146,7 +103,6 @@ export default function ModuloPageContent() {
 
                             <aside className="space-y-4 lg:sticky lg:top-28 lg:self-start">
                                 <Skeleton className="aspect-video w-full rounded-2xl" />
-
                                 <Skeleton className="h-64 w-full rounded-2xl" />
                             </aside>
                         </div>
@@ -165,7 +121,7 @@ export default function ModuloPageContent() {
                     </h1>
 
                     <Link
-                        to={`/cursos/${cursoId ?? ""}`}
+                        to={`/cursos/${slug ?? ""}`}
                         className="mt-4 inline-block text-sm font-medium text-primary"
                     >
                         Volver al curso
@@ -177,11 +133,40 @@ export default function ModuloPageContent() {
 
     return (
         <>
+            <SEO
+                title={modulo.nombre}
+                description={
+                    modulo.descripcion ||
+                    `Conoce el módulo ${modulo.nombre} de ${modulo.curso.nombre} en Elite Academy.`
+                }
+                url={`/cursos/${slug ?? ""}/modulos/${moduloId}`}
+                structuredData={{
+                    "@context": "https://schema.org",
+                    "@type": "LearningResource",
+                    name: modulo.nombre,
+                    description:
+                        modulo.descripcion ||
+                        `Módulo ${modulo.nombre} perteneciente a ${modulo.curso.nombre}.`,
+                    educationalLevel: "Formación profesional",
+                    isPartOf: {
+                        "@type": "Course",
+                        name: modulo.curso.nombre,
+                    },
+                    provider: {
+                        "@type": "EducationalOrganization",
+                        name: "Elite Academy",
+                        url:
+                            import.meta.env.VITE_SITE_URL ||
+                            "https://moodle-lms-frontend-eight.vercel.app",
+                    },
+                }}
+            />
+
             <main className="min-h-screen pb-20 pt-24 sm:pt-28 lg:pb-28 lg:pt-32">
                 <section className="px-5 sm:px-8 lg:px-[50px]">
                     <div className="mx-auto max-w-[1600px]">
                         <Link
-                            to={`/cursos/${cursoId}`}
+                            to={`/cursos/${slug ?? ""}`}
                             className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                         >
                             <ArrowLeft className="size-4" />
@@ -193,12 +178,7 @@ export default function ModuloPageContent() {
                                 <div>
                                     {modulo.curso.categoria && (
                                         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
-                                            {
-                                                modulo
-                                                    .curso
-                                                    .categoria
-                                                    .nombre
-                                            }
+                                            {modulo.curso.categoria.nombre}
                                         </p>
                                     )}
 
@@ -219,14 +199,8 @@ export default function ModuloPageContent() {
                                     <div className="mt-6 flex flex-wrap gap-2">
                                         <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3 py-2 text-xs text-muted-foreground sm:text-sm">
                                             <BookOpen className="size-4 text-primary" />
-
-                                            {
-                                                modulo
-                                                    ._count
-                                                    .lecciones
-                                            }{" "}
-                                            {modulo._count.lecciones ===
-                                                1
+                                            {modulo._count.lecciones}{" "}
+                                            {modulo._count.lecciones === 1
                                                 ? "lección"
                                                 : "lecciones"}
                                         </div>
@@ -235,15 +209,9 @@ export default function ModuloPageContent() {
 
                                 <ModuleLessonsList
                                     lecciones={lecciones}
-                                    isLoading={
-                                        isLoadingLecciones
-                                    }
-                                    isError={
-                                        isErrorLecciones
-                                    }
-                                    onLessonClick={
-                                        handleLessonClick
-                                    }
+                                    isLoading={isLoadingLecciones}
+                                    isError={isErrorLecciones}
+                                    onLessonClick={handleLessonClick}
                                 />
                             </div>
 
@@ -251,18 +219,12 @@ export default function ModuloPageContent() {
                                 <ModulePlatformVideo />
 
                                 <ModulePriceCard
-                                    cantidadLecciones={
-                                        modulo
-                                            ._count
-                                            .lecciones
-                                    }
-                                    costo={
-                                        modulo
-                                            .costo
-                                    }
-                                    onBuy={
-                                        handleAccessModule
-                                    }
+                                    cantidadLecciones={modulo._count.lecciones}
+                                    costo={modulo.costo}
+                                    precioFinal={modulo.precioFinal}
+                                    montoDescuento={modulo.montoDescuento}
+                                    descuento={modulo.descuento}
+                                    onBuy={handleAccessModule}
                                 />
                             </aside>
                         </div>
@@ -272,18 +234,10 @@ export default function ModuloPageContent() {
 
             <LessonPurchaseDialog
                 open={purchaseOpen}
-                onOpenChange={
-                    setPurchaseOpen
-                }
-                leccionNombre={
-                    selectedLesson
-                }
-                moduloNombre={
-                    modulo.nombre
-                }
-                onBuy={
-                    handleAccessModule
-                }
+                onOpenChange={setPurchaseOpen}
+                leccionNombre={selectedLesson}
+                moduloNombre={modulo.nombre}
+                onBuy={handleAccessModule}
             />
         </>
     );

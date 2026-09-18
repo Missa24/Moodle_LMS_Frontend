@@ -2,6 +2,16 @@ import { apiService } from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 
+export const descuentoModuloSchema = z.object({
+    id: z.string(),
+    nombre: z.string(),
+    descripcion: z.string().nullable(),
+    tipo: z.string(),
+    valor: z.number(),
+    iniciaEn: z.string(),
+    finalizaEn: z.string(),
+});
+
 export const moduloSchema = z.object({
     id: z.string(),
     cursoId: z.string(),
@@ -33,6 +43,12 @@ export const moduloDetalleSchema = moduloSchema.extend({
         lecciones: z.number(),
         inscripciones: z.number(),
     }),
+    descuento: descuentoModuloSchema.nullable().optional(),
+    montoDescuento: z.number().nullable().optional(),
+    precioFinal: z.number().nullable().optional(),
+    descuentoId: z.string().nullable().optional(),
+    urlPago: z.string().nullable().optional(),
+    urlPagoBolivia: z.string().nullable().optional(),
 });
 
 export const modulosMetaSchema = z.object({
@@ -48,13 +64,8 @@ export const modulosResponseSchema = z.object({
 });
 
 export type Modulo = z.infer<typeof moduloSchema>;
-export type ModuloDetalle = z.infer<
-    typeof moduloDetalleSchema
->;
-export type ModulosResponse = z.infer<
-    typeof modulosResponseSchema
->;
-
+export type ModuloDetalle = z.infer<typeof moduloDetalleSchema>;
+export type ModulosResponse = z.infer<typeof modulosResponseSchema>;
 
 export type GetModulosParams = {
     page?: number;
@@ -63,40 +74,34 @@ export type GetModulosParams = {
     estaPublicado?: boolean;
 };
 
-export async function getModulosByCurso(cursoId: string, params?: GetModulosParams): Promise<ModulosResponse> {
-    const response = await apiService.get(`/modulos/curso/${cursoId}`, { params, });
-
+export async function getModulosByCurso(
+    cursoId: string,
+    params?: GetModulosParams,
+): Promise<ModulosResponse> {
+    const response = await apiService.get(`/modulos/curso/${cursoId}`, { params });
     return modulosResponseSchema.parse(response.data);
 }
 
 export async function getModuloById(moduloId: string): Promise<ModuloDetalle> {
     const response = await apiService.get(`/modulos/${moduloId}`);
-
     return moduloDetalleSchema.parse(response.data);
 }
 
-
 export const useModulos = (
     cursoId: string,
-    params?: GetModulosParams
+    params?: GetModulosParams,
 ) => {
     return useQuery({
         queryKey: ["modulos", cursoId, params],
-
         queryFn: () => getModulosByCurso(cursoId, params),
-
         enabled: Boolean(cursoId),
     });
 };
 
 export const useModulo = (moduloId: string) => {
     return useQuery({
-        queryKey: [
-            "modulo",
-            moduloId,
-        ],
-        queryFn: () =>
-            getModuloById(moduloId),
+        queryKey: ["modulo", moduloId],
+        queryFn: () => getModuloById(moduloId),
         enabled: Boolean(moduloId),
     });
 };
