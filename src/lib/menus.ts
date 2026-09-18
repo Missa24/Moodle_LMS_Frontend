@@ -8,7 +8,6 @@ import {
     faGraduationCap,
     faClipboardList,
     faAward,
-    faHeadset,
     faUserPlus,
     faTags,
     faDollar,
@@ -55,11 +54,6 @@ export const menuItems: MenuItem[] = [
         title: "Mis certificados",
         icon: faAward,
         url: "/panel/certificados",
-    },
-    {
-        title: "Soporte",
-        icon: faHeadset,
-        url: "/panel/soporte",
     },
     {
         title: "Leads",
