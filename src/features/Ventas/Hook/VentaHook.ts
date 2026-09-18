@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import {
     GetVentaById,
     GetVentas,
+    GetVentasEstadisticas,
+    GetVentasResumen,
     MarcarComisionPendiente,
     UpdateVentaComision,
     type GetVentasParams,
@@ -16,6 +18,8 @@ import {
 
 import type {
     UpdateComisionType,
+    VentaResumenParams,
+    VentasEstadisticasParams,
 } from "../Schema/VentaSchema";
 
 export function useGetVentas(
@@ -85,5 +89,34 @@ export function useMarcarComisionPendiente() {
         onError: () => {
             toast.error("No se pudo actualizar la venta");
         },
+    });
+}
+
+export function useGetVentasResumen(
+    params: VentaResumenParams = {},
+) {
+    return useQuery({
+        queryKey: [
+            "ventas",
+            "resumen",
+            params.desde ?? null,
+            params.hasta ?? null,
+        ],
+        queryFn: () =>
+            GetVentasResumen(params),
+    });
+}
+
+export function useGetVentasEstadisticas(params: VentasEstadisticasParams = {},) {
+    return useQuery({
+        queryKey: [
+            "ventas", "estadisticas",
+            params.desde ?? null,
+            params.hasta ?? null,
+            params.agrupacion ?? "MES",
+        ],
+
+        queryFn: () =>
+            GetVentasEstadisticas(params,),
     });
 }

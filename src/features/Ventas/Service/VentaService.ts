@@ -2,7 +2,13 @@ import { apiService } from "@/api/api";
 
 import {
     UpdateComisionType,
+    VentaResumenParams,
+    VentaResumenSchema,
+    VentaResumenType,
     VentaSchema,
+    VentasEstadisticasParams,
+    VentasEstadisticasSchema,
+    VentasEstadisticasType,
     VentasResponseSchema,
     VentasResponseType,
     VentaType,
@@ -58,4 +64,38 @@ export async function MarcarComisionPendiente(
     );
 
     return VentaSchema.parse(response.data);
+}
+
+export async function GetVentasResumen(
+    params: VentaResumenParams = {},
+): Promise<VentaResumenType> {
+    const response = await apiService.get("/ventas/resumen", {
+        params: {
+            desde: params.desde || undefined,
+            hasta: params.hasta || undefined,
+        },
+    });
+
+    const raw: unknown = response.data;
+
+    return VentaResumenSchema.parse(raw);
+}
+
+export async function GetVentasEstadisticas(
+    params: VentasEstadisticasParams = {},
+): Promise<VentasEstadisticasType> {
+    const response =
+        await apiService.get("/ventas/estadisticas", {
+            params: {
+                desde: params.desde || undefined,
+
+                hasta: params.hasta || undefined,
+
+                agrupacion: params.agrupacion ?? "MES",
+            },
+        },
+        );
+
+    const raw: unknown = response.data;
+    return VentasEstadisticasSchema.parse(raw,);
 }

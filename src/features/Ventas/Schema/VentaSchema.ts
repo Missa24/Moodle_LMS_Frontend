@@ -100,3 +100,99 @@ export const UpdateComisionSchema = z.object({
 export type UpdateComisionType = z.infer<
     typeof UpdateComisionSchema
 >;
+
+export const VentaResumenMedioSchema = z.object({
+    ventas: z.number().int().nonnegative(),
+    cobrado: z.number(),
+    comisiones: z.number(),
+    neto: z.number(),
+});
+
+export const VentaResumenSchema = z.object({
+    totalVentas: z.number().int().nonnegative(),
+    totalCobrado: z.number(),
+    totalComisiones: z.number(),
+    gananciaNeta: z.number(),
+
+    paypal: VentaResumenMedioSchema,
+
+    bolivia: VentaResumenMedioSchema,
+});
+
+export type VentaResumenMedioType = z.infer<
+    typeof VentaResumenMedioSchema
+>;
+
+export type VentaResumenType = z.infer<
+    typeof VentaResumenSchema
+>;
+
+export interface VentaResumenParams {
+    desde?: string;
+    hasta?: string;
+}
+
+export const AgrupacionVentasSchema =
+    z.enum([
+        "DIA",
+        "MES",
+        "ANIO",
+    ]);
+
+export type AgrupacionVentasType =
+    z.infer<
+        typeof AgrupacionVentasSchema
+    >;
+
+export const VentaEstadisticaItemSchema =
+    z.object({
+        periodo:
+            z.string(),
+
+        ventas:
+            z
+                .number()
+                .int()
+                .nonnegative(),
+
+        cobrado:
+            z.number(),
+
+        comisiones:
+            z.number(),
+
+        neto:
+            z.number(),
+
+        paypal:
+            z.number(),
+
+        bolivia:
+            z.number(),
+    });
+
+export const VentasEstadisticasSchema =
+    z.object({
+        agrupacion:
+            AgrupacionVentasSchema,
+
+        data: z.array(
+            VentaEstadisticaItemSchema,
+        ),
+    });
+
+export type VentaEstadisticaItemType =
+    z.infer<
+        typeof VentaEstadisticaItemSchema
+    >;
+
+export type VentasEstadisticasType =
+    z.infer<
+        typeof VentasEstadisticasSchema
+    >;
+
+export interface VentasEstadisticasParams {
+    desde?: string;
+    hasta?: string;
+    agrupacion?: AgrupacionVentasType;
+}
