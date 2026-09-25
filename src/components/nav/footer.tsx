@@ -64,7 +64,7 @@ export function Footer() {
     const legal = [
         {
             name: "Política de privacidad",
-            href: "/privacy",
+            href: "/politica-de-privacidad",
         },
     ];
 
