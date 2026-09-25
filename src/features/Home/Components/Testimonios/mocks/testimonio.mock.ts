@@ -7,13 +7,13 @@ export const TESTIMONIOS: Testimonio[] = [
         pais: "BO",
         profesion: "Estudiante de Cosmetología",
         testimonio:
-            "La plataforma me permitió organizar mejor mis clases y continuar aprendiendo incluso cuando no podía asistir presencialmente.",
+            "Ha sido una experiencia muy agradable. He aprendido bastante y los docentes son muy pacientes y explican los temas de forma clara.",
         aprendio: "Cosmetología y Cosmiatría",
         resultado: "Fortaleció su formación profesional",
         media: {
             tipo: "video",
-            src: "/testimonios/maria.mp4",
-            poster: "/testimonios/maria-poster.webp",
+            src: "/testimonios/primero.webm",
+            poster: "/testimonios/primero.webp",
         },
     },
     {
@@ -22,52 +22,33 @@ export const TESTIMONIOS: Testimonio[] = [
         pais: "BO",
         profesion: "Esteticista",
         testimonio:
-            "Encontrar los módulos, continuar mis cursos y revisar mis avances es muy sencillo. Todo está organizado en un solo lugar.",
+            "Elegir esta academia ha sido una excelente experiencia. Además de aprender, he podido compartir con otros compañeros, vivir nuevas experiencias y crecer tanto a nivel académico como personal.",
         aprendio: "Estética Facial",
         resultado: "Mejoró sus conocimientos profesionales",
-        media: {
-            tipo: "imagen",
-            src: "/testimonios/andrea.webp",
-            alt: "Andrea, estudiante de Elite Academy",
-        },
     },
     {
         id: "3",
-        nombre: "Carla Mendoza",
-        pais: "BO",
-        profesion: "Profesional independiente",
-        testimonio:
-            "Poder acceder a mis certificados directamente desde la plataforma hace que todo el proceso académico sea mucho más cómodo.",
-        resultado: "Completó satisfactoriamente su formación",
-    },
-    {
-        id: "4",
         nombre: "Valeria Rojas",
         pais: "BO",
         profesion: "Cosmetóloga",
         testimonio:
-            "Me gustó poder avanzar paso a paso y tener mis contenidos disponibles cuando los necesitaba.",
+            "Estoy muy agradecido por haber formado parte de la Academia Élite. Destaco mucho el profesionalismo de los docentes, quienes nos enseñan con paciencia y dedicación, compartiendo sus conocimientos y brindándonos el apoyo necesario para alcanzar nuestros sueños.",
         aprendio: "Dermatocosmiatría",
         resultado: "Amplió sus conocimientos en estética",
         media: {
-            tipo: "imagen",
-            src: "/testimonios/valeria.webp",
-            alt: "Valeria, alumna de Elite Academy",
+            tipo: "video",
+            src: "/testimonios/tercero.webm",
+            poster: "/testimonios/tercero.webp",
         },
     },
     {
-        id: "5",
+        id: "4",
         nombre: "Daniela Flores",
         pais: "BO",
         profesion: "Maquilladora profesional",
         testimonio:
-            "La experiencia es clara y práctica. Puedo revisar mis cursos y continuar aprendiendo desde mi celular.",
+            "Ha sido una experiencia muy bonita. Hemos aprendido mucho y disfrutado cada etapa del aprendizaje. Sin duda, invitamos a otras personas a animarse y formar parte de la Academia Élite.",
         aprendio: "Maquillaje Profesional",
         resultado: "Impulsó su desarrollo profesional",
-        media: {
-            tipo: "video",
-            src: "/testimonios/daniela.mp4",
-            poster: "/testimonios/daniela-poster.webp",
-        },
     },
 ];

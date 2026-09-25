@@ -6,31 +6,31 @@ import { Image } from "@/components/ui/image";
 
 const COMMUNITY_IMAGES = [
     {
-        src: "/community/comunidad-1.webp",
+        src: "/comunidad/1.webp",
         alt: "Estudiantes de Élite Academy",
     },
     {
-        src: "/community/comunidad-2.webp",
+        src: "/comunidad/2.webp",
         alt: "Clase en Élite Academy",
     },
     {
-        src: "/community/comunidad-3.webp",
+        src: "/comunidad/3.webp",
         alt: "Formación profesional",
     },
     {
-        src: "/community/comunidad-4.webp",
+        src: "/comunidad/4.webp",
         alt: "Experiencias educativas",
     },
     {
-        src: "/community/comunidad-5.webp",
+        src: "/comunidad/5.webp",
         alt: "Comunidad Élite",
     },
     {
-        src: "/community/comunidad-6.webp",
+        src: "/comunidad/6.webp",
         alt: "Estudiantes aprendiendo",
     },
     {
-        src: "/community/comunidad-7.webp",
+        src: "/comunidad/7.webp",
         alt: "Actividades académicas",
     },
 ];
