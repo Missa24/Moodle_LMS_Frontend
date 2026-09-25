@@ -87,11 +87,12 @@ export const TestimonialShowcase = () => {
                                         }
                                     >
                                         <TestimonialCard
-                                            testimonio={
-                                                testimonio
-                                            }
-                                            destacado={
-                                                destacado
+                                            testimonio={testimonio}
+                                            destacado={destacado}
+                                            mediaSide={
+                                                index % 2 === 0
+                                                    ? "right"
+                                                    : "left"
                                             }
                                         />
                                     </div>
