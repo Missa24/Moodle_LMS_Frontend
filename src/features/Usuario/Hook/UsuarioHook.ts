@@ -101,24 +101,36 @@ export function useGetMiPerfil() {
 }
 
 export function useUpdateMiPerfil() {
-    const queryClient = useQueryClient();
+    const queryClient =
+        useQueryClient();
 
-    const setRequiereCompletarPerfil =
+    const actualizarEstadoPerfil =
         useAuthStore(
             (state) =>
-                state.setRequiereCompletarPerfil,
+                state.actualizarEstadoPerfil,
         );
 
     return useMutation({
-        mutationFn: UpdateMiPerfil,
+        mutationFn:
+            UpdateMiPerfil,
 
         onSuccess: async (response) => {
             const requiereCompletarPerfil =
-                !response.perfil?.nombre?.trim() ||
-                !response.perfil?.paisCodigo?.trim();
+                !response.perfil
+                    ?.nombre
+                    ?.trim() ||
+                !response.perfil
+                    ?.telefono
+                    ?.trim() ||
+                !response.perfil
+                    ?.paisCodigo
+                    ?.trim();
 
-            setRequiereCompletarPerfil(
+            actualizarEstadoPerfil(
                 requiereCompletarPerfil,
+                response.perfil
+                    ?.paisCodigo ??
+                null,
             );
 
             await queryClient.invalidateQueries({

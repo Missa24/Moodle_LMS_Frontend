@@ -9,6 +9,14 @@ import {
     CursoUpdateType,
     CursosResponseType,
     MisCursoInscritoType,
+    ConfiguracionVentaCursoSchema,
+    ConfigurarVentaCursoResponseSchema,
+    CursoPrecioSchema,
+
+    type ConfiguracionVentaCursoType,
+    type ConfigurarVentaCursoResponseType,
+    type ConfigurarVentaCursoType,
+    type CursoPrecioType,
 } from "../Schema/CursoSchema";
 import { buildFormData } from "@/utils/buildFormData";
 
@@ -104,4 +112,103 @@ export async function GetMisInscripcionesEnCursos(estudianteId: string): Promise
 export async function CreateCategoria(data: CategoriaCreateType): Promise<CategoriaType> {
     const response = await apiService.post("/categoria", data);
     return response.data;
+}
+
+export async function GetCursoPrecio(
+    cursoId: string,
+): Promise<CursoPrecioType> {
+    const response =
+        await apiService.get(
+            `/curso/${cursoId}/precio`,
+        );
+
+    return CursoPrecioSchema.parse(
+        response.data,
+    );
+}
+
+export async function GetConfiguracionVentaCurso(
+    cursoId: string,
+): Promise<ConfiguracionVentaCursoType | null> {
+    const response =
+        await apiService.get(
+            `/curso/${cursoId}/configuracion-venta`,
+        );
+
+    if (
+        response.data ===
+        null
+    ) {
+        return null;
+    }
+
+    return ConfiguracionVentaCursoSchema.parse(
+        response.data,
+    );
+}
+
+export async function ConfigurarVentaCurso(
+    cursoId: string,
+    data: ConfigurarVentaCursoType,
+): Promise<ConfigurarVentaCursoResponseType> {
+    const formData =
+        new FormData();
+
+    formData.append(
+        "tipoDescuento",
+        data.tipoDescuento,
+    );
+
+    if (
+        data.porcentaje !==
+        undefined
+    ) {
+        formData.append(
+            "porcentaje",
+            String(
+                data.porcentaje,
+            ),
+        );
+    }
+
+    if (
+        data.moduloDescuentoId
+    ) {
+        formData.append(
+            "moduloDescuentoId",
+            data.moduloDescuentoId,
+        );
+    }
+
+    formData.append(
+        "urlPago",
+        data.urlPago ?? "",
+    );
+
+    formData.append(
+        "habilitado",
+        String(
+            data.habilitado ??
+            true,
+        ),
+    );
+
+    if (
+        data.qrPagoBolivia
+    ) {
+        formData.append(
+            "qrPagoBolivia",
+            data.qrPagoBolivia,
+        );
+    }
+
+    const response =
+        await apiService.patch(
+            `/curso/${cursoId}/configuracion-venta`,
+            formData,
+        );
+
+    return ConfigurarVentaCursoResponseSchema.parse(
+        response.data,
+    );
 }

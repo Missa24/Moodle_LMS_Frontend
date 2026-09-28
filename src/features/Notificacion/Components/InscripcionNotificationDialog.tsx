@@ -21,38 +21,61 @@ import {
 
 export function InscripcionNotificationDialog() {
     const navigate = useNavigate();
-    const { data: notificaciones = [] } =
-        useGetNotificacionesPendientes();
 
-    const marcarComoLeida = useMarcarComoLeida();
+    const {
+        data: notificaciones = [],
+    } = useGetNotificacionesPendientes();
 
-    const notificacion = notificaciones.find(
-        (item) => item.tipo === "INSCRIPCION",
-    );
+    const marcarComoLeida =
+        useMarcarComoLeida();
 
-    if (!notificacion) return null;
+    const notificacion =
+        notificaciones.find(
+            (item) =>
+                item.tipo === "INSCRIPCION",
+        );
+
+    if (!notificacion) {
+        return null;
+    }
 
     const verCurso = () => {
-        marcarComoLeida.mutate(notificacion.id, {
-            onSuccess: () => {
-                navigate(
-                    notificacion.urlAccion ||
-                    "/panel/mis-cursos",
-                );
+        marcarComoLeida.mutate(
+            notificacion.id,
+            {
+                onSuccess: () => {
+                    navigate(
+                        notificacion.urlAccion ||
+                        "/panel/mis-cursos",
+                    );
+                },
             },
-        });
+        );
+    };
+
+    const cerrar = () => {
+        marcarComoLeida.mutate(
+            notificacion.id,
+        );
     };
 
     return (
-        <Dialog open>
+        <Dialog
+            open={true}
+            onOpenChange={(open) => {
+                if (!open) {
+                    cerrar();
+                }
+            }}
+        >
             <DialogContent
-                className="w-[calc(100%-2rem)] max-w-md rounded-2xl"
-                onInteractOutside={(event) =>
-                    event.preventDefault()
-                }
-                onEscapeKeyDown={(event) =>
-                    event.preventDefault()
-                }
+                className="
+                    w-[calc(100%-2rem)]
+                    max-w-md
+                    max-h-[90vh]
+                    overflow-y-auto
+                    rounded-2xl
+                "
             >
                 <DialogHeader>
                     <div className="mb-3 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -70,7 +93,10 @@ export function InscripcionNotificationDialog() {
 
                 <div className="rounded-xl bg-muted/50 p-4">
                     <p className="text-sm text-muted-foreground">
-                        Tu acceso ya está habilitado. Puedes comenzar tu formación desde Mis cursos.
+                        Tu acceso ya está
+                        habilitado. Puedes comenzar
+                        tu formación desde Mis
+                        cursos.
                     </p>
                 </div>
 
@@ -79,7 +105,9 @@ export function InscripcionNotificationDialog() {
                         type="button"
                         className="w-full sm:w-auto"
                         onClick={verCurso}
-                        disabled={marcarComoLeida.isPending}
+                        disabled={
+                            marcarComoLeida.isPending
+                        }
                     >
                         {marcarComoLeida.isPending
                             ? "Abriendo..."

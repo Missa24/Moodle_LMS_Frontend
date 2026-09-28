@@ -1,3 +1,5 @@
+"use client";
+
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -12,8 +14,6 @@ import {
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { useAuthStore } from "@/store/authStore";
-
 import {
     Dialog,
     DialogContent,
@@ -24,10 +24,14 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useCreateLead } from "../Hook/LeadHook";
+import { useAuthStore } from "@/store/authStore";
+import {
+    useCreateLead,
+    useEstadoCompraCurso,
+} from "../Hook/LeadHook";
 
-interface BuyModuleButtonProps {
-    moduloId: string;
+interface BuyCourseButtonProps {
+    cursoId: string;
     linkPago?: string | null;
     qrPagoBolivia?: string | null;
     precio?: number | null;
@@ -36,14 +40,20 @@ interface BuyModuleButtonProps {
 
 type PaymentStep = "confirm" | "qr" | "paypal";
 
-export default function BuyModuleButton({
-    moduloId,
+export default function BuyCourseButton({
+    cursoId,
     linkPago,
     qrPagoBolivia,
     precio,
     currency = "USD",
-}: BuyModuleButtonProps) {
+}: BuyCourseButtonProps) {
     const crearLead = useCreateLead();
+
+    const {
+        data: estadoCompra,
+        isLoading: cargandoEstadoCompra,
+    } = useEstadoCompraCurso(cursoId, !!cursoId);
+
     const usuario = useAuthStore((state) => state.usuario);
 
     const [open, setOpen] = useState(false);
@@ -55,19 +65,15 @@ export default function BuyModuleButton({
     const verifyTimerRef = useRef<number | null>(null);
 
     const paisCodigo = usuario?.paisCodigo ?? null;
-
     const requiereCompletarPerfil =
         usuario?.requiereCompletarPerfil ?? false;
 
     const esBolivia = paisCodigo === "BO";
-
     const metodoDisponible = esBolivia
         ? Boolean(qrPagoBolivia)
         : Boolean(linkPago);
 
-    const perfilIncompleto =
-        requiereCompletarPerfil || !paisCodigo;
-
+    const perfilIncompleto = requiereCompletarPerfil || !paisCodigo;
     const compraDeshabilitada =
         perfilIncompleto || !metodoDisponible;
 
@@ -77,15 +83,14 @@ export default function BuyModuleButton({
             : "Precio no disponible";
 
     const clearVerificationTimer = () => {
-        if (verifyTimerRef.current !== null) {
-            window.clearTimeout(verifyTimerRef.current);
-            verifyTimerRef.current = null;
-        }
+        if (verifyTimerRef.current === null) return;
+
+        window.clearTimeout(verifyTimerRef.current);
+        verifyTimerRef.current = null;
     };
 
     const startVerificationTimer = () => {
         clearVerificationTimer();
-
         setCanVerify(false);
 
         verifyTimerRef.current = window.setTimeout(() => {
@@ -96,7 +101,6 @@ export default function BuyModuleButton({
 
     const resetPaymentDialog = () => {
         clearVerificationTimer();
-
         setStep("confirm");
         setCanVerify(false);
         setPaymentError(null);
@@ -105,9 +109,7 @@ export default function BuyModuleButton({
     const handleOpenChange = (value: boolean) => {
         setOpen(value);
 
-        if (!value) {
-            resetPaymentDialog();
-        }
+        if (!value) resetPaymentDialog();
     };
 
     const handleStartPayment = () => {
@@ -150,7 +152,6 @@ export default function BuyModuleButton({
         }
 
         paymentWindow.opener = null;
-
         setStep("paypal");
         startVerificationTimer();
     };
@@ -158,15 +159,16 @@ export default function BuyModuleButton({
     const handleVerifyPayment = () => {
         if (!canVerify || crearLead.isPending) return;
 
+        setPaymentError(null);
+
         crearLead.mutate(
             {
-                tipoCompra: "MODULO",
-                moduloId,
+                tipoCompra: "CURSO",
+                cursoId,
             },
             {
                 onSuccess: () => {
                     clearVerificationTimer();
-
                     setOpen(false);
                     setStep("confirm");
                     setCanVerify(false);
@@ -176,9 +178,20 @@ export default function BuyModuleButton({
                         setSuccessOpen(true);
                     }, 150);
                 },
+                onError: () => {
+                    setPaymentError(
+                        "No se pudo registrar la solicitud. Verifica si ya tienes acceso a este curso.",
+                    );
+                },
             },
         );
     };
+
+    if (cargandoEstadoCompra) return null;
+
+    if (estadoCompra && !estadoCompra.puedeComprarCurso) {
+        return null;
+    }
 
     return (
         <>
@@ -191,7 +204,7 @@ export default function BuyModuleButton({
                             className="w-full gap-2"
                         >
                             <CreditCard className="size-4" />
-                            Comprar módulo
+                            Comprar curso completo
                         </Button>
                     </DialogTrigger>
 
@@ -200,7 +213,7 @@ export default function BuyModuleButton({
                             <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
 
                             <p className="text-xs leading-5 text-destructive">
-                                La compra del módulo estará disponible cuando
+                                La compra del curso estará disponible cuando
                                 completes la información de tu{" "}
                                 <Link
                                     to="/panel/perfil"
@@ -218,23 +231,14 @@ export default function BuyModuleButton({
                             <AlertCircle className="mt-0.5 size-4 shrink-0 text-destructive" />
 
                             <p className="text-xs leading-5 text-destructive">
-                                El método de pago para este módulo todavía no
-                                está disponible. Inténtalo nuevamente más tarde.
+                                El método de pago para este curso todavía no
+                                está disponible.
                             </p>
                         </div>
                     )}
                 </div>
 
-                <DialogContent
-                    className="
-                        w-[calc(100%-2rem)]
-                        max-w-md
-                        max-h-[90vh]
-                        overflow-y-auto
-                        rounded-2xl
-                        pr-3
-                    "
-                >
+                <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl pr-3">
                     {step === "confirm" && (
                         <>
                             <DialogHeader>
@@ -254,8 +258,8 @@ export default function BuyModuleButton({
 
                                 <DialogDescription className="pt-1 leading-6">
                                     {esBolivia
-                                        ? "A continuación podrás visualizar el código QR habilitado para realizar el pago."
-                                        : "Serás dirigido a PayPal en una nueva pestaña para completar el pago de tu módulo."}
+                                        ? "Realiza el pago correspondiente al acceso completo del curso."
+                                        : "Serás dirigido a PayPal para completar el pago de todo el curso."}
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -271,30 +275,15 @@ export default function BuyModuleButton({
                                 </div>
                             </div>
 
-                            {esBolivia && (
-                                <div className="rounded-xl border bg-muted/20 p-4">
-                                    <div className="flex items-start gap-3">
-                                        <QrCode className="mt-0.5 size-4 shrink-0 text-primary" />
-
-                                        <p className="text-sm leading-6 text-muted-foreground">
-                                            El precio está expresado en dólares
-                                            estadounidenses. El pago mediante QR
-                                            deberá realizarse por el equivalente
-                                            correspondiente en bolivianos.
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-
                             <div className="border-y border-border py-4">
                                 <div className="flex items-start gap-3">
                                     <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
 
                                     <p className="text-sm leading-6 text-muted-foreground">
-                                        Después de realizar el pago deberás
-                                        solicitar su verificación. Administración
-                                        revisará la operación antes de habilitar
-                                        tu inscripción al módulo.
+                                        Después de realizar el pago solicita su
+                                        verificación. Administración revisará la
+                                        operación y, una vez confirmada,
+                                        habilitará los módulos del curso.
                                     </p>
                                 </div>
                             </div>
@@ -348,21 +337,21 @@ export default function BuyModuleButton({
                             </h2>
 
                             <p className="mt-2 max-w-sm text-sm leading-6 text-muted-foreground">
-                                Realiza el pago desde tu aplicación bancaria
-                                utilizando el siguiente código QR.
+                                Realiza el pago correspondiente al curso completo
+                                desde tu aplicación bancaria.
                             </p>
 
                             <div className="mt-5 overflow-hidden rounded-2xl border bg-white p-3">
                                 <img
                                     src={qrPagoBolivia}
-                                    alt="Código QR para pago en Bolivia"
+                                    alt="Código QR para pago del curso"
                                     className="h-auto w-full max-w-[280px] object-contain"
                                 />
                             </div>
 
                             <div className="mt-5 w-full rounded-xl border bg-muted/20 p-4">
                                 <p className="text-xs text-muted-foreground">
-                                    Total del módulo
+                                    Total del curso
                                 </p>
 
                                 <p className="mt-1 text-xl font-semibold">
@@ -370,11 +359,13 @@ export default function BuyModuleButton({
                                 </p>
                             </div>
 
-                            <p className="mt-4 max-w-sm text-xs leading-5 text-muted-foreground">
-                                El monto está expresado en USD. Realiza la
-                                transferencia por el equivalente correspondiente
-                                en bolivianos.
-                            </p>
+                            {paymentError && (
+                                <div className="mt-5 w-full rounded-xl border border-destructive/20 bg-destructive/5 p-3">
+                                    <p className="text-sm leading-5 text-destructive">
+                                        {paymentError}
+                                    </p>
+                                </div>
+                            )}
 
                             {!canVerify ? (
                                 <div className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
@@ -426,19 +417,27 @@ export default function BuyModuleButton({
 
                             <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
                                 PayPal se abrió en una nueva pestaña. Completa
-                                allí el pago y luego vuelve a esta ventana para
+                                allí el pago del curso y luego vuelve para
                                 solicitar su verificación.
                             </p>
 
                             <div className="mt-5 rounded-xl border bg-muted/20 px-6 py-4">
                                 <p className="text-xs text-muted-foreground">
-                                    Total del módulo
+                                    Total del curso
                                 </p>
 
                                 <p className="mt-1 text-xl font-semibold">
                                     {precioFormateado}
                                 </p>
                             </div>
+
+                            {paymentError && (
+                                <div className="mt-5 w-full rounded-xl border border-destructive/20 bg-destructive/5 p-3">
+                                    <p className="text-sm leading-5 text-destructive">
+                                        {paymentError}
+                                    </p>
+                                </div>
+                            )}
 
                             {!canVerify ? (
                                 <div className="mt-6 flex items-center gap-2 rounded-xl bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
@@ -473,10 +472,8 @@ export default function BuyModuleButton({
                                     variant="outline"
                                     className="mt-3 w-full gap-2"
                                     onClick={() => {
-                                        const paymentWindow = window.open(
-                                            linkPago,
-                                            "_blank",
-                                        );
+                                        const paymentWindow =
+                                            window.open(linkPago, "_blank");
 
                                         if (paymentWindow) {
                                             paymentWindow.opener = null;
@@ -502,16 +499,7 @@ export default function BuyModuleButton({
             </Dialog>
 
             <Dialog open={successOpen} onOpenChange={setSuccessOpen}>
-                <DialogContent
-                    className="
-                        w-[calc(100%-2rem)]
-                        max-w-md
-                        max-h-[90vh]
-                        overflow-y-auto
-                        rounded-2xl
-                        pr-3
-                    "
-                >
+                <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl pr-3">
                     <div className="flex min-h-[320px] flex-col items-center justify-center px-4 text-center">
                         <div className="flex size-16 items-center justify-center rounded-full bg-primary/10 text-primary">
                             <MailCheck className="size-7" />
@@ -522,24 +510,23 @@ export default function BuyModuleButton({
                         </h2>
 
                         <p className="mt-3 max-w-sm text-sm leading-6 text-muted-foreground">
-                            Tu solicitud fue registrada correctamente. Nuestro
-                            equipo administrativo revisará el pago realizado.
+                            Tu solicitud fue registrada correctamente.
+                            Administración revisará el pago realizado.
                         </p>
 
                         <div className="mt-5 flex items-start gap-3 rounded-xl bg-muted/50 p-4 text-left">
                             <Clock3 className="mt-0.5 size-4 shrink-0 text-primary" />
 
                             <p className="text-sm leading-6 text-muted-foreground">
-                                Una vez confirmado el pago, tu inscripción y el
-                                acceso al módulo serán habilitados. La revisión
-                                puede tomar unos minutos.
+                                Una vez confirmado el pago, se habilitará tu
+                                inscripción a los módulos incluidos en la compra
+                                del curso.
                             </p>
                         </div>
 
                         <p className="mt-4 max-w-sm text-xs leading-5 text-muted-foreground">
                             No es necesario volver a realizar el pago ni enviar
-                            otra solicitud. Espera la confirmación de
-                            administración.
+                            otra solicitud.
                         </p>
 
                         <Button

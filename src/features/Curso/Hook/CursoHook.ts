@@ -9,10 +9,13 @@ import {
     GetCourseSubCategories,
     GetMisInscripcionesEnCursos,
     GetPaginatedCourses,
+    ConfigurarVentaCurso,
+    GetConfiguracionVentaCurso,
+    GetCursoPrecio,
     UpdateCurso,
 } from "../Service/CursoService";
 
-import { CategoriaCreateType, CursoCreateType, CursoUpdateType } from "../Schema/CursoSchema";
+import { CategoriaCreateType, ConfigurarVentaCursoType, CursoCreateType, CursoUpdateType } from "../Schema/CursoSchema";
 
 export type TipoFiltro = "categoria" | "subcategoria";
 
@@ -126,6 +129,89 @@ export function useCreateCategoria() {
         mutationFn: (data: CategoriaCreateType) => CreateCategoria(data),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["categorias"] });
+        },
+    });
+}
+
+export function useCursoPrecio(
+    cursoId: string,
+    enabled = true,
+) {
+    return useQuery({
+        queryKey: [
+            "curso",
+            cursoId,
+            "precio",
+        ],
+
+        queryFn: () =>
+            GetCursoPrecio(
+                cursoId,
+            ),
+
+        enabled:
+            enabled &&
+            !!cursoId,
+    });
+}
+
+export function useConfiguracionVentaCurso(
+    cursoId: string,
+    enabled = true,
+) {
+    return useQuery({
+        queryKey: [
+            "curso",
+            cursoId,
+            "configuracion-venta",
+        ],
+
+        queryFn: () =>
+            GetConfiguracionVentaCurso(
+                cursoId,
+            ),
+
+        enabled:
+            enabled &&
+            !!cursoId,
+    });
+}
+
+export function useConfigurarVentaCurso() {
+    const queryClient =
+        useQueryClient();
+
+    return useMutation({
+        mutationFn: ({
+            cursoId,
+            data,
+        }: {
+            cursoId: string;
+            data: ConfigurarVentaCursoType;
+        }) =>
+            ConfigurarVentaCurso(
+                cursoId,
+                data,
+            ),
+
+        onSuccess: async (
+            _,
+            variables,
+        ) => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "curso",
+                        variables.cursoId,
+                    ],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "cursos",
+                    ],
+                }),
+            ]);
         },
     });
 }

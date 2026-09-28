@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import {
+    useState,
+} from "react";
+
 import {
     CheckCircle2,
     Eye,
     GraduationCap,
-    ShieldCheck,
 } from "lucide-react";
 
 import {
@@ -16,40 +18,43 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
-
 import { QueryState } from "@/components/common/QueryState";
 import { PageHeader } from "@/components/common/PageHeader";
 import { InfoField } from "@/components/common/info/InfoField";
 import { InfoSection } from "@/components/common/info/InfoSection";
 
-import { useGetUser } from "@/features/Usuario/Hook/UsuarioHook";
+import {
+    useGetUser,
+} from "@/features/Usuario/Hook/UsuarioHook";
 
 import {
     useGetLeadsByUser,
-    useUpdateLeadEstado,
 } from "@/features/Lead/Hook/LeadHook";
+
+import {
+    ConfirmarPagoLeadDialog,
+} from "@/features/Lead/Components/ConfirmarPagoLeadDialog";
 
 import type {
     EstadoLeadType,
-    LeadUsuarioModuloType,
+    LeadUsuarioType,
 } from "@/features/Lead/Schema/LeadSchema";
 
 const estadoLabels: Record<
     EstadoLeadType,
     string
 > = {
-    INTERESADO: "Interesado",
-    PAGO_COMPLETADO: "Pago completado",
-    CONVERTIDO: "Convertido",
-    DESCARTADO: "Descartado",
+    INTERESADO:
+        "Interesado",
+
+    PAGO_COMPLETADO:
+        "Pago completado",
+
+    CONVERTIDO:
+        "Convertido",
+
+    DESCARTADO:
+        "Descartado",
 };
 
 const getEstadoVariant = (
@@ -81,19 +86,50 @@ const formatDate = (
         return "Sin registro";
     }
 
-    return new Date(value).toLocaleString(
+    return new Date(
+        value,
+    ).toLocaleString(
         "es-BO",
         {
-            dateStyle: "medium",
-            timeStyle: "short",
+            dateStyle:
+                "medium",
+
+            timeStyle:
+                "short",
         },
     );
 };
 
-export default function LeadUserDetailPage() {
-    const navigate = useNavigate();
+const getCursoNombre = (
+    lead: LeadUsuarioType,
+) =>
+    lead.tipoCompra ===
+        "CURSO"
+        ? lead.curso
+            ?.nombre ??
+        "Sin curso"
+        : lead.modulo
+            ?.curso
+            .nombre ??
+        "Sin curso";
 
-    const { usuarioId = "" } =
+const getProductoNombre = (
+    lead: LeadUsuarioType,
+) =>
+    lead.tipoCompra ===
+        "CURSO"
+        ? "Curso completo"
+        : lead.modulo
+            ?.nombre ??
+        "Sin módulo";
+
+export default function LeadUserDetailPage() {
+    const navigate =
+        useNavigate();
+
+    const {
+        usuarioId = "",
+    } =
         useParams<{
             usuarioId: string;
         }>();
@@ -110,17 +146,17 @@ export default function LeadUserDetailPage() {
             !!usuarioId,
         );
 
-    const actualizarEstado =
-        useUpdateLeadEstado();
-
-    const [dialogPagoOpen, setDialogPagoOpen] =
+    const [
+        dialogPagoOpen,
+        setDialogPagoOpen,
+    ] =
         useState(false);
 
     const [
         leadSeleccionado,
         setLeadSeleccionado,
     ] =
-        useState<LeadUsuarioModuloType | null>(
+        useState<LeadUsuarioType | null>(
             null,
         );
 
@@ -128,18 +164,20 @@ export default function LeadUserDetailPage() {
         usuarioQuery.data;
 
     const leads =
-        leadsQuery.data ?? [];
+        leadsQuery.data ??
+        [];
 
     const perfil =
         usuario?.perfil;
 
-    const nombreCompleto = [
-        perfil?.nombre,
-        perfil?.apellidoPaterno,
-        perfil?.apellidoMaterno,
-    ]
-        .filter(Boolean)
-        .join(" ");
+    const nombreCompleto =
+        [
+            perfil?.nombre,
+            perfil?.apellidoPaterno,
+            perfil?.apellidoMaterno,
+        ]
+            .filter(Boolean)
+            .join(" ");
 
     const isLoading =
         usuarioQuery.isLoading ||
@@ -153,58 +191,34 @@ export default function LeadUserDetailPage() {
         usuarioQuery.error ??
         leadsQuery.error;
 
-    const abrirConfirmacionPago = (
-        lead: LeadUsuarioModuloType,
-    ) => {
-        setLeadSeleccionado(lead);
-        setDialogPagoOpen(true);
-    };
-
-    const confirmarPago = () => {
-        if (!leadSeleccionado) {
-            return;
-        }
-
-        actualizarEstado.mutate(
-            {
-                id: leadSeleccionado.id,
-
-                data: {
-                    estado:
-                        "PAGO_COMPLETADO",
-                },
-            },
-            {
-                onSuccess: () => {
-                    setDialogPagoOpen(
-                        false,
-                    );
-
-                    setLeadSeleccionado(
-                        null,
-                    );
-                },
-            },
-        );
-    };
-
-    const handleDialogPagoChange = (
-        value: boolean,
-    ) => {
-        if (
-            actualizarEstado.isPending
-        ) {
-            return;
-        }
-
-        setDialogPagoOpen(value);
-
-        if (!value) {
+    const abrirConfirmacionPago =
+        (
+            lead:
+                LeadUsuarioType,
+        ) => {
             setLeadSeleccionado(
-                null,
+                lead,
             );
-        }
-    };
+
+            setDialogPagoOpen(
+                true,
+            );
+        };
+
+    const handleDialogPagoChange =
+        (
+            value: boolean,
+        ) => {
+            setDialogPagoOpen(
+                value,
+            );
+
+            if (!value) {
+                setLeadSeleccionado(
+                    null,
+                );
+            }
+        };
 
     return (
         <>
@@ -215,11 +229,14 @@ export default function LeadUserDetailPage() {
                             ? `Intereses de ${nombreCompleto}`
                             : "Intereses del estudiante"
                     }
-                    subtitle="Formaciones y módulos en los que este estudiante mostró interés."
+                    subtitle="Módulos y cursos en los que este estudiante mostró interés."
                     badge={
                         <Badge variant="secondary">
-                            {leads.length}{" "}
-                            {leads.length === 1
+                            {
+                                leads.length
+                            }{" "}
+                            {leads.length ===
+                                1
                                 ? "interés"
                                 : "intereses"}
                         </Badge>
@@ -234,7 +251,9 @@ export default function LeadUserDetailPage() {
                         isError ||
                         !usuarioId
                     }
-                    error={error}
+                    error={
+                        error
+                    }
                     fallbackMessage="No se pudo cargar la información del estudiante."
                 >
                     {usuario && (
@@ -272,7 +291,8 @@ export default function LeadUserDetailPage() {
                                     <InfoField
                                         label="Teléfono"
                                         value={
-                                            perfil?.telefono ||
+                                            perfil
+                                                ?.telefono ||
                                             "Sin teléfono"
                                         }
                                     />
@@ -280,7 +300,8 @@ export default function LeadUserDetailPage() {
                                     <InfoField
                                         label="Ciudad"
                                         value={
-                                            perfil?.ciudad ||
+                                            perfil
+                                                ?.ciudad ||
                                             "Sin ciudad"
                                         }
                                     />
@@ -288,7 +309,8 @@ export default function LeadUserDetailPage() {
                                     <InfoField
                                         label="País"
                                         value={
-                                            perfil?.pais ||
+                                            perfil
+                                                ?.pais ||
                                             "Sin país"
                                         }
                                     />
@@ -298,14 +320,11 @@ export default function LeadUserDetailPage() {
                             <div className="space-y-4">
                                 <div>
                                     <h2 className="text-lg font-semibold tracking-tight">
-                                        Formaciones de
-                                        interés
+                                        Formaciones de interés
                                     </h2>
 
                                     <p className="text-sm text-muted-foreground">
-                                        Cada registro
-                                        corresponde a un
-                                        módulo diferente.
+                                        Cada registro corresponde a una compra de módulo o curso completo.
                                     </p>
                                 </div>
 
@@ -329,21 +348,28 @@ export default function LeadUserDetailPage() {
                                                             </div>
 
                                                             <div className="min-w-0">
-                                                                <p className="truncate text-sm font-semibold">
-                                                                    {
-                                                                        lead
-                                                                            .modulo
-                                                                            .curso
-                                                                            .nombre
-                                                                    }
-                                                                </p>
+                                                                <div className="flex flex-wrap items-center gap-2">
+                                                                    <p className="truncate text-sm font-semibold">
+                                                                        {getCursoNombre(
+                                                                            lead,
+                                                                        )}
+                                                                    </p>
 
-                                                                <p className="mt-0.5 truncate text-sm text-muted-foreground">
-                                                                    {
-                                                                        lead
-                                                                            .modulo
-                                                                            .nombre
-                                                                    }
+                                                                    <Badge
+                                                                        variant="secondary"
+                                                                        className="text-[10px]"
+                                                                    >
+                                                                        {lead.tipoCompra ===
+                                                                            "CURSO"
+                                                                            ? "CURSO"
+                                                                            : "MÓDULO"}
+                                                                    </Badge>
+                                                                </div>
+
+                                                                <p className="mt-1 truncate text-sm text-muted-foreground">
+                                                                    {getProductoNombre(
+                                                                        lead,
+                                                                    )}
                                                                 </p>
                                                             </div>
                                                         </div>
@@ -363,6 +389,16 @@ export default function LeadUserDetailPage() {
                                                     </div>
 
                                                     <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                                        <InfoField
+                                                            label="Tipo de compra"
+                                                            value={
+                                                                lead.tipoCompra ===
+                                                                    "CURSO"
+                                                                    ? "Curso completo"
+                                                                    : "Módulo"
+                                                            }
+                                                        />
+
                                                         <InfoField
                                                             label="Fecha de interés"
                                                             value={formatDate(
@@ -389,7 +425,9 @@ export default function LeadUserDetailPage() {
                                                         {lead.estado !==
                                                             "PAGO_COMPLETADO" &&
                                                             lead.estado !==
-                                                            "CONVERTIDO" && (
+                                                            "CONVERTIDO" &&
+                                                            lead.estado !==
+                                                            "DESCARTADO" && (
                                                                 <Button
                                                                     type="button"
                                                                     size="sm"
@@ -401,8 +439,8 @@ export default function LeadUserDetailPage() {
                                                                     className="gap-2"
                                                                 >
                                                                     <CheckCircle2 className="size-4" />
-                                                                    Confirmar
-                                                                    pago
+
+                                                                    Confirmar pago
                                                                 </Button>
                                                             )}
 
@@ -418,8 +456,7 @@ export default function LeadUserDetailPage() {
                                                         >
                                                             <Eye className="mr-2 size-4" />
 
-                                                            Ver
-                                                            lead
+                                                            Ver lead
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -431,17 +468,11 @@ export default function LeadUserDetailPage() {
                                         <GraduationCap className="mx-auto size-8 text-muted-foreground" />
 
                                         <p className="mt-3 font-medium">
-                                            Sin
-                                            formaciones
-                                            de interés
+                                            Sin formaciones de interés
                                         </p>
 
                                         <p className="mt-1 text-sm text-muted-foreground">
-                                            Este
-                                            estudiante
-                                            todavía no
-                                            tiene leads
-                                            registrados.
+                                            Este estudiante todavía no tiene leads registrados.
                                         </p>
                                     </div>
                                 )}
@@ -451,118 +482,26 @@ export default function LeadUserDetailPage() {
                 </QueryState>
             </div>
 
-            <Dialog
-                open={dialogPagoOpen}
+            <ConfirmarPagoLeadDialog
+                open={
+                    dialogPagoOpen
+                }
                 onOpenChange={
                     handleDialogPagoChange
                 }
-            >
-                <DialogContent className="w-[calc(100%-2rem)] max-w-md rounded-2xl sm:rounded-2xl">
-                    <DialogHeader>
-                        <div className="mb-4 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                            <ShieldCheck className="size-6" />
-                        </div>
-
-                        <DialogTitle>
-                            Confirmar pago
-                        </DialogTitle>
-
-                        <DialogDescription className="leading-6">
-                            Confirma esta
-                            acción únicamente
-                            si ya verificaste
-                            que el estudiante
-                            completó
-                            correctamente el
-                            pago.
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    {leadSeleccionado && (
-                        <div className="space-y-3 rounded-xl border bg-muted/20 p-4">
-                            <div>
-                                <p className="text-xs font-medium text-muted-foreground">
-                                    Curso
-                                </p>
-
-                                <p className="mt-1 text-sm font-semibold">
-                                    {
-                                        leadSeleccionado
-                                            .modulo
-                                            .curso
-                                            .nombre
-                                    }
-                                </p>
-                            </div>
-
-                            <div>
-                                <p className="text-xs font-medium text-muted-foreground">
-                                    Módulo
-                                </p>
-
-                                <p className="mt-1 text-sm font-semibold">
-                                    {
-                                        leadSeleccionado
-                                            .modulo
-                                            .nombre
-                                    }
-                                </p>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
-                        <p className="text-sm leading-6">
-                            Al confirmar el
-                            pago, el estado del
-                            lead cambiará a{" "}
-                            <span className="font-semibold">
-                                Pago completado
-                            </span>
-                            . El sistema creará
-                            automáticamente la
-                            inscripción y
-                            habilitará el acceso
-                            del estudiante al
-                            módulo.
-                        </p>
-                    </div>
-
-                    <DialogFooter className="gap-2 sm:gap-2">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            disabled={
-                                actualizarEstado.isPending
-                            }
-                            onClick={() =>
-                                handleDialogPagoChange(
-                                    false,
-                                )
-                            }
-                        >
-                            Cancelar
-                        </Button>
-
-                        <Button
-                            type="button"
-                            disabled={
-                                actualizarEstado.isPending
-                            }
-                            onClick={
-                                confirmarPago
-                            }
-                            className="gap-2"
-                        >
-                            <CheckCircle2 className="size-4" />
-
-                            {actualizarEstado.isPending
-                                ? "Confirmando..."
-                                : "Sí, confirmar pago"}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+                lead={
+                    leadSeleccionado
+                }
+                estudianteNombre={
+                    nombreCompleto ||
+                    usuario?.correo
+                }
+                onSuccess={() =>
+                    setLeadSeleccionado(
+                        null,
+                    )
+                }
+            />
         </>
     );
 }

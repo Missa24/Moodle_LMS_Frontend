@@ -1,12 +1,17 @@
 "use client";
 
-import { ColumnDef, } from "@tanstack/react-table";
+import type {
+    ColumnDef,
+} from "@tanstack/react-table";
 
-import { Eye, MoreHorizontal, User, } from "lucide-react";
+import {
+    Eye,
+    MoreHorizontal,
+    User,
+} from "lucide-react";
 
-import { Button, } from "@/components/ui/button";
-
-import { Badge, } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 import {
     DropdownMenu,
@@ -17,7 +22,9 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { LeadType, } from "../Schema/LeadSchema";
+import type {
+    LeadType,
+} from "../Schema/LeadSchema";
 
 interface LeadColumnsProps {
     onViewLead: (
@@ -33,11 +40,10 @@ export function LeadColumns({
     onViewLead,
     onViewUser,
 }: LeadColumnsProps): ColumnDef<LeadType>[] {
-
-
     return [
         {
             id: "estudiante",
+
             accessorFn: (row) =>
                 [
                     row.nombre,
@@ -47,8 +53,7 @@ export function LeadColumns({
                     .filter(Boolean)
                     .join(" "),
 
-            header:
-                "Estudiante",
+            header: "Estudiante",
 
             cell: ({ row }) => {
                 const lead =
@@ -64,7 +69,7 @@ export function LeadColumns({
                         .join(" ");
 
                 return (
-                    <div className="min-w-[160px]">
+                    <div className="min-w-[180px]">
                         <p className="font-medium">
                             {nombreCompleto ||
                                 "Sin nombre"}
@@ -80,53 +85,88 @@ export function LeadColumns({
 
         {
             accessorKey: "telefono",
-
             header: "Teléfono",
 
             cell: ({ row }) =>
-                row.original
-                    .telefono ||
+                row.original.telefono ||
                 "Sin teléfono",
         },
 
         {
-            id: "curso",
+            accessorKey: "tipoCompra",
+            header: "Tipo",
+
+            cell: ({ row }) => {
+                const tipo =
+                    row.original.tipoCompra;
+
+                return (
+                    <Badge
+                        variant={
+                            tipo === "CURSO"
+                                ? "default"
+                                : "secondary"
+                        }
+                    >
+                        {tipo === "CURSO"
+                            ? "Curso"
+                            : "Módulo"}
+                    </Badge>
+                );
+            },
+        },
+
+        {
+            id: "formacion",
 
             accessorFn: (row) =>
-                row.curso.nombre,
+                row.curso?.nombre ??
+                "",
 
             header: "Formación",
 
-            cell: ({ row }) => (
-                <span className="font-medium">
-                    {
-                        row.original
-                            .curso.nombre
-                    }
-                </span>
-            ),
+            cell: ({ row }) =>
+                row.original.curso?.nombre ??
+                "Sin curso",
         },
 
         {
-            id: "modulo",
+            id: "producto",
 
             accessorFn: (row) =>
-                row.modulo.nombre,
+                row.tipoCompra === "CURSO"
+                    ? "Curso completo"
+                    : row.modulo?.nombre ?? "",
 
-            header:
-                "Módulo",
+            header: "Producto",
 
-            cell: ({ row }) =>
-                row.original
-                    .modulo.nombre,
+            cell: ({ row }) => {
+                const lead =
+                    row.original;
+
+                if (
+                    lead.tipoCompra ===
+                    "CURSO"
+                ) {
+                    return (
+                        <span className="font-medium">
+                            Curso completo
+                        </span>
+                    );
+                }
+
+                return (
+                    <span>
+                        {lead.modulo?.nombre ??
+                            "Sin módulo"}
+                    </span>
+                );
+            },
         },
 
         {
-            accessorKey:
-                "estado",
-
-            header:
-                "Estado",
+            accessorKey: "estado",
+            header: "Estado",
 
             cell: ({ row }) => {
                 const estado =
@@ -135,13 +175,14 @@ export function LeadColumns({
                 return (
                     <Badge
                         variant={
-                            estado ===
-                                "CONVERTIDO"
+                            estado === "CONVERTIDO"
                                 ? "default"
-                                : "secondary"
+                                : estado === "DESCARTADO"
+                                    ? "destructive"
+                                    : "secondary"
                         }
                     >
-                        {estado.replace(
+                        {estado.replaceAll(
                             "_",
                             " ",
                         )}
@@ -180,6 +221,7 @@ export function LeadColumns({
                             asChild
                         >
                             <Button
+                                type="button"
                                 variant="ghost"
                                 className="h-8 w-8 p-0"
                             >
@@ -187,7 +229,7 @@ export function LeadColumns({
                                     Abrir menú
                                 </span>
 
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="size-4" />
                             </Button>
                         </DropdownMenuTrigger>
 
@@ -207,7 +249,7 @@ export function LeadColumns({
                                     )
                                 }
                             >
-                                <Eye className="mr-2 h-4 w-4" />
+                                <Eye className="mr-2 size-4" />
 
                                 Ver lead
                             </DropdownMenuItem>
@@ -219,7 +261,7 @@ export function LeadColumns({
                                     )
                                 }
                             >
-                                <User className="mr-2 h-4 w-4" />
+                                <User className="mr-2 size-4" />
 
                                 Ver intereses del usuario
                             </DropdownMenuItem>

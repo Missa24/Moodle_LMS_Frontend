@@ -1,7 +1,5 @@
 import { create } from "zustand";
-import {
-    persist,
-} from "zustand/middleware";
+import { persist } from "zustand/middleware";
 
 import { LoginResponseType } from "@/features/Auth/Schema/AuthSchema";
 import { getJwtExpiration } from "@/utils/auth/jwt";
@@ -42,8 +40,9 @@ interface AuthState {
 
     logout: () => void;
 
-    setRequiereCompletarPerfil: (
-        value: boolean,
+    actualizarEstadoPerfil: (
+        requiereCompletarPerfil: boolean,
+        paisCodigo: string | null,
     ) => void;
 }
 
@@ -122,20 +121,23 @@ export const useAuthStore =
                     });
                 },
 
-                setRequiereCompletarPerfil:
-                    (value) =>
-                        set(
-                            (state) => ({
-                                usuario:
-                                    state.usuario
-                                        ? {
-                                            ...state.usuario,
-                                            requiereCompletarPerfil:
-                                                value,
-                                        }
-                                        : null,
-                            }),
-                        ),
+                actualizarEstadoPerfil: (
+                    requiereCompletarPerfil,
+                    paisCodigo,
+                ) => {
+                    set((state) => ({
+                        usuario:
+                            state.usuario
+                                ? {
+                                    ...state.usuario,
+
+                                    requiereCompletarPerfil,
+
+                                    paisCodigo,
+                                }
+                                : null,
+                    }));
+                },
             }),
 
             {

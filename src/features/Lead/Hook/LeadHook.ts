@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import {
     CreateLead,
+    GetEstadoCompraCurso,
     GetLeadById,
     GetLeads,
     GetLeadsByUser,
@@ -27,7 +28,8 @@ export function useCreateLead() {
     return useMutation({
         mutationFn: (
             data: CreateLeadType,
-        ) => CreateLead(data),
+        ) =>
+            CreateLead(data),
 
         onSuccess: async () => {
             await queryClient.invalidateQueries({
@@ -64,7 +66,9 @@ export function useGetLeads(
         enabled,
 
         staleTime:
-            1000 * 60 * 2,
+            1000 *
+            60 *
+            2,
     });
 }
 
@@ -75,10 +79,13 @@ export function useGetMyLeads() {
             "me",
         ],
 
-        queryFn: GetMyLeads,
+        queryFn:
+            GetMyLeads,
 
         staleTime:
-            1000 * 60 * 2,
+            1000 *
+            60 *
+            2,
     });
 }
 
@@ -103,7 +110,9 @@ export function useGetLeadsByUser(
             !!usuarioId,
 
         staleTime:
-            1000 * 60 * 2,
+            1000 *
+            60 *
+            2,
     });
 }
 
@@ -119,7 +128,9 @@ export function useGetLead(
         ],
 
         queryFn: () =>
-            GetLeadById(id),
+            GetLeadById(
+                id,
+            ),
 
         enabled:
             enabled &&
@@ -128,25 +139,90 @@ export function useGetLead(
 }
 
 export function useUpdateLeadEstado() {
-    const queryClient = useQueryClient();
+    const queryClient =
+        useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: UpdateLeadEstadoType }) =>
-            UpdateLeadEstado(id, data),
+        mutationFn: ({
+            id,
+            data,
+        }: {
+            id: string;
+            data: UpdateLeadEstadoType;
+        }) =>
+            UpdateLeadEstado(
+                id,
+                data,
+            ),
 
-        onSuccess: async (response) => {
+        onSuccess: async (
+            response,
+        ) => {
             await Promise.all([
-                queryClient.invalidateQueries({ queryKey: ["leads"] }),
-                queryClient.invalidateQueries({ queryKey: ["ventas"] }),
-                queryClient.invalidateQueries({ queryKey: ["inscripciones"] }),
-                queryClient.invalidateQueries({ queryKey: ["notificaciones"] }),
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "leads",
+                    ],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "ventas",
+                    ],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "leads",
+                        "curso-estado-compra",
+                    ],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "inscripciones",
+                    ],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "notificaciones",
+                    ],
+                }),
+
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "mis-cursos-inscritos",
+                    ],
+                }),
             ]);
 
-            toast.success(`Estado actualizado a ${response.estado}`);
+            toast.success(
+                `Estado actualizado a ${response.estado}`,
+            );
         },
 
         onError: () => {
-            toast.error("No se pudo actualizar el estado del lead");
+            toast.error(
+                "No se pudo actualizar el estado del lead",
+            );
         },
+    });
+}
+
+export function useEstadoCompraCurso(
+    cursoId: string,
+    enabled = true,
+) {
+    return useQuery({
+        queryKey: [
+            "leads",
+            "curso-estado-compra",
+            cursoId,
+        ],
+        queryFn: () =>
+            GetEstadoCompraCurso(cursoId),
+        enabled: enabled && !!cursoId,
+        staleTime: 0,
     });
 }
