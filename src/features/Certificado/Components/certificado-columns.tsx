@@ -1,0 +1,293 @@
+"use client";
+
+import { ColumnDef } from "@tanstack/react-table";
+import {
+    Eye,
+    MoreHorizontal,
+} from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import type { Certificado } from "../Schema/CertificadoSchema";
+
+interface CertificadoColumnsProps {
+    onView: (
+        certificado: Certificado,
+    ) => void;
+}
+
+export function CertificadoColumns({
+    onView,
+}: CertificadoColumnsProps): ColumnDef<Certificado>[] {
+    return [
+        {
+            id: "estudiante",
+
+            accessorFn: (row) =>
+                [
+                    row.usuario?.perfil?.nombre,
+                    row.usuario?.perfil?.apellidoPaterno,
+                    row.usuario?.perfil?.apellidoMaterno,
+                ]
+                    .filter(Boolean)
+                    .join(" "),
+
+            header: "Estudiante",
+
+            cell: ({ row }) => {
+                const certificado =
+                    row.original;
+
+                const perfil =
+                    certificado.usuario?.perfil;
+
+                const nombreCompleto =
+                    [
+                        perfil?.nombre,
+                        perfil?.apellidoPaterno,
+                        perfil?.apellidoMaterno,
+                    ]
+                        .filter(Boolean)
+                        .join(" ");
+
+                return (
+                    <div className="min-w-[180px]">
+                        <p className="font-medium">
+                            {nombreCompleto ||
+                                "Sin nombre"}
+                        </p>
+
+                        <p className="text-xs text-muted-foreground">
+                            {
+                                certificado
+                                    .usuario
+                                    ?.correo
+                            }
+                        </p>
+                    </div>
+                );
+            },
+        },
+
+        {
+            id: "nombreCertificado",
+
+            accessorKey:
+                "nombreCertificado",
+
+            header:
+                "Nombre en certificado",
+
+            cell: ({ row }) => (
+                <span className="font-medium">
+                    {
+                        row.original
+                            .nombreCertificado ||
+                        "Sin nombre"
+                    }
+                </span>
+            ),
+        },
+
+        {
+            id: "formacion",
+
+            accessorFn: (row) =>
+                row.curso?.nombre ??
+                row.inscripcion?.modulo
+                    ?.nombre ??
+                "",
+
+            header: "Formación",
+
+            cell: ({ row }) => {
+                const certificado =
+                    row.original;
+
+                if (
+                    certificado.curso
+                        ?.nombre
+                ) {
+                    return (
+                        <div>
+                            <p className="font-medium">
+                                {
+                                    certificado
+                                        .curso
+                                        .nombre
+                                }
+                            </p>
+
+                            <p className="text-xs text-muted-foreground">
+                                Curso
+                            </p>
+                        </div>
+                    );
+                }
+
+                if (
+                    certificado
+                        .inscripcion
+                        ?.modulo
+                        ?.nombre
+                ) {
+                    return (
+                        <div>
+                            <p className="font-medium">
+                                {
+                                    certificado
+                                        .inscripcion
+                                        .modulo
+                                        .nombre
+                                }
+                            </p>
+
+                            <p className="text-xs text-muted-foreground">
+                                Módulo
+                            </p>
+                        </div>
+                    );
+                }
+
+                return "Sin formación";
+            },
+        },
+
+        {
+            accessorKey: "tipo",
+
+            header: "Tipo",
+
+            cell: ({ row }) => (
+                <Badge variant="secondary">
+                    {row.original.tipo}
+                </Badge>
+            ),
+        },
+
+        {
+            accessorKey: "estado",
+
+            header: "Estado",
+
+            cell: ({ row }) => {
+                const estado =
+                    row.original.estado;
+
+                return (
+                    <Badge
+                        variant={
+                            estado ===
+                                "anulado"
+                                ? "destructive"
+                                : "default"
+                        }
+                    >
+                        {estado}
+                    </Badge>
+                );
+            },
+        },
+
+        {
+            accessorKey:
+                "fechaEmision",
+
+            header:
+                "Fecha de emisión",
+
+            cell: ({ row }) => {
+                const fecha =
+                    row.original
+                        .fechaEmision;
+
+                if (!fecha) {
+                    return "Sin fecha";
+                }
+
+                return new Date(
+                    fecha,
+                ).toLocaleDateString(
+                    "es-BO",
+                );
+            },
+        },
+
+        {
+            id: "numeroCertificado",
+
+            accessorKey:
+                "numeroCertificado",
+
+            header:
+                "N.º certificado",
+
+            cell: ({ row }) =>
+                row.original
+                    .numeroCertificado ||
+                "Sin número",
+        },
+
+        {
+            id: "acciones",
+
+            header: "Acciones",
+
+            cell: ({ row }) => {
+                const certificado =
+                    row.original;
+
+                return (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger
+                            asChild
+                        >
+                            <Button
+                                variant="ghost"
+                                className="h-8 w-8 p-0"
+                            >
+                                <span className="sr-only">
+                                    Abrir menú
+                                </span>
+
+                                <MoreHorizontal className="h-4 w-4" />
+                            </Button>
+                        </DropdownMenuTrigger>
+
+                        <DropdownMenuContent
+                            align="end"
+                        >
+                            <DropdownMenuLabel>
+                                Acciones
+                            </DropdownMenuLabel>
+
+                            <DropdownMenuSeparator />
+
+                            <DropdownMenuItem
+                                onClick={() =>
+                                    onView(
+                                        certificado,
+                                    )
+                                }
+                            >
+                                <Eye className="mr-2 h-4 w-4" />
+
+                                Ver certificado
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                );
+            },
+        },
+    ];
+}

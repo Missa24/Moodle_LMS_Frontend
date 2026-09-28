@@ -1,6 +1,8 @@
 import { apiService } from "@/api/api";
 import {
     Certificado,
+    CertificadoAdminResponse,
+    CertificadoSchema,
     VerificarCertificado,
     VerificarCertificadoSchema,
 } from "../Schema/CertificadoSchema";
@@ -8,6 +10,39 @@ import {
 export async function MisCertificados(): Promise<Certificado[]> {
     const response = await apiService.get(
         "/certificados/mis-certificados",
+    );
+
+    return response.data;
+}
+
+export async function obtenerCertificadosAdmin(
+    page = 1,
+    limit = 10,
+    buscar = "",
+): Promise<CertificadoAdminResponse> {
+    const response = await apiService.get(
+        "/certificados",
+        {
+            params: {
+                page,
+                limit,
+                buscar: buscar || undefined,
+            },
+        },
+    );
+
+    return response.data;
+}
+
+export async function actualizarNombreCertificado(
+    idCertificado: string,
+    nombreCertificado: string,
+) {
+    const response = await apiService.patch(
+        `/certificados/${idCertificado}/nombre`,
+        {
+            nombreCertificado,
+        },
     );
 
     return response.data;
@@ -68,4 +103,14 @@ export async function emitirCertificadoCurso(
     );
 
     return response.data;
+}
+
+export async function obtenerCertificadoPorId(
+    idCertificado: string,
+) {
+    const response = await apiService.get(
+        `/certificados/${idCertificado}`,
+    );
+
+    return CertificadoSchema.parse(response.data,);
 }
