@@ -50,11 +50,7 @@ const getEstadoVariant = (
 };
 
 export function CertificadoDetallePage() {
-    const {
-        id = "",
-    } = useParams<{
-        id: string;
-    }>();
+    const { id = "", } = useParams<{ id: string; }>();
 
     const {
         data: certificado,
@@ -115,7 +111,7 @@ export function CertificadoDetallePage() {
         actualizarNombre.mutate(
             {
                 idCertificado:
-                    certificado.idCertificado!,
+                    certificado.id!,
                 nombreCertificado,
             },
             {
@@ -127,12 +123,12 @@ export function CertificadoDetallePage() {
     };
 
     const handleDescargar = () => {
-        if (!certificado?.idCertificado) {
+        if (!certificado?.id) {
             return;
         }
 
         descargar.mutate(
-            certificado.idCertificado,
+            certificado.id,
         );
     };
 
@@ -399,7 +395,7 @@ export function CertificadoDetallePage() {
                                     className="gap-2"
                                     disabled={
                                         descargar.isPending ||
-                                        !certificado.idCertificado
+                                        !certificado.id
                                     }
                                     onClick={
                                         handleDescargar

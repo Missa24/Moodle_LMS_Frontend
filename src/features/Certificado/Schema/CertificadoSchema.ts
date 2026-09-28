@@ -2,67 +2,46 @@ import z from "zod";
 
 export const CertificadoUsuarioSchema = z.object({
     id: z.string(),
-
     username: z.string(),
-
     correo: z.string(),
-
     perfil: z
         .object({
             nombre: z.string().nullable(),
-
-            apellidoPaterno: z
-                .string()
-                .nullable(),
-
-            apellidoMaterno: z
-                .string()
-                .nullable(),
+            apellidoPaterno: z.string().nullable(),
+            apellidoMaterno: z.string().nullable(),
         })
         .nullable(),
 });
 
 export const CertificadoCursoSchema = z.object({
     id: z.string(),
-
     nombre: z.string(),
-
     slug: z.string(),
 });
 
 export const CertificadoModuloSchema = z.object({
     id: z.string(),
-
     nombre: z.string(),
-
     cursoId: z.string(),
 });
 
-export const CertificadoInscripcionSchema =
-    z.object({
-        id: z.string(),
-
-        numeroInscripcion: z.string(),
-
-        fechaInscripcion: z.string(),
-
-        estado: z.string(),
-
-        porcentajeAvance: z.number(),
-
-        modulo: CertificadoModuloSchema.nullable(),
-    });
+export const CertificadoInscripcionSchema = z.object({
+    id: z.string(),
+    numeroInscripcion: z.string(),
+    fechaInscripcion: z.string(),
+    estado: z.string(),
+    porcentajeAvance: z.number(),
+    modulo: CertificadoModuloSchema.nullable(),
+});
 
 export const CertificadoSchema = z.object({
     idCertificado: z.string().nullable(),
-
     idInscripcion: z.string().nullable(),
-
     idModulo: z.string().nullable(),
-
     idUsuario: z.string(),
-
     idCurso: z.string().nullable(),
+
+    nombre: z.string(),
 
     nombreCertificado: z
         .string()
@@ -70,13 +49,10 @@ export const CertificadoSchema = z.object({
 
     nombreSugerido: z
         .string()
-        .nullable(),
-
-    nombre: z.string(),
+        .nullable()
+        .optional(),
 
     descripcion: z.string(),
-
-    titulo: z.string().nullable(),
 
     tipo: z.string(),
 
@@ -89,126 +65,195 @@ export const CertificadoSchema = z.object({
     numeroCertificado: z
         .string()
         .nullable(),
-
-    codigoVerificacion: z
-        .string()
-        .nullable(),
-
-    usuario: CertificadoUsuarioSchema
-        .nullable(),
-
-    curso: CertificadoCursoSchema
-        .nullable(),
-
-    inscripcion:
-        CertificadoInscripcionSchema
-            .nullable(),
 });
+
+export const CertificadosSchema = z.array(
+    CertificadoSchema,
+);
 
 export type Certificado = z.infer<
     typeof CertificadoSchema
 >;
 
-export const CertificadoAdminMetaSchema =
-    z.object({
-        total: z.number(),
+export const CertificadoAdminSchema = z.object({
+    id: z.string(),
 
-        page: z.number(),
+    tipo: z.string(),
 
-        limit: z.number(),
+    usuarioId: z.string(),
 
-        totalPages: z.number(),
-    });
+    inscripcionId: z
+        .string()
+        .nullable(),
 
-export const CertificadoAdminResponseSchema =
-    z.object({
-        data: z.array(
-            CertificadoSchema,
-        ),
+    cursoId: z
+        .string()
+        .nullable(),
 
-        meta: CertificadoAdminMetaSchema,
-    });
+    plantillaId: z
+        .string()
+        .nullable(),
 
-export type CertificadoAdminResponse =
-    z.infer<
-        typeof CertificadoAdminResponseSchema
-    >;
+    codigoVerificacion: z.string(),
 
-export const VerificarCertificadoSchema =
-    z.object({
-        valido: z.boolean(),
+    numeroCertificado: z.string(),
 
-        certificado: z.object({
-            id: z.string(),
+    nombreCertificado: z
+        .string()
+        .nullable(),
 
-            codigoVerificacion: z.string(),
+    titulo: z.string(),
 
-            numeroCertificado: z.string(),
+    descripcion: z.string(),
 
-            titulo: z.string(),
+    fechaEmision: z.string(),
 
-            tipo: z.string(),
+    rutaPdf: z
+        .string()
+        .nullable(),
 
-            estado: z.string(),
+    urlVerificacion: z
+        .string()
+        .nullable(),
 
-            fechaEmision: z.string(),
+    hashVerificacion: z
+        .string()
+        .nullable(),
 
-            estudiante: z.object({
-                nombreCompleto:
-                    z.string(),
+    estado: z.string(),
 
-                nombre:
-                    z.string().nullable(),
+    intentos: z.number(),
 
-                apellidoPaterno:
-                    z.string().nullable(),
+    emitidoPor: z
+        .string()
+        .nullable(),
 
-                apellidoMaterno:
-                    z.string().nullable(),
+    anuladoEn: z
+        .string()
+        .nullable(),
 
-                tipoDocumentoIdentidad:
-                    z.string().nullable(),
+    motivoAnulacion: z
+        .string()
+        .nullable(),
 
-                numeroDocumento:
-                    z.string().nullable(),
-            }),
+    creadoEn: z.string(),
 
-            curso: z
-                .object({
-                    id: z.string(),
+    actualizadoEn: z.string(),
 
-                    nombre: z.string(),
+    usuario: CertificadoUsuarioSchema,
 
-                    slug: z.string(),
-                })
+    curso: CertificadoCursoSchema.nullable(),
+
+    inscripcion:
+        CertificadoInscripcionSchema.nullable(),
+});
+
+export type CertificadoAdmin = z.infer<
+    typeof CertificadoAdminSchema
+>;
+
+export const CertificadoDetalleSchema =
+    CertificadoAdminSchema;
+
+export type CertificadoDetalle = z.infer<
+    typeof CertificadoDetalleSchema
+>;
+
+export const CertificadoAdminMetaSchema = z.object({
+    total: z.number(),
+    page: z.number(),
+    limit: z.number(),
+    totalPages: z.number(),
+});
+
+export const CertificadoAdminResponseSchema = z.object({
+    data: z.array(
+        CertificadoAdminSchema,
+    ),
+
+    meta: CertificadoAdminMetaSchema,
+});
+
+export type CertificadoAdminResponse = z.infer<
+    typeof CertificadoAdminResponseSchema
+>;
+
+/* =========================================================
+   VERIFICACIÓN PÚBLICA
+   ========================================================= */
+
+export const VerificarCertificadoSchema = z.object({
+    valido: z.boolean(),
+
+    certificado: z.object({
+        id: z.string(),
+
+        codigoVerificacion: z.string(),
+
+        numeroCertificado: z.string(),
+
+        titulo: z.string(),
+
+        tipo: z.string(),
+
+        estado: z.string(),
+
+        fechaEmision: z.string(),
+
+        estudiante: z.object({
+            nombreCompleto: z.string(),
+
+            nombre: z
+                .string()
                 .nullable(),
 
-            modulo: z
-                .object({
-                    id: z.string(),
-
-                    nombre: z.string(),
-
-                    cursoId: z.string(),
-                })
+            apellidoPaterno: z
+                .string()
                 .nullable(),
 
-            inscripcion: z
-                .object({
-                    numeroInscripcion:
-                        z.string(),
+            apellidoMaterno: z
+                .string()
+                .nullable(),
 
-                    fechaInscripcion:
-                        z.string(),
+            tipoDocumentoIdentidad: z
+                .string()
+                .nullable(),
 
-                    fechaFinalizacion:
-                        z.string().nullable(),
-                })
+            numeroDocumento: z
+                .string()
                 .nullable(),
         }),
-    });
 
-export type VerificarCertificado =
-    z.infer<
-        typeof VerificarCertificadoSchema
-    >;
+        curso: z
+            .object({
+                id: z.string(),
+                nombre: z.string(),
+                slug: z.string(),
+            })
+            .nullable(),
+
+        modulo: z
+            .object({
+                id: z.string(),
+                nombre: z.string(),
+                cursoId: z.string(),
+            })
+            .nullable(),
+
+        inscripcion: z
+            .object({
+                numeroInscripcion: z.string(),
+
+                fechaInscripcion: z.string(),
+
+                fechaFinalizacion: z
+                    .string()
+                    .nullable(),
+            })
+            .nullable(),
+    }),
+});
+
+export type VerificarCertificado = z.infer<
+    typeof VerificarCertificadoSchema
+>;

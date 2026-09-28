@@ -38,7 +38,6 @@ export function useCertificadosAdmin(
             limit,
             buscar,
         ],
-
         queryFn: () =>
             obtenerCertificadosAdmin(
                 page,
@@ -66,8 +65,7 @@ export function useCertificado(
 }
 
 export function useActualizarNombreCertificado() {
-    const queryClient =
-        useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: ({
@@ -82,7 +80,7 @@ export function useActualizarNombreCertificado() {
                 nombreCertificado,
             ),
 
-        onSuccess: () => {
+        onSuccess: (_, variables) => {
             queryClient.invalidateQueries({
                 queryKey: [
                     "certificados",
@@ -96,39 +94,47 @@ export function useActualizarNombreCertificado() {
                     "mis-certificados",
                 ],
             });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "certificados",
+                    "detalle",
+                    variables.idCertificado,
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "certificados",
+                    "verificar",
+                ],
+            });
         },
     });
 }
 
 export function useDescargarCertificado() {
+
     return useMutation({
-        mutationFn:
-            descargarCertificado,
+        mutationFn: descargarCertificado,
 
         onSuccess: (blob) => {
             const url =
-                window.URL.createObjectURL(
-                    blob,
-                );
+                window.URL.createObjectURL(blob);
 
             const link =
                 document.createElement("a");
 
             link.href = url;
-            link.download =
-                "certificado.pdf";
+            link.download = "certificado.pdf";
 
-            document.body.appendChild(
-                link,
-            );
+            document.body.appendChild(link);
 
             link.click();
 
             link.remove();
 
-            window.URL.revokeObjectURL(
-                url,
-            );
+            window.URL.revokeObjectURL(url);
         },
     });
 }
@@ -144,9 +150,7 @@ export function useVerificarCertificado(
         ],
 
         queryFn: () =>
-            verificarCertificado(
-                codigo!,
-            ),
+            verificarCertificado(codigo!),
 
         enabled: Boolean(codigo),
 
@@ -155,8 +159,7 @@ export function useVerificarCertificado(
 }
 
 export function useEmitirCertificadoModulo() {
-    const queryClient =
-        useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: ({
@@ -178,13 +181,19 @@ export function useEmitirCertificadoModulo() {
                     "mis-certificados",
                 ],
             });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "certificados",
+                    "admin",
+                ],
+            });
         },
     });
 }
 
 export function useEmitirCertificadoCurso() {
-    const queryClient =
-        useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: ({
@@ -204,6 +213,13 @@ export function useEmitirCertificadoCurso() {
                 queryKey: [
                     "certificados",
                     "mis-certificados",
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "certificados",
+                    "admin",
                 ],
             });
         },

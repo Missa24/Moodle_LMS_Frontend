@@ -2,7 +2,8 @@ import { apiService } from "@/api/api";
 import {
     Certificado,
     CertificadoAdminResponse,
-    CertificadoSchema,
+    CertificadoDetalle,
+    CertificadoDetalleSchema,
     VerificarCertificado,
     VerificarCertificadoSchema,
 } from "../Schema/CertificadoSchema";
@@ -107,10 +108,12 @@ export async function emitirCertificadoCurso(
 
 export async function obtenerCertificadoPorId(
     idCertificado: string,
-) {
+): Promise<CertificadoDetalle> {
     const response = await apiService.get(
         `/certificados/${idCertificado}`,
     );
 
-    return CertificadoSchema.parse(response.data,);
+    return CertificadoDetalleSchema.parse(
+        response.data,
+    );
 }

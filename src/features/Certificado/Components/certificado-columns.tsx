@@ -1,6 +1,9 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
+import type {
+    ColumnDef,
+} from "@tanstack/react-table";
+
 import {
     Eye,
     MoreHorizontal,
@@ -18,26 +21,36 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import type { Certificado } from "../Schema/CertificadoSchema";
+import type {
+    CertificadoAdmin,
+} from "../Schema/CertificadoSchema";
 
 interface CertificadoColumnsProps {
     onView: (
-        certificado: Certificado,
+        certificado: CertificadoAdmin,
     ) => void;
 }
 
 export function CertificadoColumns({
     onView,
-}: CertificadoColumnsProps): ColumnDef<Certificado>[] {
+}: CertificadoColumnsProps): ColumnDef<CertificadoAdmin>[] {
     return [
         {
             id: "estudiante",
 
             accessorFn: (row) =>
                 [
-                    row.usuario?.perfil?.nombre,
-                    row.usuario?.perfil?.apellidoPaterno,
-                    row.usuario?.perfil?.apellidoMaterno,
+                    row.usuario
+                        .perfil
+                        ?.nombre,
+
+                    row.usuario
+                        .perfil
+                        ?.apellidoPaterno,
+
+                    row.usuario
+                        .perfil
+                        ?.apellidoMaterno,
                 ]
                     .filter(Boolean)
                     .join(" "),
@@ -49,13 +62,17 @@ export function CertificadoColumns({
                     row.original;
 
                 const perfil =
-                    certificado.usuario?.perfil;
+                    certificado
+                        .usuario
+                        .perfil;
 
                 const nombreCompleto =
                     [
                         perfil?.nombre,
-                        perfil?.apellidoPaterno,
-                        perfil?.apellidoMaterno,
+                        perfil
+                            ?.apellidoPaterno,
+                        perfil
+                            ?.apellidoMaterno,
                     ]
                         .filter(Boolean)
                         .join(" ");
@@ -64,6 +81,8 @@ export function CertificadoColumns({
                     <div className="min-w-[180px]">
                         <p className="font-medium">
                             {nombreCompleto ||
+                                certificado
+                                    .nombreCertificado ||
                                 "Sin nombre"}
                         </p>
 
@@ -71,7 +90,7 @@ export function CertificadoColumns({
                             {
                                 certificado
                                     .usuario
-                                    ?.correo
+                                    .correo
                             }
                         </p>
                     </div>
@@ -90,11 +109,9 @@ export function CertificadoColumns({
 
             cell: ({ row }) => (
                 <span className="font-medium">
-                    {
-                        row.original
-                            .nombreCertificado ||
-                        "Sin nombre"
-                    }
+                    {row.original
+                        .nombreCertificado ||
+                        "Sin nombre"}
                 </span>
             ),
         },
@@ -104,7 +121,8 @@ export function CertificadoColumns({
 
             accessorFn: (row) =>
                 row.curso?.nombre ??
-                row.inscripcion?.modulo
+                row.inscripcion
+                    ?.modulo
                     ?.nombre ??
                 "",
 
@@ -115,7 +133,8 @@ export function CertificadoColumns({
                     row.original;
 
                 if (
-                    certificado.curso
+                    certificado
+                        .curso
                         ?.nombre
                 ) {
                     return (
@@ -135,20 +154,17 @@ export function CertificadoColumns({
                     );
                 }
 
-                if (
+                const modulo =
                     certificado
                         .inscripcion
-                        ?.modulo
-                        ?.nombre
-                ) {
+                        ?.modulo;
+
+                if (modulo?.nombre) {
                     return (
                         <div>
                             <p className="font-medium">
                                 {
-                                    certificado
-                                        .inscripcion
-                                        .modulo
-                                        .nombre
+                                    modulo.nombre
                                 }
                             </p>
 
@@ -159,7 +175,11 @@ export function CertificadoColumns({
                     );
                 }
 
-                return "Sin formación";
+                return (
+                    <span className="text-muted-foreground">
+                        Sin formación
+                    </span>
+                );
             },
         },
 
@@ -170,7 +190,10 @@ export function CertificadoColumns({
 
             cell: ({ row }) => (
                 <Badge variant="secondary">
-                    {row.original.tipo}
+                    {
+                        row.original
+                            .tipo
+                    }
                 </Badge>
             ),
         },
@@ -211,14 +234,15 @@ export function CertificadoColumns({
                     row.original
                         .fechaEmision;
 
-                if (!fecha) {
-                    return "Sin fecha";
-                }
-
                 return new Date(
                     fecha,
                 ).toLocaleDateString(
                     "es-BO",
+                    {
+                        year: "numeric",
+                        month: "short",
+                        day: "2-digit",
+                    },
                 );
             },
         },
@@ -232,10 +256,14 @@ export function CertificadoColumns({
             header:
                 "N.º certificado",
 
-            cell: ({ row }) =>
-                row.original
-                    .numeroCertificado ||
-                "Sin número",
+            cell: ({ row }) => (
+                <span className="whitespace-nowrap font-mono text-xs">
+                    {
+                        row.original
+                            .numeroCertificado
+                    }
+                </span>
+            ),
         },
 
         {
@@ -253,6 +281,7 @@ export function CertificadoColumns({
                             asChild
                         >
                             <Button
+                                type="button"
                                 variant="ghost"
                                 className="h-8 w-8 p-0"
                             >
@@ -260,7 +289,7 @@ export function CertificadoColumns({
                                     Abrir menú
                                 </span>
 
-                                <MoreHorizontal className="h-4 w-4" />
+                                <MoreHorizontal className="size-4" />
                             </Button>
                         </DropdownMenuTrigger>
 
@@ -280,7 +309,7 @@ export function CertificadoColumns({
                                     )
                                 }
                             >
-                                <Eye className="mr-2 h-4 w-4" />
+                                <Eye className="mr-2 size-4" />
 
                                 Ver certificado
                             </DropdownMenuItem>
