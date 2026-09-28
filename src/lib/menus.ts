@@ -11,6 +11,7 @@ import {
     faUserPlus,
     faTags,
     faDollar,
+    faCertificate,
 } from "@fortawesome/free-solid-svg-icons";
 
 export interface MenuItem {
@@ -72,5 +73,11 @@ export const menuItems: MenuItem[] = [
         icon: faDollar,
         url: "/panel/ventas",
         permission: PERMISSIONS.VENTAS.VER,
+    },
+    {
+        title: "Gestión de certificados",
+        icon: faCertificate,
+        url: "/panel/gestion-certificados",
+        permission: PERMISSIONS.CERTIFICADOS.VER,
     },
 ];

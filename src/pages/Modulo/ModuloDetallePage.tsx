@@ -95,20 +95,15 @@ export default function ModuloDetallePage() {
         );
     };
 
-    const inscrito =
-        accesoModulo?.inscrito ?? false;
+    const inscrito = accesoModulo?.inscrito ?? false;
 
-    const tieneAcceso =
-        accesoModulo?.tieneAcceso ?? false;
+    const tieneAcceso = accesoModulo?.tieneAcceso ?? false;
 
-    const porcentajeAvance =
-        accesoModulo?.inscripcion
-            ?.porcentajeAvance ?? 0;
+    const porcentajeAvance = accesoModulo?.inscripcion?.porcentajeAvance ?? 0;
 
     return (
         <div className="space-y-6 p-4 text-foreground sm:p-6">
 
-            {/* VOLVER */}
 
             <Button
                 type="button"
@@ -145,7 +140,6 @@ export default function ModuloDetallePage() {
                         xl:grid-cols-[minmax(0,1fr)_380px]
                     ">
 
-                        {/* CONTENIDO PRINCIPAL */}
 
                         <div className="min-w-0 space-y-6">
 
@@ -292,7 +286,6 @@ export default function ModuloDetallePage() {
                             </div>
                         </div>
 
-                        {/* SIDEBAR */}
 
                         <aside className="min-w-0 lg:self-start">
                             <div className="
@@ -363,7 +356,6 @@ export default function ModuloDetallePage() {
                                         />
                                     )}
 
-                                {/* TIENE ACCESO */}
 
                                 {!isLoadingAcceso &&
                                     inscrito &&

@@ -64,6 +64,9 @@ export const PERMISSIONS = {
 
     CERTIFICADOS: {
         VER: "certificados.ver",
+        CREAR: "certificados.crear",
+        EDITAR: "certificados.editar",
+        ELIMINAR: "certificados.eliminar",
     },
 
     LEADS: {

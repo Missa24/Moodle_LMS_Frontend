@@ -6,7 +6,7 @@ import { createBrowserRouter, Navigate, Outlet, } from "react-router-dom";
 
 import { Loading } from "@/components/common/app/Loading";
 import { RouteErrorBoundary } from "@/components/common/app/Routeerrorboundary";
-import { PermissionRoute } from "@/features/Auth/components/PermissionRoute";
+import { PermissionRoute } from "@/features/Auth/Components/PermissionRoute";
 import { PERMISSIONS } from "@/utils/constants";
 import { PublicRouteFallback } from "@/components/common/app/PublicRouteFallback";
 import RootLayout from "@/layouts/RootLayout";
@@ -60,6 +60,8 @@ const EditarInscripcionPage = lazy(() => import("@/pages/Inscripciones/EditarIns
 const InscripcionesPage = lazy(() => import("@/pages/Inscripciones/InscripcionesPage").then((module) => ({ default: module.InscripcionesPage, })),);
 
 const MisCertificados = lazy(() => import("@/pages/Certificados/MisCertificados"),);
+const CertificadosPage = lazy(() => import("@/pages/Certificados/CertificadosPage").then((module) => ({ default: module.CertificadosPage, }),),);
+const CertificadoDetallePage = lazy(() => import("@/pages/Certificados/CertificadoDetallePage").then((module) => ({ default: module.CertificadoDetallePage, }),),);
 
 const LeadsPage = lazy(() => import("@/pages/Lead/LeadPage"),);
 
@@ -291,6 +293,28 @@ export const router =
                                     path: "certificados",
                                     element: privateLazyElement(MisCertificados,),
                                 },
+                                {
+                                    path: "gestion-certificados",
+                                    children: [
+                                        {
+                                            index: true,
+                                            element: withPermission(
+                                                PERMISSIONS.CERTIFICADOS.VER,
+                                                privateLazyElement(CertificadosPage,),
+                                                "No tienes permisos para ver los certificados",
+                                            ),
+                                        },
+                                        {
+                                            path: ":id",
+                                            element: withPermission(
+                                                PERMISSIONS.CERTIFICADOS.VER,
+                                                privateLazyElement(CertificadoDetallePage,),
+                                                "No tienes permisos para ver el certificado",
+                                            ),
+                                        },
+                                    ],
+                                },
+
                                 {
                                     path: "ventas",
                                     element: withPermission(PERMISSIONS.VENTAS.VER, privateLazyElement(VentasPage,), "No tienes permisos para ver las ventas",),

@@ -17,11 +17,11 @@ interface CertificadoInfoProps {
         estudiante: {
             nombreCompleto: string;
             tipoDocumentoIdentidad:
-            | string
-            | null;
+                | string
+                | null;
             numeroDocumento:
-            | string
-            | null;
+                | string
+                | null;
         };
 
         curso?: {
@@ -60,9 +60,7 @@ export function CertificadoInfo({
                 </p>
 
                 <h2 className="mt-2 text-2xl font-bold">
-                    {
-                        certificado.titulo
-                    }
+                    {certificado.titulo}
                 </h2>
             </div>
 
@@ -71,7 +69,7 @@ export function CertificadoInfo({
                     icon={
                         <User className="size-5" />
                     }
-                    label="Estudiante"
+                    label="Nombre en el certificado"
                     value={
                         certificado
                             .estudiante
@@ -85,9 +83,7 @@ export function CertificadoInfo({
                         <IdCard className="size-5" />
                     }
                     label="Documento"
-                    value={
-                        documento
-                    }
+                    value={documento}
                 />
 
                 {certificado.curso && (

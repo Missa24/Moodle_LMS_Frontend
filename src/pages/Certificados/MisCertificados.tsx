@@ -1,10 +1,11 @@
-
 import { AppTitle } from "@/components/common/Apptittle";
 import { QueryState } from "@/components/common/QueryState";
 import { CertificadoEmpty } from "@/features/Certificado/Components/CertificadoEmpty";
 import { CertificadoList } from "@/features/Certificado/Components/CertificadoList";
 import {
     useDescargarCertificado,
+    useEmitirCertificadoCurso,
+    useEmitirCertificadoModulo,
     useMisCertificados,
 } from "@/features/Certificado/Hook/CertificadoHook";
 
@@ -13,11 +14,55 @@ const MisCertificados = () => {
 
     const {
         mutate: descargar,
-        isPending,
+        isPending: isDownloading,
         variables: downloadingId,
     } = useDescargarCertificado();
 
+    const {
+        mutate: emitirModulo,
+        isPending: isEmitiendoModulo,
+        variables: moduloVariables,
+    } = useEmitirCertificadoModulo();
+
+    const {
+        mutate: emitirCurso,
+        isPending: isEmitiendoCurso,
+        variables: cursoVariables,
+    } = useEmitirCertificadoCurso();
+
     const certificados = certificadosQuery.data ?? [];
+
+    const handleEmitir = (
+        certificado: (typeof certificados)[number],
+        nombreCertificado: string,
+    ) => {
+        if (certificado.tipo === "modulo") {
+            if (!certificado.idInscripcion) return;
+
+            emitirModulo({
+                inscripcionId: certificado.idInscripcion,
+                nombreCertificado,
+            });
+
+            return;
+        }
+
+        if (certificado.tipo === "curso") {
+            if (!certificado.idCurso) return;
+
+            emitirCurso({
+                cursoId: certificado.idCurso,
+                nombreCertificado,
+            });
+        }
+    };
+
+    const emittingId =
+        isEmitiendoModulo && moduloVariables
+            ? moduloVariables.inscripcionId
+            : isEmitiendoCurso && cursoVariables
+                ? cursoVariables.cursoId
+                : undefined;
 
     return (
         <div className="space-y-6 p-6">
@@ -38,11 +83,9 @@ const MisCertificados = () => {
                     <CertificadoList
                         certificados={certificados}
                         onDownload={descargar}
-                        downloadingId={
-                            isPending
-                                ? downloadingId
-                                : undefined
-                        }
+                        onEmitir={handleEmitir}
+                        downloadingId={isDownloading ? downloadingId : undefined}
+                        emittingId={emittingId}
                     />
                 )}
             </QueryState>
