@@ -10,11 +10,8 @@ import { Input } from "@/components/ui/input";
 
 
 import { useDebouncedValue } from "@/hooks/useDebouncedValue";
-import { useModulePermissions } from "@/hooks/useModulePermissions";
 
-import { PERMISSIONS } from "@/utils/constants";
 import { useCertificadosAdmin } from "@/features/Certificado/Hook/CertificadoHook";
-import { Certificado } from "@/features/Certificado/Schema/CertificadoSchema";
 import { CertificadoColumns } from "@/features/Certificado/Components/certificado-columns";
 import { useNavigate } from "react-router-dom";
 
@@ -27,10 +24,6 @@ export const CertificadosPage = () => {
     const searchDebounced = useDebouncedValue(
         search,
         500,
-    );
-
-    const { puedeEditar } = useModulePermissions(
-        PERMISSIONS.CERTIFICADOS,
     );
 
     const {
