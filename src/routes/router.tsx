@@ -6,7 +6,7 @@ import { createBrowserRouter, Navigate, Outlet, } from "react-router-dom";
 
 import { Loading } from "@/components/common/app/Loading";
 import { RouteErrorBoundary } from "@/components/common/app/Routeerrorboundary";
-import { PermissionRoute } from "@/features/Auth/components/PermissionRoute";
+import { PermissionRoute } from "@/features/Auth/Components/PermissionRoute";
 import { PERMISSIONS } from "@/utils/constants";
 import { PublicRouteFallback } from "@/components/common/app/PublicRouteFallback";
 import RootLayout from "@/layouts/RootLayout";

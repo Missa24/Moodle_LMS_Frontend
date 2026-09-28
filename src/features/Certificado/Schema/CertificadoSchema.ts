@@ -1,17 +1,31 @@
 import z from "zod";
 
 export const CertificadoSchema = z.object({
-    idCertificado: z.string(),
+    idCertificado: z.string().nullable(),
+
     idInscripcion: z.string().nullable(),
+
     idModulo: z.string().nullable(),
+
     idUsuario: z.string(),
+
     idCurso: z.string().nullable(),
+
+    nombreCertificado: z.string().nullable(),
+
+    nombreSugerido: z.string().nullable(),
+
     nombre: z.string(),
+
     descripcion: z.string(),
+
     tipo: z.string(),
+
     estado: z.string(),
-    fechaEmision: z.string(),
-    numeroCertificado: z.string(),
+
+    fechaEmision: z.string().nullable(),
+
+    numeroCertificado: z.string().nullable(),
 });
 
 export type Certificado = z.infer<
@@ -23,26 +37,39 @@ export const VerificarCertificadoSchema = z.object({
 
     certificado: z.object({
         id: z.string(),
+
         codigoVerificacion: z.string(),
+
         numeroCertificado: z.string(),
+
         titulo: z.string(),
+
         tipo: z.string(),
+
         estado: z.string(),
+
         fechaEmision: z.string(),
 
         estudiante: z.object({
             nombreCompleto: z.string(),
+
             nombre: z.string().nullable(),
+
             apellidoPaterno: z.string().nullable(),
+
             apellidoMaterno: z.string().nullable(),
+
             tipoDocumentoIdentidad: z.string().nullable(),
+
             numeroDocumento: z.string().nullable(),
         }),
 
         curso: z
             .object({
                 id: z.string(),
+
                 nombre: z.string(),
+
                 slug: z.string(),
             })
             .nullable(),
@@ -50,7 +77,9 @@ export const VerificarCertificadoSchema = z.object({
         modulo: z
             .object({
                 id: z.string(),
+
                 nombre: z.string(),
+
                 cursoId: z.string(),
             })
             .nullable(),
@@ -58,8 +87,11 @@ export const VerificarCertificadoSchema = z.object({
         inscripcion: z
             .object({
                 numeroInscripcion: z.string(),
+
                 fechaInscripcion: z.string(),
-                fechaFinalizacion: z.string().nullable(),
+
+                fechaFinalizacion:
+                    z.string().nullable(),
             })
             .nullable(),
     }),
