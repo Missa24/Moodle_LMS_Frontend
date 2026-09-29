@@ -10,7 +10,10 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 ARG VITE_API_URL=/api
+ARG VITE_SITE_URL
+
 ENV VITE_API_URL=$VITE_API_URL
+ENV VITE_SITE_URL=$VITE_SITE_URL
 
 RUN pnpm build
 
