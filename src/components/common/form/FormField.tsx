@@ -482,24 +482,22 @@ export function FormField<
 
                     case "richtext": {
                         return (
-                            <Field
-                                data-invalid={fieldState.invalid}
-                            >
-                                <FieldLabel>
-                                    {label}
-                                </FieldLabel>
+                            <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel>{label}</FieldLabel>
 
-                                <RichTextEditor
-                                    value={
-                                        field.value ?? ""
-                                    }
-                                    onChange={
-                                        field.onChange
-                                    }
-                                    minHeight={
-                                        props.minHeight
-                                    }
-                                />
+                                <div className="
+                                        text-foreground
+                                        [&_strong]:!text-foreground
+                                        [&_b]:!text-foreground
+                                        [&_li]:!text-foreground
+                                        [&_li::marker]:!text-foreground
+                                    ">
+                                    <RichTextEditor
+                                        value={field.value ?? ""}
+                                        onChange={field.onChange}
+                                        minHeight={props.minHeight}
+                                    />
+                                </div>
 
                                 {hint && (
                                     <p className="text-xl text-muted-foreground">
@@ -508,16 +506,11 @@ export function FormField<
                                 )}
 
                                 {fieldState.invalid && (
-                                    <FieldError
-                                        errors={[
-                                            fieldState.error,
-                                        ]}
-                                    />
+                                    <FieldError errors={[fieldState.error]} />
                                 )}
                             </Field>
                         );
                     }
-
                     default: {
                         return (
                             <Field
