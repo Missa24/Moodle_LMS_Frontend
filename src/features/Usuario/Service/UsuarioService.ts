@@ -1,6 +1,6 @@
 import { apiService } from "@/api/api";
 import { ResponseType } from "@/utils/Schema/Response";
-import { MiPerfilType, UpdateMiPerfilType, UserCreateType, UserIndexResponseType, UserUpdateType, UsuarioDetailType } from "../Schema/UsuarioSchema";
+import { MiPerfilType, ResetPasswordResponse, UpdateMiPerfilType, UserCreateType, UserIndexResponseType, UserUpdateType, UsuarioDetailType } from "../Schema/UsuarioSchema";
 
 
 export async function GetPaginatedUsers(page: number, limit: number = 10): Promise<UserIndexResponseType> {
@@ -55,4 +55,11 @@ export async function updateProfilePhoto(file: File,) {
     const { data } = await apiService.patch("/user/mi-perfil/foto", formData,);
 
     return data;
+}
+
+export async function ResetUserPassword(
+    id: string,
+): Promise<ResetPasswordResponse> {
+    const response = await apiService.patch(`/user/password/${id}`);
+    return response.data;
 }

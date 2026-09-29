@@ -207,3 +207,17 @@ export const CambiarMiPasswordSchema = z
 export type CambiarMiPasswordType = z.infer<
     typeof CambiarMiPasswordSchema
 >;
+
+export const ResetPasswordResponseSchema = z.object({
+    mensaje: z.string(),
+    passwordTemporal: z.string(),
+    usuario: z.object({
+        id: z.string(),
+        username: z.string(),
+        correo: z.string().email(),
+    }),
+});
+
+export type ResetPasswordResponse = z.infer<
+    typeof ResetPasswordResponseSchema
+>;

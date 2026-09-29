@@ -1,7 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { useState } from "react";
 import { LogIn, UserPlus } from "lucide-react";
 
 import {
@@ -17,33 +16,12 @@ import { useAuthDialogStore } from "@/store/authDialogStore";
 
 import { LoginForm } from "./FormLogin";
 import { RegisterForm } from "./RegisterForm";
-import { useGoogleAuth } from "../Hook/useGoogleAuth";
 
 type AuthMode = "login" | "register";
 
 export function LoginDialog() {
     const { isOpen, close } = useAuthDialogStore();
     const [mode, setMode] = useState<AuthMode>("login");
-    const [googleButtonWidth, setGoogleButtonWidth] = useState("360");
-    const googleAuth = useGoogleAuth();
-
-    useEffect(() => {
-        const updateGoogleWidth = () => {
-            const width = Math.max(
-                240,
-                Math.min(360, window.innerWidth - 64),
-            );
-
-            setGoogleButtonWidth(String(width));
-        };
-
-        updateGoogleWidth();
-        window.addEventListener("resize", updateGoogleWidth);
-
-        return () => {
-            window.removeEventListener("resize", updateGoogleWidth);
-        };
-    }, []);
 
     const handleClose = () => {
         close();
@@ -134,41 +112,6 @@ export function LoginDialog() {
                         ) : (
                             <RegisterForm onSuccess={handleSuccess} />
                         )}
-
-                        <div className="flex items-center gap-3">
-                            <div className="h-px flex-1 bg-border" />
-
-                            <span className="shrink-0 text-[9px] font-medium uppercase tracking-wider text-muted-foreground">
-                                o continúa con
-                            </span>
-
-                            <div className="h-px flex-1 bg-border" />
-                        </div>
-
-                        <div className="flex w-full justify-center overflow-hidden">
-                            <GoogleLogin
-                                onSuccess={(response) => {
-                                    if (!response.credential) return;
-
-                                    googleAuth.mutate(
-                                        response.credential,
-                                        {
-                                            onSuccess: handleSuccess,
-                                        },
-                                    );
-                                }}
-                                onError={() => {
-                                    console.error(
-                                        "Error al iniciar sesión con Google",
-                                    );
-                                }}
-                                text="continue_with"
-                                shape="pill"
-                                size="large"
-                                width={googleButtonWidth}
-                            />
-                        </div>
-
                         <p className="text-center text-[9px] leading-4 text-muted-foreground sm:text-[10px]">
                             Al continuar, aceptas los términos de uso y la
                             política de privacidad de Élite Academy.

@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { ChangeMyPassword, CreateUser, DeleteUserLogically, GetMiPerfil, GetPaginatedUsers, GetUserById, SearchUsers, UpdateMiPerfil, updateProfilePhoto, UpdateUser } from "../Service/UsuarioService";
+import { ChangeMyPassword, CreateUser, DeleteUserLogically, GetMiPerfil, GetPaginatedUsers, GetUserById, ResetUserPassword, SearchUsers, UpdateMiPerfil, updateProfilePhoto, UpdateUser } from "../Service/UsuarioService";
 import { UserCreateType, UserUpdateType } from "../Schema/UsuarioSchema";
 import { useAuthStore } from "@/store/authStore";
 
@@ -183,6 +183,35 @@ export function useUpdateProfilePhoto() {
 
         onError: () => {
             toast.error("No se pudo actualizar la foto de perfil");
+        },
+    });
+}
+
+export function useResetUserPassword() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (id: string) => ResetUserPassword(id),
+
+        onSuccess: async (_, id) => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: ["users"],
+                }),
+                queryClient.invalidateQueries({
+                    queryKey: ["user", id],
+                }),
+            ]);
+
+            toast.success(
+                "Contraseña restablecida correctamente",
+            );
+        },
+
+        onError: () => {
+            toast.error(
+                "No se pudo restablecer la contraseña",
+            );
         },
     });
 }
