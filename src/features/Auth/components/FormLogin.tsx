@@ -19,7 +19,7 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
     const onSubmit = (data: AuthSchemaType) => {
         loginMutation.mutate(data, {
-            onSuccess: () => onSuccess?.(), 
+            onSuccess: () => onSuccess?.(),
         });
     };
 
@@ -49,8 +49,16 @@ export function LoginForm({ onSuccess }: LoginFormProps) {
 
                     <FieldDescription className="text-center">
                         ¿Te olvidaste tu contraseña?{" "}
-                        <a href="#" className="underline">Escribe a soporte</a>
+                        <a
+                            href="https://wa.me/59164152202"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline"
+                        >
+                            Escribe a soporte
+                        </a>
                     </FieldDescription>
+
                 </Field>
             </FieldGroup>
         </form>

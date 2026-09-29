@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
-const PHONE = "59170586532";
+const PHONE = "59164152202";
 const MESSAGE = "Hola, quisiera información por favor";
 
 export default function FloatingWhatsApp() {
