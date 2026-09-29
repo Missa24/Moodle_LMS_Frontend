@@ -1,5 +1,3 @@
-import { Link } from "react-router-dom";
-
 import {
   Accordion,
   AccordionContent,
@@ -101,17 +99,6 @@ export const FAQ = ({
             <p className="mx-auto mt-4 max-w-md text-sm leading-[1.7] text-muted-foreground sm:text-base lg:mx-0">
               Todo lo que necesitas saber sobre nuestros cursos,
               la plataforma y tu experiencia de aprendizaje.
-            </p>
-
-            <p className="mx-auto mt-4 max-w-md text-xs leading-[1.7] text-muted-foreground sm:text-sm lg:mx-0">
-              ¿Tienes otra consulta?{" "}
-              <Link
-                to="/contact"
-                className="font-medium text-primary underline decoration-primary/30 underline-offset-4 transition-colors hover:decoration-primary"
-              >
-                Contáctanos
-              </Link>
-              .
             </p>
 
             <div className="mx-auto mt-6 flex items-center justify-center gap-2 lg:mx-0 lg:justify-start">
