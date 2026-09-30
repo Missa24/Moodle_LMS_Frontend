@@ -30,14 +30,6 @@ export function Footer() {
             href: "/#categorias",
         },
         {
-            name: "Nuestra comunidad",
-            href: "/#comunidad",
-        },
-        {
-            name: "Docentes",
-            href: "/#docentes",
-        },
-        {
             name: "Preguntas frecuentes",
             href: "/#faq",
         },
@@ -158,12 +150,13 @@ export function Footer() {
                                 {navigation.map(
                                     (item) => (
                                         <li key={item.name}>
-                                            <Link
-                                                to={item.href}
+                                            <a
+                                                href={item.href}
                                                 className="text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
                                             >
                                                 {item.name}
-                                            </Link>
+                                            </a>
+
                                         </li>
                                     )
                                 )}

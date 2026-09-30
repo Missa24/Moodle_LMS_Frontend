@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 @keyframes loading-bar {
   0% {
     transform: translateX(-100%);

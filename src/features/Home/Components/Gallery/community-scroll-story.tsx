@@ -1,9 +1,3 @@
-import {
-    motion,
-} from "motion/react";
-
-import { Image } from "@/components/ui/image";
-
 const COMMUNITY_IMAGES = [
     {
         src: "/comunidad/1.webp",
@@ -60,401 +54,100 @@ export const CommunityScrollStory = () => {
     return (
         <section
             id="comunidad"
-            className="scroll-mt-28 overflow-hidden bg-background py-16 sm:py-20 md:py-24 lg:py-28"
+            className="bg-background py-16 sm:py-20 lg:py-28"
         >
-            <div className="mx-auto max-w-[1800px] px-5 sm:px-8 lg:px-[50px]">
-                <motion.div
-                    initial={{
-                        opacity: 0,
-                        y: 30,
-                    }}
-                    whileInView={{
-                        opacity: 1,
-                        y: 0,
-                    }}
-                    viewport={{
-                        once: true,
-                        amount: 0.2,
-                    }}
-                    transition={{
-                        duration: 0.65,
-                        ease: [
-                            0.22,
-                            1,
-                            0.36,
-                            1,
-                        ],
-                    }}
-                    className="mx-auto max-w-5xl text-center"
-                >
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-primary sm:text-xs">
+            <div className="mx-auto max-w-[1500px] px-5 sm:px-8 lg:px-12">
+                {/* CABECERA */}
+                <div className="mx-auto max-w-4xl text-center">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
                         Nuestra comunidad
                     </p>
 
-                    <h2 className="mt-3 text-3xl font-medium leading-[1.02] tracking-[-0.045em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
+                    <h2 className="mt-4 text-3xl font-medium leading-[1.05] tracking-[-0.04em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
                         Juntos crecemos,
+                        <br />
                         aprendemos y avanzamos
                     </h2>
 
-                    <p className="mx-auto mt-5 max-w-2xl text-sm leading-[1.75] text-muted-foreground sm:text-base lg:text-lg">
-                        Una comunidad que conecta experiencias,
-                        conocimiento y personas con el deseo de
-                        seguir creciendo.
+                    <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+                        Una comunidad que conecta experiencias, conocimiento y
+                        personas con el deseo de seguir creciendo.
                     </p>
-                </motion.div>
+                </div>
 
-                <div className="relative mt-12 sm:mt-16 md:mt-20">
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4 md:hidden">
-                        {COMMUNITY_IMAGES
-                            .slice(0, 5)
-                            .map(
-                                (
-                                    image,
-                                    index
-                                ) => (
-                                    <motion.div
-                                        key={
-                                            image.src
-                                        }
-                                        initial={{
-                                            opacity: 0,
-                                            scale: 0.96,
-                                            y: 20,
-                                        }}
-                                        whileInView={{
-                                            opacity: 1,
-                                            scale: 1,
-                                            y: 0,
-                                        }}
-                                        viewport={{
-                                            once: true,
-                                            amount: 0.15,
-                                        }}
-                                        transition={{
-                                            duration: 0.5,
-                                            delay:
-                                                index *
-                                                0.05,
-                                        }}
-                                        className={
-                                            index ===
-                                                0
-                                                ? "relative col-span-2 aspect-[16/9] overflow-hidden rounded-2xl"
-                                                : "relative aspect-[4/3] overflow-hidden rounded-2xl"
-                                        }
-                                    >
-                                        <Image
-                                            src={
-                                                image.src
-                                            }
-                                            alt={
-                                                image.alt
-                                            }
-                                            fill
-                                            sizes={
-                                                index ===
-                                                    0
-                                                    ? "100vw"
-                                                    : "50vw"
-                                            }
-                                            className="object-cover"
-                                        />
-                                    </motion.div>
-                                )
-                            )}
+                {/* GALERÍA */}
+                <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-4 md:mt-16 md:grid-cols-4 lg:gap-5">
+                    {/* FOTO PRINCIPAL */}
+                    <div className="col-span-2 row-span-2 overflow-hidden rounded-3xl bg-muted">
+                        <img
+                            src={COMMUNITY_IMAGES[0].src}
+                            alt={COMMUNITY_IMAGES[0].alt}
+                            loading="lazy"
+                            decoding="async"
+                            className="aspect-[4/3] h-full w-full object-cover"
+                        />
                     </div>
 
-                    <div className="relative hidden h-[620px] md:block lg:h-[720px] xl:h-[780px]">
-                        <motion.div
-                            initial={{
-                                opacity: 0,
-                                scale: 0.94,
-                                y: 25,
-                            }}
-                            whileInView={{
-                                opacity: 1,
-                                scale: 1,
-                                y: 0,
-                            }}
-                            viewport={{
-                                once: true,
-                                amount: 0.2,
-                            }}
-                            transition={{
-                                duration: 0.7,
-                            }}
-                            className="absolute left-[4%] top-[13%] h-[170px] w-[230px] rotate-[-5deg] overflow-hidden rounded-[1.5rem] lg:h-[210px] lg:w-[290px] xl:h-[230px] xl:w-[320px]"
+                    {COMMUNITY_IMAGES.slice(1).map((image, index) => (
+                        <div
+                            key={image.src}
+                            className={`overflow-hidden rounded-2xl bg-muted ${index === 4
+                                ? "hidden md:block"
+                                : ""
+                                }`}
                         >
-                            <Image
-                                src={
-                                    COMMUNITY_IMAGES[0]
-                                        .src
-                                }
-                                alt={
-                                    COMMUNITY_IMAGES[0]
-                                        .alt
-                                }
-                                fill
-                                sizes="320px"
-                                className="object-cover"
+                            <img
+                                src={image.src}
+                                alt={image.alt}
+                                loading="lazy"
+                                decoding="async"
+                                className="aspect-[4/3] h-full w-full object-cover transition-transform duration-300 hover:scale-[1.03]"
                             />
-                        </motion.div>
-
-                        <motion.div
-                            initial={{
-                                opacity: 0,
-                                scale: 0.94,
-                                y: 25,
-                            }}
-                            whileInView={{
-                                opacity: 1,
-                                scale: 1,
-                                y: 0,
-                            }}
-                            viewport={{
-                                once: true,
-                                amount: 0.2,
-                            }}
-                            transition={{
-                                duration: 0.7,
-                                delay: 0.08,
-                            }}
-                            className="absolute left-[31%] top-[2%] h-[145px] w-[205px] rotate-[3deg] overflow-hidden rounded-[1.5rem] lg:h-[180px] lg:w-[250px] xl:h-[200px] xl:w-[280px]"
-                        >
-                            <Image
-                                src={
-                                    COMMUNITY_IMAGES[1]
-                                        .src
-                                }
-                                alt={
-                                    COMMUNITY_IMAGES[1]
-                                        .alt
-                                }
-                                fill
-                                sizes="280px"
-                                className="object-cover"
-                            />
-                        </motion.div>
-
-                        <motion.div
-                            initial={{
-                                opacity: 0,
-                                scale: 0.94,
-                                y: 25,
-                            }}
-                            whileInView={{
-                                opacity: 1,
-                                scale: 1,
-                                y: 0,
-                            }}
-                            viewport={{
-                                once: true,
-                                amount: 0.2,
-                            }}
-                            transition={{
-                                duration: 0.7,
-                                delay: 0.16,
-                            }}
-                            className="absolute right-[6%] top-[10%] h-[160px] w-[220px] rotate-[-4deg] overflow-hidden rounded-[1.5rem] lg:h-[200px] lg:w-[280px] xl:h-[220px] xl:w-[310px]"
-                        >
-                            <Image
-                                src={
-                                    COMMUNITY_IMAGES[3]
-                                        .src
-                                }
-                                alt={
-                                    COMMUNITY_IMAGES[3]
-                                        .alt
-                                }
-                                fill
-                                sizes="310px"
-                                className="object-cover"
-                            />
-                        </motion.div>
-
-                        <motion.div
-                            initial={{
-                                opacity: 0,
-                                scale: 0.94,
-                                y: 25,
-                            }}
-                            whileInView={{
-                                opacity: 1,
-                                scale: 1,
-                                y: 0,
-                            }}
-                            viewport={{
-                                once: true,
-                                amount: 0.2,
-                            }}
-                            transition={{
-                                duration: 0.7,
-                                delay: 0.22,
-                            }}
-                            className="absolute left-[13%] bottom-[5%] h-[170px] w-[235px] rotate-[4deg] overflow-hidden rounded-[1.5rem] lg:h-[210px] lg:w-[290px] xl:h-[230px] xl:w-[320px]"
-                        >
-                            <Image
-                                src={
-                                    COMMUNITY_IMAGES[4]
-                                        .src
-                                }
-                                alt={
-                                    COMMUNITY_IMAGES[4]
-                                        .alt
-                                }
-                                fill
-                                sizes="320px"
-                                className="object-cover"
-                            />
-                        </motion.div>
-
-                        <motion.div
-                            initial={{
-                                opacity: 0,
-                                scale: 0.94,
-                                y: 25,
-                            }}
-                            whileInView={{
-                                opacity: 1,
-                                scale: 1,
-                                y: 0,
-                            }}
-                            viewport={{
-                                once: true,
-                                amount: 0.2,
-                            }}
-                            transition={{
-                                duration: 0.7,
-                                delay: 0.3,
-                            }}
-                            className="absolute right-[16%] bottom-[3%] h-[165px] w-[230px] rotate-[-3deg] overflow-hidden rounded-[1.5rem] lg:h-[205px] lg:w-[285px] xl:h-[225px] xl:w-[315px]"
-                        >
-                            <Image
-                                src={
-                                    COMMUNITY_IMAGES[6]
-                                        .src
-                                }
-                                alt={
-                                    COMMUNITY_IMAGES[6]
-                                        .alt
-                                }
-                                fill
-                                sizes="315px"
-                                className="object-cover"
-                            />
-                        </motion.div>
-
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <motion.div
-                                initial={{
-                                    opacity: 0,
-                                    scale: 0.96,
-                                }}
-                                whileInView={{
-                                    opacity: 1,
-                                    scale: 1,
-                                }}
-                                viewport={{
-                                    once: true,
-                                    amount: 0.3,
-                                }}
-                                transition={{
-                                    duration: 0.7,
-                                    delay: 0.15,
-                                }}
-                                className="max-w-lg text-center lg:max-w-xl"
-                            >
-                                <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-primary lg:text-xs">
-                                    Élite Academy
-                                </p>
-
-                                <p className="mt-4 text-4xl font-medium leading-[1.02] tracking-[-0.045em] text-foreground lg:text-5xl xl:text-6xl">
-                                    Una comunidad para seguir
-                                    creciendo
-                                </p>
-                            </motion.div>
                         </div>
-                    </div>
+                    ))}
                 </div>
 
-                <div className="mt-16 border-t border-border sm:mt-20 lg:mt-24">
-                    {COMMUNITY_TEXTS.map(
-                        (
-                            item,
-                            index
-                        ) => (
-                            <motion.div
-                                key={
-                                    item.number
-                                }
-                                initial={{
-                                    opacity: 0,
-                                    y: 30,
-                                }}
-                                whileInView={{
-                                    opacity: 1,
-                                    y: 0,
-                                }}
-                                viewport={{
-                                    once: true,
-                                    amount: 0.2,
-                                }}
-                                transition={{
-                                    duration: 0.55,
-                                    delay:
-                                        index *
-                                        0.06,
-                                }}
-                                className="grid gap-4 border-b border-border py-7 sm:py-9 md:grid-cols-[100px_1fr_1fr] md:items-start md:gap-8 lg:grid-cols-[140px_0.85fr_1.15fr] lg:py-11"
-                            >
-                                <div>
-                                    <span className="text-sm font-semibold text-primary sm:text-base">
-                                        {
-                                            item.number
-                                        }
-                                    </span>
-                                </div>
+                {/* TEXTO CENTRAL */}
+                <div className="mx-auto mt-16 max-w-4xl text-center sm:mt-20">
+                    <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+                        Élite Academy
+                    </p>
 
-                                <h3 className="max-w-md text-xl font-semibold leading-[1.08] tracking-[-0.035em] text-foreground sm:text-2xl lg:text-3xl">
-                                    {
-                                        item.title
-                                    }
-                                </h3>
-
-                                <p className="max-w-xl text-sm leading-[1.7] text-muted-foreground sm:text-base">
-                                    {
-                                        item.description
-                                    }
-                                </p>
-                            </motion.div>
-                        )
-                    )}
+                    <h3 className="mt-4 text-3xl font-medium tracking-[-0.04em] text-foreground sm:text-4xl lg:text-5xl">
+                        Una comunidad para seguir creciendo
+                    </h3>
                 </div>
 
-                <motion.div
-                    initial={{
-                        opacity: 0,
-                        y: 25,
-                    }}
-                    whileInView={{
-                        opacity: 1,
-                        y: 0,
-                    }}
-                    viewport={{
-                        once: true,
-                        amount: 0.2,
-                    }}
-                    transition={{
-                        duration: 0.6,
-                    }}
-                    className="pt-14 text-center sm:pt-16 lg:pt-20"
-                >
-                    <p className="mx-auto max-w-4xl text-3xl font-medium leading-[1.03] tracking-[-0.045em] text-foreground sm:text-4xl md:text-5xl lg:text-6xl">
+                {/* INFORMACIÓN */}
+                <div className="mt-16 border-t border-border sm:mt-20">
+                    {COMMUNITY_TEXTS.map((item) => (
+                        <div
+                            key={item.number}
+                            className="grid gap-4 border-b border-border py-7 sm:py-9 md:grid-cols-[80px_1fr_1.2fr] md:gap-8 lg:py-10"
+                        >
+                            <span className="text-sm font-semibold text-primary">
+                                {item.number}
+                            </span>
+
+                            <h3 className="text-xl font-semibold leading-tight tracking-[-0.03em] text-foreground sm:text-2xl">
+                                {item.title}
+                            </h3>
+
+                            <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                                {item.description}
+                            </p>
+                        </div>
+                    ))}
+                </div>
+
+                {/* CIERRE */}
+                <div className="pt-14 text-center sm:pt-20">
+                    <p className="mx-auto max-w-4xl text-3xl font-medium leading-[1.05] tracking-[-0.04em] text-foreground sm:text-4xl md:text-5xl">
                         Siempre hay un lugar para seguir creciendo
                     </p>
 
-                    <div className="mx-auto mt-6 h-1 w-14 rounded-full bg-primary sm:w-16" />
-                </motion.div>
+                    <div className="mx-auto mt-6 h-1 w-14 rounded-full bg-primary" />
+                </div>
             </div>
         </section>
     );
