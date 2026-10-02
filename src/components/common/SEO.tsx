@@ -15,7 +15,7 @@ const SITE_NAME = "Elaces Latam";
 
 const SITE_URL = (
     import.meta.env.VITE_SITE_URL ||
-    "https://moodle-lms-frontend-eight.vercel.app"
+    "https://elaceslatam.com"
 ).replace(/\/$/, "");
 
 const getAbsoluteUrl = (value: string) => {
