@@ -49,7 +49,7 @@ export function useLogin() {
             }
 
             toast.success(
-                "Bienvenido a Elite Academy",
+                "Bienvenido a Elaces Latam",
             );
 
             const redirectPath =
@@ -168,7 +168,7 @@ export function useRegister() {
         ) => {
             login(response);
 
-            toast.success("Cuenta creada correctamente. ¡Bienvenido a Elite Academy!");
+            toast.success("Cuenta creada correctamente. ¡Bienvenido a Elaces Latam!");
 
             const redirectPath = sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY);
 

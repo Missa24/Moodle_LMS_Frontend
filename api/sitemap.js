@@ -1,6 +1,6 @@
 const SITE_URL =
     process.env.SITE_URL ||
-    "https://moodle-lms-frontend-eight.vercel.app";
+    "https://elaceslatam.com";
 
 const API_URL = process.env.API_URL;
 

@@ -1,6 +1,5 @@
 import DOMPurify from "dompurify";
 
-import { LeccionVideoPlayer } from "./LeccionVideoPlayer";
 import { RecursoViewer } from "./RecursoViewer";
 import { LeccionCheckpointForm } from "./LeccionCheckpointForm";
 import { LeccionesTimeline } from "./LeccionesTimeline";
@@ -11,6 +10,7 @@ import {
     useGetLeccion,
     useGetLeccionesConProgreso,
 } from "../Hook/LeccionHook";
+import { VideoLeccion } from "./VideoLeccion";
 
 interface LeccionContenidoProps {
     leccion: NonNullable<
@@ -80,18 +80,14 @@ export function LeccionContenido({
                 <h1 className="text-xl font-bold tracking-tight sm:text-2xl">
                     {leccion.nombre}
                 </h1>
-
-                {leccion.urlVideo && (
-                    <LeccionVideoPlayer
-                        urlVideo={
-                            leccion.urlVideo
-                        }
-                        proveedorVideo={
-                            leccion.proveedorVideo
-                        }
-                    />
-                )}
-
+                {leccion.tipoLeccion === "video" &&
+                    leccion.urlVideo && (
+                        <VideoLeccion
+                            urlVideo={
+                                leccion.urlVideo
+                            }
+                        />
+                    )}
                 {contenidoSeguro && (
                     <article
                         className="prose prose-sm max-w-none text-foreground prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-blockquote:text-muted-foreground prose-code:text-foreground prose-pre:bg-muted prose-pre:text-foreground prose-hr:border-border sm:prose-base dark:prose-invert"

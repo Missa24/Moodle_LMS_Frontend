@@ -17,12 +17,12 @@ export default function Home() {
         <>
             <SEO
                 title="Formación profesional en estética"
-                description="Elite Academy ofrece formación profesional en cosmetología, cosmiatría, dermatocosmiatría, maquillaje profesional y estética."
+                description="Elaces Latam ofrece formación profesional en cosmetología, cosmiatría, dermatocosmiatría, maquillaje profesional y estética."
                 url="/"
                 structuredData={{
                     "@context": "https://schema.org",
                     "@type": "EducationalOrganization",
-                    name: "Elite Academy",
+                    name: "Elaces Latam",
                     url: "https://moodle-lms-frontend-eight.vercel.app",
                     address: {
                         "@type": "PostalAddress",

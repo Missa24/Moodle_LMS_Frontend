@@ -13,6 +13,7 @@ import RootLayout from "@/layouts/RootLayout";
 import PublicLayout from "@/layouts/PublicLayout";
 
 import HomePage from "@/pages/Home/Home";
+import { DriveVideoTestPage } from "@/pages/DriveVideoTestPage";
 
 const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"),);
 
@@ -121,6 +122,10 @@ export const router =
                         {
                             index: true,
                             element: <HomePage />,
+                        },
+                        {
+                            path: "/test-drive-video",
+                            element: <DriveVideoTestPage />,
                         },
                         {
                             path: "cursos",

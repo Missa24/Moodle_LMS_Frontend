@@ -51,7 +51,7 @@ export default function CursoPageContent() {
     const descripcionCurso =
         curso?.descripcionCorta ||
         curso?.descripcionCompleta ||
-        "Explora los módulos y contenidos disponibles en esta formación de Elite Academy.";
+        "Explora los módulos y contenidos disponibles en esta formación de Elaces Latam.";
 
     const structuredData = curso
         ? {
@@ -62,7 +62,7 @@ export default function CursoPageContent() {
             url: `${siteUrl}/cursos/${curso.id}`,
             provider: {
                 "@type": "EducationalOrganization",
-                name: "Elite Academy",
+                name: "Elaces Latam",
                 url: siteUrl,
             },
             ...(curso.rutaPortada

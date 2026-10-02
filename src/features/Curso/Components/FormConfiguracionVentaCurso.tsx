@@ -1,15 +1,41 @@
 "use client";
 
 import { useState } from "react";
-import { ImageIcon, Loader2 } from "lucide-react";
+
+import {
+    ImageIcon,
+    Loader2,
+} from "lucide-react";
+
 import { toast } from "sonner";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { DialogFooter } from "@/components/ui/dialog";
+import {
+    Button,
+} from "@/components/ui/button";
 
-import { useConfigurarVentaCurso } from "../Hook/CursoHook";
+import {
+    Input,
+} from "@/components/ui/input";
+
+import {
+    Label,
+} from "@/components/ui/label";
+
+import {
+    DialogFooter,
+} from "@/components/ui/dialog";
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+
+import {
+    useConfigurarVentaCurso,
+} from "../Hook/CursoHook";
 
 import type {
     ConfiguracionVentaCursoType,
@@ -17,13 +43,18 @@ import type {
     TipoDescuentoCursoType,
 } from "../Schema/CursoSchema";
 
+
 interface Props {
     cursoId: string;
+
     configuracion:
     ConfiguracionVentaCursoType | null;
+
     precio?: CursoPrecioType;
+
     onSuccess?: () => void;
 }
+
 
 export function FormConfiguracionVentaCurso({
     cursoId,
@@ -34,6 +65,7 @@ export function FormConfiguracionVentaCurso({
     const configurar =
         useConfigurarVentaCurso();
 
+
     const [
         tipoDescuento,
         setTipoDescuento,
@@ -41,8 +73,9 @@ export function FormConfiguracionVentaCurso({
         useState<TipoDescuentoCursoType>(
             configuracion
                 ?.tipoDescuento ??
-            "PORCENTAJE",
+            "PORCENTAJE"
         );
+
 
     const [
         porcentaje,
@@ -52,10 +85,11 @@ export function FormConfiguracionVentaCurso({
             configuracion?.porcentaje !=
                 null
                 ? String(
-                    configuracion.porcentaje,
+                    configuracion.porcentaje
                 )
-                : "",
+                : ""
         );
+
 
     const [
         moduloDescuentoId,
@@ -64,8 +98,9 @@ export function FormConfiguracionVentaCurso({
         useState(
             configuracion
                 ?.moduloDescuentoId ??
-            "",
+            ""
         );
+
 
     const [
         urlPago,
@@ -74,16 +109,18 @@ export function FormConfiguracionVentaCurso({
         useState(
             configuracion
                 ?.urlPago ??
-            "",
+            ""
         );
+
 
     const [
         qrPagoBolivia,
         setQrPagoBolivia,
     ] =
         useState<File | null>(
-            null,
+            null
         );
+
 
     const [
         habilitado,
@@ -92,8 +129,9 @@ export function FormConfiguracionVentaCurso({
         useState(
             configuracion
                 ?.habilitado ??
-            true,
+            true
         );
+
 
     const guardar = () => {
         if (
@@ -102,23 +140,24 @@ export function FormConfiguracionVentaCurso({
         ) {
             const valor =
                 Number(
-                    porcentaje,
+                    porcentaje
                 );
 
             if (
                 !Number.isFinite(
-                    valor,
+                    valor
                 ) ||
                 valor <= 0 ||
                 valor > 100
             ) {
                 toast.error(
-                    "Ingresa un porcentaje válido entre 0 y 100",
+                    "Ingresa un porcentaje válido entre 0 y 100"
                 );
 
                 return;
             }
         }
+
 
         if (
             tipoDescuento ===
@@ -126,24 +165,26 @@ export function FormConfiguracionVentaCurso({
             !moduloDescuentoId
         ) {
             toast.error(
-                "Selecciona el módulo a descontar",
+                "Selecciona el módulo a descontar"
             );
 
             return;
         }
+
 
         if (
             qrPagoBolivia &&
             !qrPagoBolivia.type.startsWith(
-                "image/",
+                "image/"
             )
         ) {
             toast.error(
-                "El QR debe ser una imagen",
+                "El QR debe ser una imagen"
             );
 
             return;
         }
+
 
         configurar.mutate(
             {
@@ -156,7 +197,7 @@ export function FormConfiguracionVentaCurso({
                         tipoDescuento ===
                             "PORCENTAJE"
                             ? Number(
-                                porcentaje,
+                                porcentaje
                             )
                             : undefined,
 
@@ -179,7 +220,7 @@ export function FormConfiguracionVentaCurso({
             {
                 onSuccess: () => {
                     toast.success(
-                        "Configuración actualizada",
+                        "Configuración actualizada"
                     );
 
                     onSuccess?.();
@@ -187,12 +228,13 @@ export function FormConfiguracionVentaCurso({
 
                 onError: () => {
                     toast.error(
-                        "No se pudo guardar la configuración",
+                        "No se pudo guardar la configuración"
                     );
                 },
-            },
+            }
         );
     };
+
 
     return (
         <div className="space-y-5">
@@ -206,10 +248,11 @@ export function FormConfiguracionVentaCurso({
                         <p className="font-semibold">
                             $
                             {precio.precioBase.toFixed(
-                                2,
+                                2
                             )}
                         </p>
                     </div>
+
 
                     <div>
                         <p className="text-xs text-muted-foreground">
@@ -219,10 +262,11 @@ export function FormConfiguracionVentaCurso({
                         <p className="font-semibold">
                             -$
                             {precio.montoDescuento.toFixed(
-                                2,
+                                2
                             )}
                         </p>
                     </div>
+
 
                     <div>
                         <p className="text-xs text-muted-foreground">
@@ -232,7 +276,7 @@ export function FormConfiguracionVentaCurso({
                         <p className="font-semibold text-primary">
                             $
                             {precio.precioFinal.toFixed(
-                                2,
+                                2
                             )}
                         </p>
                     </div>
@@ -244,29 +288,38 @@ export function FormConfiguracionVentaCurso({
                     Tipo de descuento
                 </Label>
 
-                <select
+                <Select
                     value={
                         tipoDescuento
                     }
-                    onChange={(
-                        event,
+                    onValueChange={(
+                        value
                     ) =>
                         setTipoDescuento(
-                            event
-                                .target
-                                .value as TipoDescuentoCursoType,
+                            value as TipoDescuentoCursoType
                         )
                     }
-                    className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
                 >
-                    <option value="PORCENTAJE">
-                        Porcentaje
-                    </option>
+                    <SelectTrigger className="w-full">
+                        <SelectValue
+                            placeholder="Seleccionar tipo de descuento"
+                        />
+                    </SelectTrigger>
 
-                    <option value="MODULO_GRATIS">
-                        Descontar un módulo
-                    </option>
-                </select>
+                    <SelectContent>
+                        <SelectItem
+                            value="PORCENTAJE"
+                        >
+                            Porcentaje
+                        </SelectItem>
+
+                        <SelectItem
+                            value="MODULO_GRATIS"
+                        >
+                            Descontar un módulo
+                        </SelectItem>
+                    </SelectContent>
+                </Select>
             </div>
 
             {tipoDescuento ===
@@ -285,12 +338,12 @@ export function FormConfiguracionVentaCurso({
                                 porcentaje
                             }
                             onChange={(
-                                event,
+                                event
                             ) =>
                                 setPorcentaje(
                                     event
                                         .target
-                                        .value,
+                                        .value
                                 )
                             }
                             placeholder="Ej: 20"
@@ -305,48 +358,45 @@ export function FormConfiguracionVentaCurso({
                             Módulo a descontar
                         </Label>
 
-                        <select
+                        <Select
                             value={
                                 moduloDescuentoId
                             }
-                            onChange={(
-                                event,
-                            ) =>
-                                setModuloDescuentoId(
-                                    event
-                                        .target
-                                        .value,
-                                )
+                            onValueChange={
+                                setModuloDescuentoId
                             }
-                            className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
                         >
-                            <option value="">
-                                Seleccionar módulo...
-                            </option>
+                            <SelectTrigger className="w-full">
+                                <SelectValue
+                                    placeholder="Seleccionar módulo..."
+                                />
+                            </SelectTrigger>
 
-                            {precio?.modulos.map(
-                                (
-                                    modulo,
-                                ) => (
-                                    <option
-                                        key={
-                                            modulo.id
-                                        }
-                                        value={
-                                            modulo.id
-                                        }
-                                    >
-                                        {
-                                            modulo.nombre
-                                        }{" "}
-                                        - $
-                                        {modulo.precio.toFixed(
-                                            2,
-                                        )}
-                                    </option>
-                                ),
-                            )}
-                        </select>
+                            <SelectContent>
+                                {precio?.modulos.map(
+                                    (
+                                        modulo
+                                    ) => (
+                                        <SelectItem
+                                            key={
+                                                modulo.id
+                                            }
+                                            value={
+                                                modulo.id
+                                            }
+                                        >
+                                            {
+                                                modulo.nombre
+                                            }{" "}
+                                            - $
+                                            {modulo.precio.toFixed(
+                                                2
+                                            )}
+                                        </SelectItem>
+                                    )
+                                )}
+                            </SelectContent>
+                        </Select>
                     </div>
                 )}
 
@@ -357,14 +407,16 @@ export function FormConfiguracionVentaCurso({
 
                 <Input
                     type="url"
-                    value={urlPago}
+                    value={
+                        urlPago
+                    }
                     onChange={(
-                        event,
+                        event
                     ) =>
                         setUrlPago(
                             event
                                 .target
-                                .value,
+                                .value
                         )
                     }
                     placeholder="https://..."
@@ -375,6 +427,7 @@ export function FormConfiguracionVentaCurso({
                 <Label>
                     QR de pago Bolivia
                 </Label>
+
 
                 {configuracion
                     ?.urlPagoBolivia && (
@@ -393,10 +446,12 @@ export function FormConfiguracionVentaCurso({
                         </div>
                     )}
 
+
                 <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed p-4 transition-colors hover:bg-muted/40">
                     <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
                         <ImageIcon className="size-5 text-muted-foreground" />
                     </div>
+
 
                     <div className="min-w-0 flex-1">
                         <p className="text-sm font-medium">
@@ -409,22 +464,24 @@ export function FormConfiguracionVentaCurso({
                         </p>
 
                         <p className="text-xs text-muted-foreground">
-                            PNG, JPG, JPEG o WEBP
+                            PNG, JPG, JPEG
+                            o WEBP
                         </p>
                     </div>
+
 
                     <input
                         type="file"
                         accept="image/png,image/jpeg,image/webp"
                         className="hidden"
                         onChange={(
-                            event,
+                            event
                         ) =>
                             setQrPagoBolivia(
                                 event
                                     .target
                                     .files?.[0] ??
-                                null,
+                                null
                             )
                         }
                     />
@@ -438,18 +495,19 @@ export function FormConfiguracionVentaCurso({
                         habilitado
                     }
                     onChange={(
-                        event,
+                        event
                     ) =>
                         setHabilitado(
                             event
                                 .target
-                                .checked,
+                                .checked
                         )
                     }
                 />
 
                 <span className="text-sm font-medium">
-                    Habilitar compra del curso completo
+                    Habilitar compra del
+                    curso completo
                 </span>
             </label>
 

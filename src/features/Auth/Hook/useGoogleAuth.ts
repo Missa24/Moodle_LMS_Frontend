@@ -39,7 +39,7 @@ export function useGoogleAuth() {
             login(response);
 
             toast.success(
-                "Bienvenido a Elite Academy"
+                "Bienvenido a Elaces Latam"
             );
 
             const redirectPath =

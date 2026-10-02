@@ -1,7 +1,13 @@
+"use client";
+
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
-import { Loader2, CheckCircle2, ArrowRight } from "lucide-react";
+import {
+    Loader2,
+    CheckCircle2,
+    ArrowRight,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -9,6 +15,7 @@ import { QueryState } from "@/components/common/QueryState";
 import { getApiErrorCode } from "@/utils/apiError";
 
 import { LeccionBloqueadaDialog } from "./LeccionBloqueadaDialog";
+
 import {
     useGetFormularioLeccion,
     useMarcarLeccionCompletada,
@@ -21,7 +28,9 @@ interface LeccionCheckpointFormProps {
     estaCompletada: boolean;
     siguienteLeccionId?: string;
     linkPago?: string | null;
-    onNavigateSiguiente: (leccionId: string) => void;
+    onNavigateSiguiente: (
+        leccionId: string
+    ) => void;
     onCompletada?: (data: {
         moduloCompletado: boolean;
         cursoCompletado: boolean;
@@ -42,67 +51,93 @@ export function LeccionCheckpointForm({
     onNavigateSiguiente,
     onCompletada,
 }: LeccionCheckpointFormProps) {
-    const queryClient = useQueryClient();
+    const queryClient =
+        useQueryClient();
 
     const {
         data: formulario,
         isLoading,
         isError,
         error,
-    } = useGetFormularioLeccion(leccionId);
+    } = useGetFormularioLeccion(
+        leccionId
+    );
 
     const {
         mutate: completar,
         isPending,
-    } = useMarcarLeccionCompletada();
+    } =
+        useMarcarLeccionCompletada();
 
-    const [respuestas, setRespuestas] = useState<
+    const [
+        respuestas,
+        setRespuestas,
+    ] = useState<
         Record<string, string>
     >({});
 
-    const [dialogBloqueo, setDialogBloqueo] = useState<{
+    const [
+        dialogBloqueo,
+        setDialogBloqueo,
+    ] = useState<{
         open: boolean;
-        motivo: MotivoBloqueo | null;
+        motivo:
+        | MotivoBloqueo
+        | null;
     }>({
         open: false,
         motivo: null,
     });
 
-    const handleExito = async (data: {
-        moduloCompletado: boolean;
-        cursoCompletado: boolean;
-    }) => {
-        await Promise.all([
-            queryClient.invalidateQueries({
-                queryKey: ["lecciones"],
-            }),
-            queryClient.invalidateQueries({
-                queryKey: ["progreso"],
-            }),
-            queryClient.invalidateQueries({
-                queryKey: ["inscripciones"],
-            }),
-            queryClient.invalidateQueries({
-                queryKey: ["certificados"],
-            }),
-        ]);
+    const handleExito =
+        async (data: {
+            moduloCompletado: boolean;
+            cursoCompletado: boolean;
+        }) => {
+            await Promise.all([
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "lecciones",
+                    ],
+                }),
 
-        toast.success("¡Lección completada!");
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "progreso",
+                    ],
+                }),
 
-        onCompletada?.(data);
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "inscripciones",
+                    ],
+                }),
 
-        if (
-            siguienteLeccionId &&
-            !data.moduloCompletado
-        ) {
-            onNavigateSiguiente(
-                siguienteLeccionId,
+                queryClient.invalidateQueries({
+                    queryKey: [
+                        "certificados",
+                    ],
+                }),
+            ]);
+
+            toast.success(
+                "¡Lección completada!"
             );
-        }
-    };
+
+            onCompletada?.(data);
+
+            if (
+                siguienteLeccionId &&
+                !data.moduloCompletado
+            ) {
+                onNavigateSiguiente(
+                    siguienteLeccionId
+                );
+            }
+        };
 
     const handleError = (
-        error: unknown,
+        error: unknown
     ) => {
         const code =
             getApiErrorCode(error);
@@ -127,10 +162,13 @@ export function LeccionCheckpointForm({
                 error={error}
                 minHeight="min-h-[100px]"
             >
-                <div className="flex flex-col items-start gap-3 rounded-lg border bg-primary/5 p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <div className="flex items-center gap-2 text-sm font-medium text-primary">
-                        <CheckCircle2 className="h-4 w-4" />
-                        Lección completada
+                <div className="flex flex-col items-start gap-3 rounded-lg border bg-primary/5 p-4 text-foreground sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2 text-sm font-normal text-foreground">
+                        <CheckCircle2 className="h-4 w-4 text-foreground" />
+
+                        <span className="font-normal text-foreground">
+                            Lección completada
+                        </span>
                     </div>
 
                     {siguienteLeccionId && (
@@ -141,11 +179,13 @@ export function LeccionCheckpointForm({
                             className="gap-1.5"
                             onClick={() =>
                                 onNavigateSiguiente(
-                                    siguienteLeccionId,
+                                    siguienteLeccionId
                                 )
                             }
                         >
-                            Ir a la siguiente lección
+                            Ir a la siguiente
+                            lección
+
                             <ArrowRight className="h-3.5 w-3.5" />
                         </Button>
                     )}
@@ -174,15 +214,16 @@ export function LeccionCheckpointForm({
                                 },
                                 {
                                     onSuccess: (
-                                        data,
+                                        data
                                     ) => {
                                         void handleExito(
-                                            data,
+                                            data
                                         );
                                     },
+
                                     onError:
                                         handleError,
-                                },
+                                }
                             )
                         }
                     >
@@ -190,11 +231,14 @@ export function LeccionCheckpointForm({
                             <Loader2 className="h-4 w-4 animate-spin" />
                         )}
 
-                        Marcar como completada
+                        Marcar como
+                        completada
                     </Button>
 
                     <LeccionBloqueadaDialog
-                        open={dialogBloqueo.open}
+                        open={
+                            dialogBloqueo.open
+                        }
                         motivo={
                             dialogBloqueo.motivo
                         }
@@ -212,7 +256,7 @@ export function LeccionCheckpointForm({
             (pregunta) =>
                 respuestas[
                 pregunta.id
-                ],
+                ]
         );
 
     const handleSubmit = () => {
@@ -221,11 +265,12 @@ export function LeccionCheckpointForm({
                 (pregunta) => ({
                     preguntaFormularioId:
                         pregunta.id,
+
                     opcionFormularioId:
                         respuestas[
                         pregunta.id
                         ],
-                }),
+                })
             );
 
         completar(
@@ -235,10 +280,13 @@ export function LeccionCheckpointForm({
             },
             {
                 onSuccess: (data) => {
-                    void handleExito(data);
+                    void handleExito(
+                        data
+                    );
                 },
+
                 onError: handleError,
-            },
+            }
         );
     };
 
@@ -250,39 +298,56 @@ export function LeccionCheckpointForm({
             minHeight="min-h-[100px]"
         >
             <>
-                <div className="space-y-5 rounded-lg border bg-muted/10 p-4">
-                    <div className="flex items-center gap-2">
-                        <CheckCircle2 className="h-4 w-4 text-primary" />
+                <div className="space-y-5 rounded-lg border bg-muted/10 p-4 font-normal text-foreground">
+                    <div className="flex items-center gap-2 text-foreground">
+                        <CheckCircle2 className="h-4 w-4 text-foreground" />
 
-                        <p className="text-sm font-medium">
-                            {formulario.titulo}
+                        <p className="text-sm font-normal text-foreground">
+                            {
+                                formulario.titulo
+                            }
                         </p>
                     </div>
 
                     {formulario.preguntas.map(
                         (
                             pregunta,
-                            index,
+                            index
                         ) => (
                             <div
                                 key={
                                     pregunta.id
                                 }
-                                className="space-y-2"
+                                className="space-y-2 text-foreground"
                             >
-                                <div className="flex gap-1 text-sm font-medium">
-                                    <span>
+                                <div className="flex gap-1 text-sm font-normal text-foreground">
+                                    <span className="font-normal text-foreground">
                                         {index +
                                             1}
                                         .
                                     </span>
 
                                     <span
-                                        className="prose prose-sm max-w-none [&>p]:m-0"
+                                        className="
+                                            prose
+                                            prose-sm
+                                            max-w-none
+                                            font-normal
+                                            text-foreground
+                                            dark:prose-invert
+                                            prose-p:text-foreground
+                                            prose-strong:font-normal
+                                            prose-strong:text-foreground
+                                            prose-em:text-foreground
+                                            prose-li:text-foreground
+                                            prose-headings:text-foreground
+                                            [&>p]:m-0
+                                        "
                                         dangerouslySetInnerHTML={{
-                                            __html: DOMPurify.sanitize(
-                                                pregunta.enunciado,
-                                            ),
+                                            __html:
+                                                DOMPurify.sanitize(
+                                                    pregunta.enunciado
+                                                ),
                                         }}
                                     />
                                 </div>
@@ -290,13 +355,28 @@ export function LeccionCheckpointForm({
                                 <div className="space-y-1.5">
                                     {pregunta.opciones.map(
                                         (
-                                            opcion,
+                                            opcion
                                         ) => (
                                             <label
                                                 key={
                                                     opcion.id
                                                 }
-                                                className="flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-muted/40 has-[:checked]:border-primary has-[:checked]:bg-primary/5"
+                                                className="
+                                                    flex
+                                                    cursor-pointer
+                                                    items-center
+                                                    gap-2
+                                                    rounded-md
+                                                    border
+                                                    px-3
+                                                    py-2
+                                                    text-sm
+                                                    font-normal
+                                                    text-foreground
+                                                    hover:bg-muted/40
+                                                    has-[:checked]:border-primary
+                                                    has-[:checked]:bg-primary/5
+                                                "
                                             >
                                                 <input
                                                     type="radio"
@@ -316,26 +396,29 @@ export function LeccionCheckpointForm({
                                                     onChange={() =>
                                                         setRespuestas(
                                                             (
-                                                                prev,
+                                                                prev
                                                             ) => ({
                                                                 ...prev,
+
                                                                 [pregunta.id]:
                                                                     opcion.id,
-                                                            }),
+                                                            })
                                                         )
                                                     }
                                                     className="h-4 w-4"
                                                 />
 
-                                                {
-                                                    opcion.texto
-                                                }
+                                                <span className="font-normal text-foreground">
+                                                    {
+                                                        opcion.texto
+                                                    }
+                                                </span>
                                             </label>
-                                        ),
+                                        )
                                     )}
                                 </div>
                             </div>
-                        ),
+                        )
                     )}
 
                     <Button
@@ -353,7 +436,8 @@ export function LeccionCheckpointForm({
                             <Loader2 className="h-4 w-4 animate-spin" />
                         )}
 
-                        Enviar y completar lección
+                        Enviar y completar
+                        lección
                     </Button>
                 </div>
 

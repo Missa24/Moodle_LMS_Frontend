@@ -9,9 +9,9 @@ import { cn } from "@/lib/utils";
 
 const FAQS = [
   {
-    question: "¿Qué es Élite Academy?",
+    question: "¿Qué es Elaces Latam?",
     answer:
-      "Élite Academy es una plataforma de formación donde puedes acceder a cursos, contenidos académicos y recursos diseñados para acompañar tu aprendizaje y desarrollo profesional.",
+      "Elaces Latam es una plataforma de formación donde puedes acceder a cursos, contenidos académicos y recursos diseñados para acompañar tu aprendizaje y desarrollo profesional.",
   },
   {
     question: "¿Cómo puedo acceder a mis cursos?",
@@ -46,7 +46,7 @@ const FAQS = [
   {
     question: "¿Qué hago si tengo problemas para ingresar a mi cuenta?",
     answer:
-      "Si tienes dificultades para iniciar sesión o acceder a algún contenido, puedes comunicarte con el equipo de soporte de Élite Academy para recibir asistencia.",
+      "Si tienes dificultades para iniciar sesión o acceder a algún contenido, puedes comunicarte con el equipo de soporte de Elaces Latam para recibir asistencia.",
   },
 ];
 

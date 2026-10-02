@@ -79,7 +79,7 @@ export function Footer() {
                             <p className="mt-5 max-w-2xl text-sm leading-[1.7] text-muted-foreground sm:text-base">
                                 Explora nuevas áreas, desarrolla tus habilidades
                                 y continúa construyendo tu camino profesional
-                                junto a Élite Academy.
+                                junto a Elaces Latam.
                             </p>
                         </div>
 
@@ -117,7 +117,7 @@ export function Footer() {
                                 className="inline-flex items-center"
                             >
                                 <span className="text-xl font-bold tracking-[-0.04em] text-primary sm:text-2xl">
-                                    ÉLITE ACADEMY
+                                    Elaces Latam
                                 </span>
                             </Link>
 
@@ -248,7 +248,7 @@ export function Footer() {
                         <p>
                             ©{" "}
                             {new Date().getFullYear()}{" "}
-                            Élite Academy. Todos los
+                            Elaces Latam. Todos los
                             derechos reservados.
                         </p>
 

@@ -1,6 +1,6 @@
-# Elite Academy - LMS Frontend
+# Elaces Latam - LMS Frontend
 
-Plataforma de aprendizaje en línea (Learning Management System) construida con React y TypeScript para la gestión de cursos, módulos, lecciones, estudiantes, compras, progreso, certificados y contenido público de Elite Academy.
+Plataforma de aprendizaje en línea (Learning Management System) construida con React y TypeScript para la gestión de cursos, módulos, lecciones, estudiantes, compras, progreso, certificados y contenido público de Elaces Latam.
 
 ---
 
@@ -135,7 +135,7 @@ features/<Nombre>/
 
 - Node.js 24 recomendado.
 - pnpm 10.
-- Backend de Elite Academy en ejecución.
+- Backend de Elaces Latam en ejecución.
 
 ### Clonar e instalar
 

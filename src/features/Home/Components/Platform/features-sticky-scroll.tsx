@@ -64,7 +64,7 @@ export const FeaturesStickyScroll = () => {
                     <div className="relative mx-auto max-w-5xl">
                         <img
                             src="/features/laptop.png"
-                            alt="Plataforma Élite Academy en computadora"
+                            alt="Plataforma Elaces Latam en computadora"
                             className="h-auto w-full object-contain"
                         />
 
@@ -81,7 +81,7 @@ export const FeaturesStickyScroll = () => {
                         >
                             <img
                                 src="/features/mobile.png"
-                                alt="Plataforma Élite Academy en celular"
+                                alt="Plataforma Elaces Latam en celular"
                                 className="h-auto w-full object-contain drop-shadow-2xl"
                             />
                         </motion.div>
@@ -90,7 +90,7 @@ export const FeaturesStickyScroll = () => {
                     <div className="mt-4 flex justify-center lg:hidden">
                         <img
                             src="/features/mobile.png"
-                            alt="Plataforma Élite Academy en celular"
+                            alt="Plataforma Elaces Latam en celular"
                             className="h-auto w-[55%] max-w-[250px] object-contain drop-shadow-xl sm:w-[36%]"
                         />
                     </div>

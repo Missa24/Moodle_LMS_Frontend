@@ -14,7 +14,7 @@ export const AuthPage = () => {
             <div className="relative z-10 flex min-h-screen flex-col">
                 <header className="flex items-center justify-between px-6 py-6 sm:px-10 lg:px-14">
                     <AppTitle
-                        title="ELITE ACADEMY"
+                        title="Elaces Latam"
                         subtitle="Learning Management System"
                     />
 
@@ -70,7 +70,7 @@ export const AuthPage = () => {
 
                 <footer className="px-6 pb-6 sm:px-10 lg:px-14">
                     <p className="text-xs text-sidebar-foreground/35">
-                        © {new Date().getFullYear()} Elite Academy
+                        © {new Date().getFullYear()} Elaces Latam
                     </p>
                 </footer>
             </div>

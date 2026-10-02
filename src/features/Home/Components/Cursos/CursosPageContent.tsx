@@ -95,7 +95,7 @@ export default function CursosPageContent() {
     const cursosStructuredData = {
         "@context": "https://schema.org",
         "@type": "ItemList",
-        name: "Cursos y certificaciones de Elite Academy",
+        name: "Cursos y certificaciones de Elaces Latam",
         itemListElement: cursos.map((curso, index) => ({
             "@type": "ListItem",
             position: index + 1,
@@ -250,7 +250,7 @@ export default function CursosPageContent() {
         <>
             <SEO
                 title="Cursos y certificaciones"
-                description="Explora los cursos, certificaciones y programas de formación profesional disponibles en Elite Academy."
+                description="Explora los cursos, certificaciones y programas de formación profesional disponibles en Elaces Latam."
                 url="/cursos"
                 structuredData={cursos.length > 0 ? cursosStructuredData : undefined}
             />

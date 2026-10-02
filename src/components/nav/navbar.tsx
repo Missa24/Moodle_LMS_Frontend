@@ -1,17 +1,38 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { CircleUserRound, Menu, Search, X } from "lucide-react";
+import {
+    Link,
+    NavLink,
+} from "react-router-dom";
 
-import { CourseSearch } from "@/features/Home/Components/Cursos/couse-search";
+import {
+    CircleUserRound,
+    Menu,
+    Search,
+    X,
+} from "lucide-react";
+
+import {
+    CourseSearch,
+} from "@/features/Home/Components/Cursos/couse-search";
+
 import { cn } from "@/lib/utils";
-import { useAuthDialogStore } from "@/store/authDialogStore";
-import { useAuthStore } from "@/store/authStore";
 
-import { ModeToggle } from "../ModeToggle";
+import {
+    useAuthDialogStore,
+} from "@/store/authDialogStore";
+
+import {
+    useAuthStore,
+} from "@/store/authStore";
+
+import {
+    ModeToggle,
+} from "../ModeToggle";
 
 import {
     isJwtExpired,
 } from "@/utils/auth/jwt";
+
 
 const ITEMS = [
     {
@@ -24,23 +45,52 @@ const ITEMS = [
     },
 ];
 
+
 export function Navbar() {
-    const token = useAuthStore((state) => state.token,);
+    const token =
+        useAuthStore(
+            (state) => state.token
+        );
 
-    const sesionActiva = Boolean(token) && !isJwtExpired(token!,);
+    const sesionActiva =
+        Boolean(token) &&
+        !isJwtExpired(token!);
 
-    const openLoginDialog = useAuthDialogStore((state) => state.open);
+    const openLoginDialog =
+        useAuthDialogStore(
+            (state) => state.open
+        );
 
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+    const [
+        mobileMenuOpen,
+        setMobileMenuOpen,
+    ] = useState(false);
+
+    const [
+        mobileSearchOpen,
+        setMobileSearchOpen,
+    ] = useState(false);
+
 
     const closeMobilePanels = () => {
         setMobileMenuOpen(false);
         setMobileSearchOpen(false);
     };
 
+
     return (
-        <header className="fixed inset-x-0 top-3 z-[100] px-3 sm:top-5 sm:px-5 lg:top-6">
+        <header
+            className="
+                fixed
+                inset-x-0
+                top-3
+                z-[100]
+                px-3
+                sm:top-5
+                sm:px-5
+                lg:top-6
+            "
+        >
             <div
                 className={cn(
                     "mx-auto w-full max-w-[1050px]",
@@ -48,7 +98,7 @@ export function Navbar() {
                     "border border-border/80",
                     "bg-background/90",
                     "shadow-sm backdrop-blur-xl",
-                    "transition-all duration-300",
+                    "transition-all duration-300"
                 )}
             >
                 <div
@@ -57,72 +107,157 @@ export function Navbar() {
                         "sm:h-[70px] sm:px-4",
                         "lg:grid",
                         "lg:grid-cols-[auto_minmax(280px,430px)_auto]",
-                        "lg:gap-6 lg:px-5",
+                        "lg:gap-6 lg:px-5"
                     )}
                 >
-                    <div className="flex min-w-0 items-center gap-5">
+                    <div
+                        className="
+                            flex
+                            min-w-0
+                            items-center
+                            gap-5
+                        "
+                    >
                         <Link
                             to="/"
-                            onClick={closeMobilePanels}
-                            className="flex shrink-0 items-center"
-                            aria-label="Élite Academy"
+                            onClick={
+                                closeMobilePanels
+                            }
+                            className="
+                                flex
+                                shrink-0
+                                items-center
+                            "
+                            aria-label="Elaces Latam"
                         >
                             <img
-                                src="/logo.png"
-                                alt="Élite Academy"
-                                className="size-10 object-contain sm:size-11"
+                                src="/logo_white.png"
+                                alt="Elaces Latam"
+                                className="
+                                    size-10
+                                    object-contain
+                                    transition-opacity
+                                    duration-300
+                                    dark:hidden
+                                    sm:size-11
+                                "
+                            />
+
+                            <img
+                                src="/logo_black.png"
+                                alt="Elaces Latam"
+                                className="
+                                    hidden
+                                    size-10
+                                    object-contain
+                                    transition-opacity
+                                    duration-300
+                                    dark:block
+                                    sm:size-11
+                                "
                             />
                         </Link>
 
-                        <nav className="hidden items-center gap-6 lg:flex">
-                            {ITEMS.map((item) => (
-                                <NavLink
-                                    key={item.to}
-                                    to={item.to}
-                                    end={item.to === "/"}
-                                    className={({ isActive }) =>
-                                        cn(
-                                            "group relative py-2 text-sm font-medium",
-                                            "transition-colors duration-200",
-                                            isActive
-                                                ? "text-foreground"
-                                                : "text-muted-foreground hover:text-foreground",
-                                        )
-                                    }
-                                >
-                                    {({ isActive }) => (
-                                        <>
-                                            {item.label}
+                        <nav
+                            className="
+                                hidden
+                                items-center
+                                gap-6
+                                lg:flex
+                            "
+                        >
+                            {ITEMS.map(
+                                (item) => (
+                                    <NavLink
+                                        key={
+                                            item.to
+                                        }
+                                        to={
+                                            item.to
+                                        }
+                                        end={
+                                            item.to ===
+                                            "/"
+                                        }
+                                        className={({
+                                            isActive,
+                                        }) =>
+                                            cn(
+                                                "group relative py-2 text-sm font-medium",
+                                                "transition-colors duration-200",
 
-                                            <span
-                                                className={cn(
-                                                    "absolute bottom-0 left-0 h-[2px] bg-primary",
-                                                    "transition-all duration-300 ease-out",
-                                                    isActive
-                                                        ? "w-full"
-                                                        : "w-0 group-hover:w-full",
-                                                )}
-                                            />
-                                        </>
-                                    )}
-                                </NavLink>
-                            ))}
+                                                isActive
+                                                    ? "text-foreground"
+                                                    : "text-muted-foreground hover:text-foreground"
+                                            )
+                                        }
+                                    >
+                                        {({
+                                            isActive,
+                                        }) => (
+                                            <>
+                                                {
+                                                    item.label
+                                                }
+
+                                                <span
+                                                    className={cn(
+                                                        "absolute bottom-0 left-0 h-[2px] bg-primary",
+                                                        "transition-all duration-300 ease-out",
+
+                                                        isActive
+                                                            ? "w-full"
+                                                            : "w-0 group-hover:w-full"
+                                                    )}
+                                                />
+                                            </>
+                                        )}
+                                    </NavLink>
+                                )
+                            )}
                         </nav>
                     </div>
 
-                    <div className="hidden min-w-0 lg:block">
+                    <div
+                        className="
+                            hidden
+                            min-w-0
+                            lg:block
+                        "
+                    >
                         <CourseSearch
                             variant="navbar"
-                            className="mx-auto w-full"
+                            className="
+                                mx-auto
+                                w-full
+                            "
                         />
                     </div>
-
-                    <div className="ml-auto flex shrink-0 items-center justify-end gap-1.5 lg:ml-0 lg:gap-2">
+                    <div
+                        className="
+                            ml-auto
+                            flex
+                            shrink-0
+                            items-center
+                            justify-end
+                            gap-1.5
+                            lg:ml-0
+                            lg:gap-2
+                        "
+                    >
                         <button
                             type="button"
                             onClick={() => {
-                                setMobileSearchOpen((current) => !current);
-                                setMobileMenuOpen(false);
+                                setMobileSearchOpen(
+                                    (
+                                        current
+                                    ) =>
+                                        !current
+                                );
+
+                                setMobileMenuOpen(
+                                    false
+                                );
                             }}
                             className={cn(
                                 "flex size-9 items-center justify-center",
@@ -133,18 +268,29 @@ export function Navbar() {
                                 "hover:border-primary/30",
                                 "hover:bg-primary/5",
                                 "hover:text-primary",
-                                "lg:hidden",
+                                "lg:hidden"
                             )}
                             aria-label="Buscar cursos"
                         >
                             {mobileSearchOpen ? (
-                                <X className="size-4" />
+                                <X
+                                    className="
+                                        size-4
+                                    "
+                                />
                             ) : (
-                                <Search className="size-4" />
+                                <Search
+                                    className="
+                                        size-4
+                                    "
+                                />
                             )}
                         </button>
 
+
                         <ModeToggle />
+
+
 
                         {sesionActiva ? (
                             <Link
@@ -162,7 +308,7 @@ export function Navbar() {
                                     "hover:-translate-y-0.5",
                                     "hover:border-primary/30",
                                     "hover:shadow-md",
-                                    "sm:inline-flex",
+                                    "sm:inline-flex"
                                 )}
                             >
                                 <span
@@ -170,18 +316,26 @@ export function Navbar() {
                                         "flex size-7 items-center justify-center",
                                         "rounded-full",
                                         "bg-primary/10",
-                                        "text-primary",
+                                        "text-primary"
                                     )}
                                 >
-                                    <CircleUserRound className="size-4" />
+                                    <CircleUserRound
+                                        className="
+                                            size-4
+                                        "
+                                    />
                                 </span>
 
-                                <span>Mi cuenta</span>
+                                <span>
+                                    Mi cuenta
+                                </span>
                             </Link>
                         ) : (
                             <button
                                 type="button"
-                                onClick={() => openLoginDialog()}
+                                onClick={() =>
+                                    openLoginDialog()
+                                }
                                 className={cn(
                                     "group hidden items-center gap-2",
                                     "rounded-full",
@@ -195,7 +349,7 @@ export function Navbar() {
                                     "hover:-translate-y-0.5",
                                     "hover:border-primary/30",
                                     "hover:shadow-md",
-                                    "sm:inline-flex",
+                                    "sm:inline-flex"
                                 )}
                             >
                                 <span
@@ -206,19 +360,39 @@ export function Navbar() {
                                         "text-primary",
                                         "transition-colors duration-300",
                                         "group-hover:bg-primary",
-                                        "group-hover:text-primary-foreground",
+                                        "group-hover:text-primary-foreground"
                                     )}
                                 >
-                                    <CircleUserRound className="size-4" />
+                                    <CircleUserRound
+                                        className="
+                                            size-4
+                                        "
+                                    />
                                 </span>
 
-                                <span className="whitespace-nowrap">
+                                <span
+                                    className="
+                                        whitespace-nowrap
+                                    "
+                                >
                                     Iniciar sesión
-                                    <span className="mx-1.5 text-border">
+
+                                    <span
+                                        className="
+                                            mx-1.5
+                                            text-border
+                                        "
+                                    >
                                         |
                                     </span>
 
-                                    <span className="text-muted-foreground transition-colors group-hover:text-foreground">
+                                    <span
+                                        className="
+                                            text-muted-foreground
+                                            transition-colors
+                                            group-hover:text-foreground
+                                        "
+                                    >
                                         Registrarse
                                     </span>
                                 </span>
@@ -228,8 +402,16 @@ export function Navbar() {
                         <button
                             type="button"
                             onClick={() => {
-                                setMobileMenuOpen((current) => !current);
-                                setMobileSearchOpen(false);
+                                setMobileMenuOpen(
+                                    (
+                                        current
+                                    ) =>
+                                        !current
+                                );
+
+                                setMobileSearchOpen(
+                                    false
+                                );
                             }}
                             className={cn(
                                 "flex size-9 items-center justify-center",
@@ -240,7 +422,7 @@ export function Navbar() {
                                 "hover:border-primary/30",
                                 "hover:bg-primary/5",
                                 "hover:text-primary",
-                                "lg:hidden",
+                                "lg:hidden"
                             )}
                             aria-label={
                                 mobileMenuOpen
@@ -249,9 +431,17 @@ export function Navbar() {
                             }
                         >
                             {mobileMenuOpen ? (
-                                <X className="size-4" />
+                                <X
+                                    className="
+                                        size-4
+                                    "
+                                />
                             ) : (
-                                <Menu className="size-4" />
+                                <Menu
+                                    className="
+                                        size-4
+                                    "
+                                />
                             )}
                         </button>
                     </div>
@@ -260,62 +450,121 @@ export function Navbar() {
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
+
                         mobileSearchOpen
                             ? "grid-rows-[1fr] border-t border-border opacity-100"
-                            : "grid-rows-[0fr] opacity-0",
+                            : "grid-rows-[0fr] opacity-0"
                     )}
                 >
-                    <div className="overflow-hidden">
-                        <div className="p-3 sm:p-4">
+                    <div
+                        className="
+                            overflow-hidden
+                        "
+                    >
+                        <div
+                            className="
+                                p-3
+                                sm:p-4
+                            "
+                        >
                             <CourseSearch
                                 variant="navbar"
                                 onSearchComplete={() =>
-                                    setMobileSearchOpen(false)
+                                    setMobileSearchOpen(
+                                        false
+                                    )
                                 }
                             />
                         </div>
                     </div>
                 </div>
 
+
                 <div
                     className={cn(
                         "grid transition-all duration-300 lg:hidden",
+
                         mobileMenuOpen
                             ? "grid-rows-[1fr] border-t border-border opacity-100"
-                            : "grid-rows-[0fr] opacity-0",
+                            : "grid-rows-[0fr] opacity-0"
                     )}
                 >
-                    <div className="overflow-hidden">
-                        <div className="p-3 sm:p-4">
-                            <nav className="flex flex-col">
-                                {ITEMS.map((item) => (
-                                    <NavLink
-                                        key={item.to}
-                                        to={item.to}
-                                        end={item.to === "/"}
-                                        onClick={closeMobilePanels}
-                                        className={({ isActive }) =>
-                                            cn(
-                                                "relative border-b border-border/60 px-2 py-3",
-                                                "text-sm font-medium",
-                                                "transition-colors duration-200",
-                                                "last:border-b-0",
-                                                isActive
-                                                    ? "text-primary"
-                                                    : "text-muted-foreground hover:text-foreground",
-                                            )
-                                        }
-                                    >
-                                        {item.label}
-                                    </NavLink>
-                                ))}
+                    <div
+                        className="
+                            overflow-hidden
+                        "
+                    >
+                        <div
+                            className="
+                                p-3
+                                sm:p-4
+                            "
+                        >
+                            <nav
+                                className="
+                                    flex
+                                    flex-col
+                                "
+                            >
+                                {ITEMS.map(
+                                    (item) => (
+                                        <NavLink
+                                            key={
+                                                item.to
+                                            }
+                                            to={
+                                                item.to
+                                            }
+                                            end={
+                                                item.to ===
+                                                "/"
+                                            }
+                                            onClick={
+                                                closeMobilePanels
+                                            }
+                                            className={({
+                                                isActive,
+                                            }) =>
+                                                cn(
+                                                    "relative border-b border-border/60 px-2 py-3",
+                                                    "text-sm font-medium",
+                                                    "transition-colors duration-200",
+                                                    "last:border-b-0",
+
+                                                    isActive
+                                                        ? "text-primary"
+                                                        : "text-muted-foreground hover:text-foreground"
+                                                )
+                                            }
+                                        >
+                                            {
+                                                item.label
+                                            }
+                                        </NavLink>
+                                    )
+                                )}
                             </nav>
 
-                            <div className="mt-3 border-t border-border pt-3 sm:hidden">
+
+                            {/* ============================= */}
+                            {/* SESIÓN MOBILE */}
+                            {/* ============================= */}
+
+                            <div
+                                className="
+                                    mt-3
+                                    border-t
+                                    border-border
+                                    pt-3
+                                    sm:hidden
+                                "
+                            >
                                 {sesionActiva ? (
                                     <Link
                                         to="/panel/inicio"
-                                        onClick={closeMobilePanels}
+                                        onClick={
+                                            closeMobilePanels
+                                        }
                                         className={cn(
                                             "flex w-full items-center gap-3",
                                             "rounded-xl",
@@ -326,18 +575,47 @@ export function Navbar() {
                                             "text-foreground",
                                             "transition-all duration-200",
                                             "hover:border-primary/30",
-                                            "hover:bg-primary/5",
+                                            "hover:bg-primary/5"
                                         )}
                                     >
-                                        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                                            <CircleUserRound className="size-[18px]" />
+                                        <span
+                                            className="
+                                                flex
+                                                size-9
+                                                shrink-0
+                                                items-center
+                                                justify-center
+                                                rounded-full
+                                                bg-primary/10
+                                                text-primary
+                                            "
+                                        >
+                                            <CircleUserRound
+                                                className="
+                                                    size-[18px]
+                                                "
+                                            />
                                         </span>
 
-                                        <div className="text-left">
-                                            <p>Mi cuenta</p>
+                                        <div
+                                            className="
+                                                text-left
+                                            "
+                                        >
+                                            <p>
+                                                Mi cuenta
+                                            </p>
 
-                                            <p className="mt-0.5 text-[10px] font-normal text-muted-foreground">
-                                                Accede a tu plataforma
+                                            <p
+                                                className="
+                                                    mt-0.5
+                                                    text-[10px]
+                                                    font-normal
+                                                    text-muted-foreground
+                                                "
+                                            >
+                                                Accede a tu
+                                                plataforma
                                             </p>
                                         </div>
                                     </Link>
@@ -357,24 +635,64 @@ export function Navbar() {
                                             "text-left",
                                             "transition-all duration-200",
                                             "hover:border-primary/30",
-                                            "hover:bg-primary/5",
+                                            "hover:bg-primary/5"
                                         )}
                                     >
-                                        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                                            <CircleUserRound className="size-[18px]" />
+                                        <span
+                                            className="
+                                                flex
+                                                size-9
+                                                shrink-0
+                                                items-center
+                                                justify-center
+                                                rounded-full
+                                                bg-primary/10
+                                                text-primary
+                                            "
+                                        >
+                                            <CircleUserRound
+                                                className="
+                                                    size-[18px]
+                                                "
+                                            />
                                         </span>
 
-                                        <div className="min-w-0">
-                                            <p className="text-sm font-medium text-foreground">
-                                                Iniciar sesión
-                                                <span className="mx-1.5 text-border">
+                                        <div
+                                            className="
+                                                min-w-0
+                                            "
+                                        >
+                                            <p
+                                                className="
+                                                    text-sm
+                                                    font-medium
+                                                    text-foreground
+                                                "
+                                            >
+                                                Iniciar
+                                                sesión
+
+                                                <span
+                                                    className="
+                                                        mx-1.5
+                                                        text-border
+                                                    "
+                                                >
                                                     |
                                                 </span>
+
                                                 Registrarse
                                             </p>
 
-                                            <p className="mt-0.5 text-[10px] text-muted-foreground">
-                                                Accede o crea tu cuenta
+                                            <p
+                                                className="
+                                                    mt-0.5
+                                                    text-[10px]
+                                                    text-muted-foreground
+                                                "
+                                            >
+                                                Accede o crea
+                                                tu cuenta
                                             </p>
                                         </div>
                                     </button>

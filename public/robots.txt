@@ -4,4 +4,4 @@ Allow: /
 Disallow: /panel/
 Disallow: /login/
 
-Sitemap: https://moodle-lms-frontend-eight.vercel.app/sitemap.xml
+Sitemap: https://elaceslatam.com/sitemap.xml

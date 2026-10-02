@@ -79,9 +79,13 @@ export const LeccionesProgresoResponseSchema = z.array(LeccionProgresoSchema);
 export type LeccionesProgresoResponseType = z.infer<typeof LeccionesProgresoResponseSchema>;
 
 export const LeccionCreateSchema = z.object({
-    moduloId: z.string().min(1, "El módulo es obligatorio"),
+    moduloId: z
+        .string()
+        .min(1, "El módulo es obligatorio"),
 
-    nombre: z.string().min(1, "El nombre es obligatorio"),
+    nombre: z
+        .string()
+        .min(1, "El nombre es obligatorio"),
 
     descripcion: z.string().optional(),
 
@@ -91,13 +95,10 @@ export const LeccionCreateSchema = z.object({
         .string()
         .min(1, "El tipo de lección es obligatorio"),
 
-    // Lo dejamos por ahora para compatibilidad
-    // con las lecciones que ya tienen URL.
     urlVideo: z.string().optional(),
 
     proveedorVideo: z.string().optional(),
 
-    // NUEVO
     video: z.instanceof(File).optional(),
 
     orden: z
@@ -115,12 +116,14 @@ export const LeccionCreateSchema = z.object({
         z.boolean().optional(),
 });
 
-export type LeccionCreateType = z.infer<typeof LeccionCreateSchema>;
+export type LeccionCreateType =
+    z.infer<typeof LeccionCreateSchema>;
 
-export const LeccionUpdateSchema = LeccionCreateSchema.partial();
+export const LeccionUpdateSchema =
+    LeccionCreateSchema.partial();
 
-export type LeccionUpdateType = z.infer<typeof LeccionUpdateSchema>;
-
+export type LeccionUpdateType =
+    z.infer<typeof LeccionUpdateSchema>;
 
 
 export const OpcionFormularioPublicaSchema = z.object({

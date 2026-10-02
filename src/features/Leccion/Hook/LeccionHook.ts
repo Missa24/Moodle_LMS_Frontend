@@ -15,6 +15,7 @@ import {
     UpdateRecursoLeccion,
     DeleteRecursoLeccion,
     GetFormularioLeccion,
+    GetVideoLeccion
 } from "../Service/LeccionService";
 import {
     LeccionCreateType,
@@ -54,34 +55,115 @@ export function useGetLeccion(id: string, enabled = true) {
 }
 
 export function useCreateLeccion() {
-    const queryClient = useQueryClient();
+    const queryClient =
+        useQueryClient();
 
     return useMutation({
-        mutationFn: (data: LeccionCreateType) => CreateLeccion(data),
-        onSuccess: (response, variables) => {
-            toast.success(response.message || "Lección creada con éxito");
-            queryClient.invalidateQueries({ queryKey: ["lecciones", "byModulo", variables.moduloId] });
-            queryClient.invalidateQueries({ queryKey: ["lecciones", "progreso", variables.moduloId] });
+        mutationFn:
+            (data: LeccionCreateType) =>
+                CreateLeccion(data),
+
+        onSuccess: (
+            response,
+            variables
+        ) => {
+            toast.success(
+                response.message ||
+                "Lección creada con éxito"
+            );
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "byModulo",
+                    variables.moduloId,
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "progreso",
+                    variables.moduloId,
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "video",
+                ],
+            });
         },
+
         onError: () => {
-            toast.error("Error al procesar la solicitud de creación");
+            toast.error(
+                "Error al procesar la solicitud de creación"
+            );
         },
     });
 }
 
 export function useUpdateLeccion() {
-    const queryClient = useQueryClient();
+    const queryClient =
+        useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: LeccionUpdateType }) => UpdateLeccion(id, data),
-        onSuccess: (response, variables) => {
-            toast.success(response.message || "Lección actualizada con éxito");
-            queryClient.invalidateQueries({ queryKey: ["lecciones", "detail", variables.id] });
-            queryClient.invalidateQueries({ queryKey: ["lecciones", "byModulo"] });
-            queryClient.invalidateQueries({ queryKey: ["lecciones", "progreso"] });
+        mutationFn: ({
+            id,
+            data,
+        }: {
+            id: string;
+            data: LeccionUpdateType;
+        }) =>
+            UpdateLeccion(
+                id,
+                data
+            ),
+
+        onSuccess: (
+            response,
+            variables
+        ) => {
+            toast.success(
+                response.message ||
+                "Lección actualizada con éxito"
+            );
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "detail",
+                    variables.id,
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "byModulo",
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "progreso",
+                ],
+            });
+
+            queryClient.invalidateQueries({
+                queryKey: [
+                    "lecciones",
+                    "video",
+                ],
+            });
         },
+
         onError: () => {
-            toast.error("Error al procesar la solicitud de actualización");
+            toast.error(
+                "Error al procesar la solicitud de actualización"
+            );
         },
     });
 }
@@ -206,5 +288,31 @@ export function useDeleteRecursoLeccion() {
         onError: () => {
             toast.error("Error al eliminar el recurso");
         },
+    });
+}
+
+export function useGetVideoLeccion(
+    urlVideo: string,
+    enabled = true
+) {
+    return useQuery({
+        queryKey: [
+            "lecciones",
+            "video",
+            urlVideo,
+        ],
+
+        queryFn: () =>
+            GetVideoLeccion(urlVideo),
+
+        enabled:
+            enabled &&
+            !!urlVideo,
+
+        staleTime:
+            1000 * 60 * 30,
+
+        gcTime:
+            1000 * 60 * 30,
     });
 }

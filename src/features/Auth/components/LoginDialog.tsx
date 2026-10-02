@@ -114,7 +114,7 @@ export function LoginDialog() {
                         )}
                         <p className="text-center text-[9px] leading-4 text-muted-foreground sm:text-[10px]">
                             Al continuar, aceptas los términos de uso y la
-                            política de privacidad de Élite Academy.
+                            política de privacidad de Elaces Latam.
                         </p>
                     </div>
                 </div>

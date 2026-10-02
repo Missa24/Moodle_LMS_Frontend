@@ -1,11 +1,11 @@
 const COMMUNITY_IMAGES = [
     {
         src: "/comunidad/1.webp",
-        alt: "Estudiantes de Élite Academy",
+        alt: "Estudiantes de Elaces Latam",
     },
     {
         src: "/comunidad/2.webp",
-        alt: "Clase en Élite Academy",
+        alt: "Clase en Elaces Latam",
     },
     {
         src: "/comunidad/3.webp",
@@ -110,7 +110,7 @@ export const CommunityScrollStory = () => {
                 {/* TEXTO CENTRAL */}
                 <div className="mx-auto mt-16 max-w-4xl text-center sm:mt-20">
                     <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
-                        Élite Academy
+                        Elaces Latam
                     </p>
 
                     <h3 className="mt-4 text-3xl font-medium tracking-[-0.04em] text-foreground sm:text-4xl lg:text-5xl">
