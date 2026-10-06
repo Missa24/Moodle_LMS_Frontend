@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-
 import {
     Dialog,
     DialogContent,
@@ -16,7 +15,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-
 import {
     Select,
     SelectContent,
@@ -26,16 +24,9 @@ import {
 } from "@/components/ui/select";
 
 import { useUpdateLeadEstado } from "../Hook/LeadHook";
+import type { LeadDetailType, MedioPagoType } from "../Schema/LeadSchema";
 
-import type {
-    LeadDetailType,
-    MedioPagoType,
-} from "../Schema/LeadSchema";
-
-type LeadParaPago = Pick<
-    LeadDetailType,
-    "id" | "tipoCompra" | "curso" | "modulo"
->;
+type LeadParaPago = Pick<LeadDetailType, "id" | "tipoCompra" | "curso" | "modulo" | "precioUSD">;
 
 interface Props {
     open: boolean;
@@ -60,15 +51,13 @@ export function ConfirmarPagoLeadDialog({
     const [observaciones, setObservaciones] = useState("");
     const [comprobante, setComprobante] = useState<File | null>(null);
 
-    const cursoNombre =
-        lead?.tipoCompra === "CURSO"
-            ? lead.curso?.nombre
-            : lead?.modulo?.curso.nombre;
+    const cursoNombre = lead?.tipoCompra === "CURSO"
+        ? lead.curso?.nombre
+        : lead?.modulo?.curso.nombre;
 
-    const productoNombre =
-        lead?.tipoCompra === "CURSO"
-            ? "Curso completo"
-            : lead?.modulo?.nombre;
+    const productoNombre = lead?.tipoCompra === "CURSO"
+        ? "Curso completo"
+        : lead?.modulo?.nombre;
 
     const limpiar = () => {
         setMedioPago("");
@@ -84,8 +73,33 @@ export function ConfirmarPagoLeadDialog({
         onOpenChange(false);
     };
 
+    const pegarComprobante = (event: React.ClipboardEvent) => {
+        const image = Array.from(event.clipboardData.items)
+            .find((item) => item.type.startsWith("image/"));
+
+        if (!image) return;
+
+        const file = image.getAsFile();
+        if (!file) return;
+
+        event.preventDefault();
+
+        const extension = file.type.split("/")[1] || "png";
+        setComprobante(
+            new File([file], `comprobante-${Date.now()}.${extension}`, {
+                type: file.type,
+            }),
+        );
+    };
+
     const confirmarPago = () => {
-        if (!lead || !medioPago || !montoCobrado || !comprobante) return;
+        if (!lead || !medioPago || !comprobante) return;
+
+        const monto = medioPago === "PAYPAL"
+            ? lead.precioUSD
+            : Number(montoCobrado);
+
+        if (!monto || monto <= 0) return;
 
         actualizarEstado.mutate(
             {
@@ -94,7 +108,7 @@ export function ConfirmarPagoLeadDialog({
                     estado: "PAGO_COMPLETADO",
                     medioPago,
                     moneda: medioPago === "PAYPAL" ? "USD" : "BOB",
-                    montoCobrado: Number(montoCobrado),
+                    montoCobrado: monto,
                     referenciaPago: referenciaPago.trim() || undefined,
                     observaciones: observaciones.trim() || undefined,
                     comprobante,
@@ -110,6 +124,14 @@ export function ConfirmarPagoLeadDialog({
         );
     };
 
+    const puedeConfirmar =
+        !actualizarEstado.isPending &&
+        !!medioPago &&
+        !!comprobante &&
+        (medioPago === "PAYPAL"
+            ? !!lead?.precioUSD
+            : Number(montoCobrado) > 0);
+
     return (
         <Dialog
             open={open}
@@ -118,7 +140,10 @@ export function ConfirmarPagoLeadDialog({
                 onOpenChange(true);
             }}
         >
-            <DialogContent className="max-h-[90vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl pr-3">
+            <DialogContent
+                onPaste={pegarComprobante}
+                className="max-h-[90vh] w-[calc(100%-2rem)] max-w-md overflow-y-auto rounded-2xl pr-3"
+            >
                 <DialogHeader>
                     <div className="mb-3 flex size-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
                         <ShieldCheck className="size-6" />
@@ -136,39 +161,25 @@ export function ConfirmarPagoLeadDialog({
                     <div className="space-y-3 rounded-xl border bg-muted/20 p-4">
                         {estudianteNombre && (
                             <div>
-                                <p className="text-xs text-muted-foreground">
-                                    Estudiante
-                                </p>
-                                <p className="font-medium">
-                                    {estudianteNombre}
-                                </p>
+                                <p className="text-xs text-muted-foreground">Estudiante</p>
+                                <p className="font-medium">{estudianteNombre}</p>
                             </div>
                         )}
 
                         <div>
-                            <p className="text-xs text-muted-foreground">
-                                Tipo de compra
-                            </p>
+                            <p className="text-xs text-muted-foreground">Tipo de compra</p>
                             <p className="font-medium">
-                                {lead.tipoCompra === "CURSO"
-                                    ? "Curso completo"
-                                    : "Módulo"}
+                                {lead.tipoCompra === "CURSO" ? "Curso completo" : "Módulo"}
                             </p>
                         </div>
 
                         <div>
-                            <p className="text-xs text-muted-foreground">
-                                Curso
-                            </p>
-                            <p className="font-medium">
-                                {cursoNombre ?? "Sin curso"}
-                            </p>
+                            <p className="text-xs text-muted-foreground">Curso</p>
+                            <p className="font-medium">{cursoNombre ?? "Sin curso"}</p>
                         </div>
 
                         <div>
-                            <p className="text-xs text-muted-foreground">
-                                Producto
-                            </p>
+                            <p className="text-xs text-muted-foreground">Producto</p>
                             <p className="font-medium">
                                 {productoNombre ?? "Sin información"}
                             </p>
@@ -191,12 +202,8 @@ export function ConfirmarPagoLeadDialog({
                             </SelectTrigger>
 
                             <SelectContent>
-                                <SelectItem value="PAYPAL">
-                                    PayPal
-                                </SelectItem>
-                                <SelectItem value="BOLIVIA">
-                                    QR Bolivia
-                                </SelectItem>
+                                <SelectItem value="PAYPAL">PayPal</SelectItem>
+                                <SelectItem value="BOLIVIA">QR Bolivia</SelectItem>
                             </SelectContent>
                         </Select>
                     </div>
@@ -206,28 +213,43 @@ export function ConfirmarPagoLeadDialog({
                             <div className="space-y-2">
                                 <Label>Moneda</Label>
                                 <Input
-                                    value={
-                                        medioPago === "PAYPAL"
-                                            ? "USD"
-                                            : "BOB"
-                                    }
+                                    value={medioPago === "PAYPAL" ? "USD" : "BOB"}
                                     disabled
                                 />
                             </div>
 
-                            <div className="space-y-2">
-                                <Label>Monto cobrado</Label>
-                                <Input
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    value={montoCobrado}
-                                    onChange={(e) =>
-                                        setMontoCobrado(e.target.value)
-                                    }
-                                    placeholder="Ej: 10"
-                                />
-                            </div>
+                            {medioPago === "PAYPAL" ? (
+                                <div className="space-y-2">
+                                    <Label>Precio configurado</Label>
+                                    <Input
+                                        value={
+                                            lead?.precioUSD != null
+                                                ? `US$ ${lead.precioUSD.toFixed(2)}`
+                                                : "Precio no disponible"
+                                        }
+                                        disabled
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Este monto se registrará automáticamente como
+                                        monto cobrado en PayPal.
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    <Label>Monto cobrado</Label>
+                                    <Input
+                                        type="number"
+                                        min="0"
+                                        step="0.01"
+                                        value={montoCobrado}
+                                        onChange={(e) => setMontoCobrado(e.target.value)}
+                                        placeholder="Ej: 70"
+                                    />
+                                    <p className="text-xs text-muted-foreground">
+                                        Ingresa el monto real recibido en bolivianos.
+                                    </p>
+                                </div>
+                            )}
                         </>
                     )}
 
@@ -235,9 +257,7 @@ export function ConfirmarPagoLeadDialog({
                         <Label>Referencia de pago</Label>
                         <Input
                             value={referenciaPago}
-                            onChange={(e) =>
-                                setReferenciaPago(e.target.value)
-                            }
+                            onChange={(e) => setReferenciaPago(e.target.value)}
                             placeholder="Ej: ID de transacción"
                         />
                     </div>
@@ -251,14 +271,13 @@ export function ConfirmarPagoLeadDialog({
                             </div>
 
                             <div className="min-w-0">
-                                <p className="text-sm font-medium">
+                                <p className="truncate text-sm font-medium">
                                     {comprobante
                                         ? comprobante.name
-                                        : "Seleccionar comprobante"}
+                                        : "Seleccionar o pegar comprobante"}
                                 </p>
-
                                 <p className="text-xs text-muted-foreground">
-                                    JPG, PNG o WEBP
+                                    JPG, PNG o WEBP · También puedes usar Ctrl+V
                                 </p>
                             </div>
 
@@ -267,9 +286,7 @@ export function ConfirmarPagoLeadDialog({
                                 accept="image/png,image/jpeg,image/webp"
                                 className="hidden"
                                 onChange={(e) =>
-                                    setComprobante(
-                                        e.target.files?.[0] ?? null,
-                                    )
+                                    setComprobante(e.target.files?.[0] ?? null)
                                 }
                             />
                         </label>
@@ -279,9 +296,7 @@ export function ConfirmarPagoLeadDialog({
                         <Label>Observaciones</Label>
                         <Textarea
                             value={observaciones}
-                            onChange={(e) =>
-                                setObservaciones(e.target.value)
-                            }
+                            onChange={(e) => setObservaciones(e.target.value)}
                             placeholder="Observación opcional"
                             rows={3}
                         />
@@ -308,20 +323,12 @@ export function ConfirmarPagoLeadDialog({
 
                     <Button
                         type="button"
-                        disabled={
-                            actualizarEstado.isPending ||
-                            !medioPago ||
-                            !montoCobrado ||
-                            !comprobante
-                        }
+                        disabled={!puedeConfirmar}
                         onClick={confirmarPago}
                         className="gap-2"
                     >
                         <CheckCircle2 className="size-4" />
-
-                        {actualizarEstado.isPending
-                            ? "Confirmando..."
-                            : "Confirmar pago"}
+                        {actualizarEstado.isPending ? "Confirmando..." : "Confirmar pago"}
                     </Button>
                 </DialogFooter>
             </DialogContent>

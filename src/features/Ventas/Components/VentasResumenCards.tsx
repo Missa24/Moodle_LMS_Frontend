@@ -50,15 +50,6 @@ export function VentasResumenCards({
     return (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
             <ResumenCard
-                titulo="Ganancia neta"
-                valor={`USD ${dinero(resumen.gananciaNeta)}`}
-                descripcion={`${resumen.totalVentas} venta${resumen.totalVentas === 1 ? "" : "s"
-                    } registrada${resumen.totalVentas === 1 ? "" : "s"}`}
-                icono={<CircleDollarSign className="size-5" />}
-                destacado
-            />
-
-            <ResumenCard
                 titulo="PayPal"
                 valor={`USD ${dinero(resumen.paypal.neto)}`}
                 descripcion={`${resumen.paypal.ventas} venta${resumen.paypal.ventas === 1 ? "" : "s"
@@ -68,19 +59,29 @@ export function VentasResumenCards({
 
             <ResumenCard
                 titulo="QR Bolivia"
-                valor={`USD ${dinero(resumen.bolivia.neto)}`}
+                valor={`BOB ${dinero(resumen.bolivia.neto)}`}
                 descripcion={`${resumen.bolivia.ventas} venta${resumen.bolivia.ventas === 1 ? "" : "s"
-                    } · Cobrado USD ${dinero(resumen.bolivia.cobrado)}`}
+                    } · Cobrado BOB ${dinero(resumen.bolivia.cobrado)}`}
                 icono={<QrCode className="size-5" />}
             />
 
             <ResumenCard
                 titulo="Comisiones"
-                valor={`USD ${dinero(resumen.totalComisiones)}`}
-                descripcion={`Total cobrado USD ${dinero(
-                    resumen.totalCobrado,
+                valor="Ver por moneda"
+                descripcion={`PayPal: USD ${dinero(
+                    resumen.paypal.comisiones,
+                )} · Bolivia: BOB ${dinero(
+                    resumen.bolivia.comisiones,
                 )}`}
                 icono={<WalletCards className="size-5" />}
+            />
+
+            <ResumenCard
+                titulo="Ventas registradas"
+                valor={resumen.totalVentas.toString()}
+                descripcion={`PayPal: ${resumen.paypal.ventas} · Bolivia: ${resumen.bolivia.ventas}`}
+                icono={<CircleDollarSign className="size-5" />}
+                destacado
             />
         </div>
     );

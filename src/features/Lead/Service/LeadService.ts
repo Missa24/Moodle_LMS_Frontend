@@ -17,22 +17,15 @@ import {
     type UpdateLeadEstadoType,
 } from "../Schema/LeadSchema";
 
-export async function CreateLead(
-    data: CreateLeadType,
-): Promise<CreateLeadResponseType> {
+export async function CreateLead(data: CreateLeadType): Promise<CreateLeadResponseType> {
     const response = await apiService.post("/leads", data);
     return CreateLeadResponseSchema.parse(response.data);
 }
 
-export async function GetLeads(
-    page: number,
-    limit = 10,
-    q = "",
-): Promise<LeadsResponseType> {
+export async function GetLeads(page: number, limit = 10, q = ""): Promise<LeadsResponseType> {
     const response = await apiService.get("/leads", {
         params: { page, limit, q: q.trim() || undefined },
     });
-
     return LeadsResponseSchema.parse(response.data);
 }
 
@@ -41,9 +34,7 @@ export async function GetMyLeads(): Promise<LeadsUsuarioResponseType> {
     return LeadsUsuarioResponseSchema.parse(response.data);
 }
 
-export async function GetLeadsByUser(
-    usuarioId: string,
-): Promise<LeadsUsuarioResponseType> {
+export async function GetLeadsByUser(usuarioId: string): Promise<LeadsUsuarioResponseType> {
     const response = await apiService.get(`/leads/usuario/${usuarioId}`);
     return LeadsUsuarioResponseSchema.parse(response.data);
 }
@@ -55,6 +46,7 @@ export async function GetLeadById(id: string): Promise<LeadDetailType> {
 
 export async function UpdateLeadEstado(id: string, data: UpdateLeadEstadoType): Promise<UpdateLeadEstadoResponseType> {
     const formData = new FormData();
+
     formData.append("estado", data.estado);
     if (data.medioPago) formData.append("medioPago", data.medioPago);
     if (data.moneda) formData.append("moneda", data.moneda);
@@ -67,12 +59,7 @@ export async function UpdateLeadEstado(id: string, data: UpdateLeadEstadoType): 
     return UpdateLeadEstadoResponseSchema.parse(response.data);
 }
 
-export async function GetEstadoCompraCurso(
-    cursoId: string,
-): Promise<EstadoCompraCursoType> {
-    const response = await apiService.get(
-        `/leads/curso/${cursoId}/estado-compra`,
-    );
-
+export async function GetEstadoCompraCurso(cursoId: string): Promise<EstadoCompraCursoType> {
+    const response = await apiService.get(`/leads/curso/${cursoId}/estado-compra`);
     return EstadoCompraCursoSchema.parse(response.data);
 }

@@ -1,9 +1,4 @@
-import {
-    useMutation,
-    useQuery,
-    useQueryClient,
-} from "@tanstack/react-query";
-
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import {
@@ -16,212 +11,83 @@ import {
     UpdateLeadEstado,
 } from "../Service/LeadService";
 
-import type {
-    CreateLeadType,
-    UpdateLeadEstadoType,
-} from "../Schema/LeadSchema";
+import type { CreateLeadType, UpdateLeadEstadoType } from "../Schema/LeadSchema";
 
 export function useCreateLead() {
-    const queryClient =
-        useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (
-            data: CreateLeadType,
-        ) =>
-            CreateLead(data),
-
+        mutationFn: (data: CreateLeadType) => CreateLead(data),
         onSuccess: async () => {
-            await queryClient.invalidateQueries({
-                queryKey: [
-                    "leads",
-                ],
-            });
+            await queryClient.invalidateQueries({ queryKey: ["leads"] });
         },
     });
 }
 
-export function useGetLeads(
-    page: number,
-    limit: number = 10,
-    q: string = "",
-    enabled = true,
-) {
+export function useGetLeads(page: number, limit = 10, q = "", enabled = true) {
     return useQuery({
-        queryKey: [
-            "leads",
-            "list",
-            page,
-            limit,
-            q,
-        ],
-
-        queryFn: () =>
-            GetLeads(
-                page,
-                limit,
-                q,
-            ),
-
+        queryKey: ["leads", "list", page, limit, q],
+        queryFn: () => GetLeads(page, limit, q),
         enabled,
-
-        staleTime:
-            1000 *
-            60 *
-            2,
+        staleTime: 1000 * 60 * 2,
     });
 }
 
 export function useGetMyLeads() {
     return useQuery({
-        queryKey: [
-            "leads",
-            "me",
-        ],
-
-        queryFn:
-            GetMyLeads,
-
-        staleTime:
-            1000 *
-            60 *
-            2,
+        queryKey: ["leads", "me"],
+        queryFn: GetMyLeads,
+        staleTime: 1000 * 60 * 2,
     });
 }
 
-export function useGetLeadsByUser(
-    usuarioId: string,
-    enabled = true,
-) {
+export function useGetLeadsByUser(usuarioId: string, enabled = true) {
     return useQuery({
-        queryKey: [
-            "leads",
-            "usuario",
-            usuarioId,
-        ],
-
-        queryFn: () =>
-            GetLeadsByUser(
-                usuarioId,
-            ),
-
-        enabled:
-            enabled &&
-            !!usuarioId,
-
-        staleTime:
-            1000 *
-            60 *
-            2,
+        queryKey: ["leads", "usuario", usuarioId],
+        queryFn: () => GetLeadsByUser(usuarioId),
+        enabled: enabled && !!usuarioId,
+        staleTime: 1000 * 60 * 2,
     });
 }
 
-export function useGetLead(
-    id: string,
-    enabled = true,
-) {
+export function useGetLead(id: string, enabled = true) {
     return useQuery({
-        queryKey: [
-            "leads",
-            "detail",
-            id,
-        ],
-
-        queryFn: () =>
-            GetLeadById(
-                id,
-            ),
-
-        enabled:
-            enabled &&
-            !!id,
+        queryKey: ["leads", "detail", id],
+        queryFn: () => GetLeadById(id),
+        enabled: enabled && !!id,
     });
 }
 
 export function useUpdateLeadEstado() {
-    const queryClient =
-        useQueryClient();
+    const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({
-            id,
-            data,
-        }: {
-            id: string;
-            data: UpdateLeadEstadoType;
-        }) =>
-            UpdateLeadEstado(
-                id,
-                data,
-            ),
+        mutationFn: ({ id, data }: { id: string; data: UpdateLeadEstadoType }) =>
+            UpdateLeadEstado(id, data),
 
-        onSuccess: async (
-            response,
-        ) => {
+        onSuccess: async (response) => {
             await Promise.all([
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "leads",
-                    ],
-                }),
-
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "ventas",
-                    ],
-                }),
-
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "leads",
-                        "curso-estado-compra",
-                    ],
-                }),
-
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "inscripciones",
-                    ],
-                }),
-
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "notificaciones",
-                    ],
-                }),
-
-                queryClient.invalidateQueries({
-                    queryKey: [
-                        "mis-cursos-inscritos",
-                    ],
-                }),
+                queryClient.invalidateQueries({ queryKey: ["leads"] }),
+                queryClient.invalidateQueries({ queryKey: ["ventas"] }),
+                queryClient.invalidateQueries({ queryKey: ["leads", "curso-estado-compra"] }),
+                queryClient.invalidateQueries({ queryKey: ["inscripciones"] }),
+                queryClient.invalidateQueries({ queryKey: ["notificaciones"] }),
+                queryClient.invalidateQueries({ queryKey: ["mis-cursos-inscritos"] }),
             ]);
 
-            toast.success(
-                `Estado actualizado a ${response.estado}`,
-            );
+            toast.success(`Estado actualizado a ${response.estado}`);
         },
 
         onError: () => {
-            toast.error(
-                "No se pudo actualizar el estado del lead",
-            );
+            toast.error("No se pudo actualizar el estado del lead");
         },
     });
 }
 
-export function useEstadoCompraCurso(
-    cursoId: string,
-    enabled = true,
-) {
+export function useEstadoCompraCurso(cursoId: string, enabled = true) {
     return useQuery({
-        queryKey: [
-            "leads",
-            "curso-estado-compra",
-            cursoId,
-        ],
-        queryFn: () =>
-            GetEstadoCompraCurso(cursoId),
+        queryKey: ["leads", "curso-estado-compra", cursoId],
+        queryFn: () => GetEstadoCompraCurso(cursoId),
         enabled: enabled && !!cursoId,
         staleTime: 0,
     });
