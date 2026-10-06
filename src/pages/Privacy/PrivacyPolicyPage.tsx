@@ -8,7 +8,7 @@ const sections = [
         content: (
             <>
                 <p>
-                    La plataforma es administrada por <strong>Elaces Latam</strong>,
+                    La plataforma es administrada por <strong>Elaces</strong>,
                     con sede en La Paz, Bolivia.
                 </p>
 
@@ -37,14 +37,14 @@ const sections = [
         content: (
             <>
                 <p>
-                    Elaces Latam permite utilizar Google como método de registro
+                    Elaces permite utilizar Google como método de registro
                     o inicio de sesión.
                 </p>
 
                 <p className="mt-3">
                     Cuando utilizas esta opción, podemos recibir datos como tu
                     nombre, correo electrónico y fotografía de perfil, dependiendo
-                    de los permisos autorizados. Elaces Latam no recibe ni
+                    de los permisos autorizados. Elaces no recibe ni
                     almacena la contraseña de tu cuenta de Google.
                 </p>
             </>
@@ -90,7 +90,7 @@ const sections = [
         content: (
             <p>
                 Cuando se habiliten pagos en línea, podrán ser procesados mediante
-                proveedores externos especializados. Elaces Latam no almacenará
+                proveedores externos especializados. Elaces no almacenará
                 directamente datos completos de tarjetas cuando estos sean
                 procesados por el proveedor de pagos correspondiente.
             </p>
@@ -100,7 +100,7 @@ const sections = [
         title: "8. Compartición de información",
         content: (
             <p>
-                Elaces Latam no vende información personal. Los datos podrán ser
+                Elaces no vende información personal. Los datos podrán ser
                 compartidos únicamente con proveedores necesarios para operar la
                 plataforma o cuando exista una obligación legal o requerimiento
                 válido de una autoridad competente.
@@ -169,7 +169,7 @@ export default function PrivacyPolicyPage() {
         <>
             <SEO
                 title="Política de Privacidad"
-                description="Consulta la Política de Privacidad de Elaces Latam y conoce cómo recopilamos, utilizamos y protegemos la información de nuestros usuarios."
+                description="Consulta la Política de Privacidad de Elaces y conoce cómo recopilamos, utilizamos y protegemos la información de nuestros usuarios."
                 url="/politica-de-privacidad"
             />
 
@@ -185,7 +185,7 @@ export default function PrivacyPolicyPage() {
 
                     <header className="mt-10 border-b border-border pb-10">
                         <p className="text-sm font-medium text-primary">
-                            Elaces Latam
+                            Elaces
                         </p>
 
                         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.04em] text-foreground sm:text-4xl lg:text-5xl">
@@ -197,7 +197,7 @@ export default function PrivacyPolicyPage() {
                         </p>
 
                         <p className="mt-6 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
-                            En Elaces Latam valoramos la privacidad de nuestros
+                            En Elaces valoramos la privacidad de nuestros
                             estudiantes y usuarios. Esta política explica cómo
                             recopilamos, utilizamos y protegemos la información
                             proporcionada al utilizar nuestra plataforma educativa.
@@ -227,9 +227,7 @@ export default function PrivacyPolicyPage() {
                         </h2>
 
                         <div className="mt-4 text-sm leading-7 text-muted-foreground">
-                            <p>Elaces Latam</p>
-                            <p>La Paz, Bolivia</p>
-                            <p>Correo: TU_CORREO@DOMINIO.COM</p>
+                            <p>Elaces</p>
                         </div>
                     </section>
                 </div>

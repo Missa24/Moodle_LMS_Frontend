@@ -145,27 +145,25 @@ export const LeadDetailSchema = z.object({
 
 export type LeadDetailType = z.infer<typeof LeadDetailSchema>;
 
-export const UpdateLeadEstadoSchema = z
-    .object({
-        estado: EstadoLeadSchema,
-        medioPago: MedioPagoSchema.optional(),
-        moneda: z.enum(["USD", "BOB"]).optional(),
-        referenciaPago: z.string().optional(),
-        observaciones: z.string().optional(),
-    })
-    .superRefine((data, ctx) => {
-        if (data.estado === "PAGO_COMPLETADO" && !data.medioPago) {
-            ctx.addIssue({
-                code: "custom",
-                path: ["medioPago"],
-                message: "El medio de pago es obligatorio",
-            });
-        }
-    });
+export const UpdateLeadEstadoSchema = z.object({
+    estado: EstadoLeadSchema,
+    medioPago: MedioPagoSchema.optional(),
+    moneda: z.enum(["USD", "BOB"]).optional(),
+    montoCobrado: z.number().positive("El monto debe ser mayor a 0").optional(),
+    referenciaPago: z.string().optional(),
+    observaciones: z.string().optional(),
+}).superRefine((data, ctx) => {
+    if (data.estado === "PAGO_COMPLETADO" && !data.medioPago)
+        ctx.addIssue({ code: "custom", path: ["medioPago"], message: "El medio de pago es obligatorio" });
+
+    if (data.estado === "PAGO_COMPLETADO" && data.montoCobrado === undefined)
+        ctx.addIssue({ code: "custom", path: ["montoCobrado"], message: "El monto cobrado es obligatorio" });
+});
 
 export type UpdateLeadEstadoType = z.infer<typeof UpdateLeadEstadoSchema> & {
     comprobante?: File;
 };
+
 
 export const UpdateLeadEstadoResponseSchema = z.object({
     id: z.string(),

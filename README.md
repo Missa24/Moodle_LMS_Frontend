@@ -1,6 +1,6 @@
-# Elaces Latam - LMS Frontend
+# Elaces - LMS Frontend
 
-Plataforma de aprendizaje en línea (Learning Management System) construida con React y TypeScript para la gestión de cursos, módulos, lecciones, estudiantes, compras, progreso, certificados y contenido público de Elaces Latam.
+Plataforma de aprendizaje en línea (Learning Management System) construida con React y TypeScript para la gestión de cursos, módulos, lecciones, estudiantes, compras, progreso, certificados y contenido público de Elaces.
 
 ---
 
@@ -135,7 +135,7 @@ features/<Nombre>/
 
 - Node.js 24 recomendado.
 - pnpm 10.
-- Backend de Elaces Latam en ejecución.
+- Backend de Elaces en ejecución.
 
 ### Clonar e instalar
 

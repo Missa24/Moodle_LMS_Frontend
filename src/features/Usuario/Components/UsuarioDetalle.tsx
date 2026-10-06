@@ -217,19 +217,15 @@ export function UsuarioDetalle({
                         <InfoField
                             label="Contacto de emergencia"
                             value={
-                                <div>
-                                    <p>
-                                        {perfil?.contactoEmergenciaNombre || "-"}
-                                    </p>
-
-                                    {perfil?.contactoEmergenciaTelefono && (
-                                        <p className="text-sm text-muted-foreground">
-                                            {perfil.contactoEmergenciaTelefono}
-                                        </p>
-                                    )}
-                                </div>
+                                [
+                                    perfil?.contactoEmergenciaNombre,
+                                    perfil?.contactoEmergenciaTelefono,
+                                ]
+                                    .filter(Boolean)
+                                    .join(" · ") || "-"
                             }
                         />
+
                     </InfoSection>
                 </CardContent>
             </Card>

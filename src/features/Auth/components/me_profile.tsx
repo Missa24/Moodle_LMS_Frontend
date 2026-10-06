@@ -19,7 +19,7 @@ export function ProfileView() {
                     <div className="border-b border-neutral-200 pb-4 dark:border-neutral-800">
                         <AppTitle
                             title="Configuración de Cuenta"
-                            subtitle="Administra tu información personal y preferencias en Elaces Latam"
+                            subtitle="Administra tu información personal y preferencias en Elaces"
                         />
                     </div>
 

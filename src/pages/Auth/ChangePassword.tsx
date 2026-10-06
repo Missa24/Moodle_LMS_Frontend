@@ -11,7 +11,7 @@ export function ChangePassword() {
             <div className="relative z-10 flex h-dvh flex-col">
                 <header className="flex shrink-0 items-center justify-between px-5 py-4 sm:px-8 sm:py-5 lg:px-12">
                     <AppTitle
-                        title="Elaces Latam"
+                        title="Elaces"
                         subtitle="Learning Management System"
                     />
 
@@ -70,7 +70,7 @@ export function ChangePassword() {
 
                 <footer className="shrink-0 px-5 pb-4 sm:px-8 sm:pb-5 lg:px-12">
                     <p className="text-xs text-sidebar-foreground/35">
-                        © {new Date().getFullYear()} Elaces Latam
+                        © {new Date().getFullYear()} Elaces
                     </p>
                 </footer>
             </div>

@@ -102,7 +102,7 @@ export const Headerbar = () => {
         }
 
         return {
-            title: "Elaces Latam",
+            title: "Elaces",
             subtitle: "Plataforma académica",
         };
     };

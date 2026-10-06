@@ -137,7 +137,7 @@ export default function ModuloPageContent() {
                 title={modulo.nombre}
                 description={
                     modulo.descripcion ||
-                    `Conoce el módulo ${modulo.nombre} de ${modulo.curso.nombre} en Elaces Latam.`
+                    `Conoce el módulo ${modulo.nombre} de ${modulo.curso.nombre} en Elaces.`
                 }
                 url={`/cursos/${slug ?? ""}/modulos/${moduloId}`}
                 structuredData={{
@@ -154,7 +154,7 @@ export default function ModuloPageContent() {
                     },
                     provider: {
                         "@type": "EducationalOrganization",
-                        name: "Elaces Latam",
+                        name: "Elaces",
                         url:
                             import.meta.env.VITE_SITE_URL ||
                             "https://moodle-lms-frontend-eight.vercel.app",

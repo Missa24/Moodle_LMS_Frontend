@@ -11,7 +11,7 @@ interface SEOProps {
     structuredData?: StructuredData;
 }
 
-const SITE_NAME = "Elaces Latam";
+const SITE_NAME = "Elaces";
 
 const SITE_URL = (
     import.meta.env.VITE_SITE_URL ||

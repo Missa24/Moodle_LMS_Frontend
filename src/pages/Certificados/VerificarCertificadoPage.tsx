@@ -42,7 +42,7 @@ export default function VerificarCertificadoPage() {
         <>
             <SEO
                 title="Verificar certificado"
-                description="Verifica la autenticidad de un certificado emitido por Elaces Latam."
+                description="Verifica la autenticidad de un certificado emitido por Elaces."
                 url={`/verificar/${codigo ?? ""}`}
                 noindex
             />
@@ -88,7 +88,7 @@ export default function VerificarCertificadoPage() {
                                 </div>
 
                                 <p className="mt-6 text-center text-xs text-muted-foreground">
-                                    Este certificado fue verificado mediante el sistema oficial de certificación de Elaces Latam.
+                                    Este certificado fue verificado mediante el sistema oficial de certificación de Elaces.
                                 </p>
                             </>
                         )}

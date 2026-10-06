@@ -80,9 +80,9 @@ export default function EditProfileDialog({
             fechaNacimiento:
                 usuario.perfil?.fechaNacimiento
                     ? usuario.perfil.fechaNacimiento.substring(
-                        0,
-                        10,
-                    )
+                          0,
+                          10,
+                      )
                     : "",
             genero:
                 usuario.perfil?.genero ?? "",
@@ -110,19 +110,15 @@ export default function EditProfileDialog({
     ) => {
         const payload = Object.fromEntries(
             Object.entries(data).filter(
-                ([, value]) =>
-                    value !== "",
+                ([, value]) => value !== "",
             ),
         );
 
-        actualizarPerfil.mutate(
-            payload,
-            {
-                onSuccess: () => {
-                    onOpenChange(false);
-                },
+        actualizarPerfil.mutate(payload, {
+            onSuccess: () => {
+                onOpenChange(false);
             },
-        );
+        });
     };
 
     const paisCodigo =
@@ -219,11 +215,62 @@ export default function EditProfileDialog({
                         type="date"
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="tipoDocumentoIdentidad"
-                        label="Tipo de documento"
-                    />
+                    {/* Tipo de documento */}
+                    <div className="space-y-2">
+                        <Label>
+                            Tipo de documento
+                        </Label>
+
+                        <Select
+                            value={
+                                form.watch(
+                                    "tipoDocumentoIdentidad",
+                                ) || ""
+                            }
+                            onValueChange={(
+                                value,
+                            ) =>
+                                form.setValue(
+                                    "tipoDocumentoIdentidad",
+                                    value,
+                                    {
+                                        shouldDirty:
+                                            true,
+                                        shouldValidate:
+                                            true,
+                                    },
+                                )
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Selecciona el tipo de documento" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="DNI">
+                                    DNI
+                                </SelectItem>
+
+                                <SelectItem value="PASAPORTE">
+                                    Pasaporte
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        {form.formState.errors
+                            .tipoDocumentoIdentidad
+                            ?.message && (
+                            <p className="text-sm text-destructive">
+                                {
+                                    form
+                                        .formState
+                                        .errors
+                                        .tipoDocumentoIdentidad
+                                        .message
+                                }
+                            </p>
+                        )}
+                    </div>
 
                     <FormField
                         control={form.control}
@@ -231,11 +278,61 @@ export default function EditProfileDialog({
                         label="Número de documento"
                     />
 
-                    <FormField
-                        control={form.control}
-                        name="genero"
-                        label="Género"
-                    />
+                    {/* Género */}
+                    <div className="space-y-2">
+                        <Label>
+                            Género
+                        </Label>
+
+                        <Select
+                            value={
+                                form.watch(
+                                    "genero",
+                                ) || ""
+                            }
+                            onValueChange={(
+                                value,
+                            ) =>
+                                form.setValue(
+                                    "genero",
+                                    value,
+                                    {
+                                        shouldDirty:
+                                            true,
+                                        shouldValidate:
+                                            true,
+                                    },
+                                )
+                            }
+                        >
+                            <SelectTrigger className="w-full">
+                                <SelectValue placeholder="Selecciona tu género" />
+                            </SelectTrigger>
+
+                            <SelectContent>
+                                <SelectItem value="MASCULINO">
+                                    Masculino
+                                </SelectItem>
+
+                                <SelectItem value="FEMENINO">
+                                    Femenino
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        {form.formState.errors
+                            .genero?.message && (
+                            <p className="text-sm text-destructive">
+                                {
+                                    form
+                                        .formState
+                                        .errors
+                                        .genero
+                                        .message
+                                }
+                            </p>
+                        )}
+                    </div>
 
                     <FormField
                         control={form.control}
@@ -243,6 +340,7 @@ export default function EditProfileDialog({
                         label="Ciudad"
                     />
 
+                    {/* País */}
                     <div className="space-y-2">
                         <Label>
                             País
@@ -280,20 +378,19 @@ export default function EditProfileDialog({
                             </SelectContent>
                         </Select>
 
-                        {form.formState
-                            .errors
+                        {form.formState.errors
                             .paisCodigo
                             ?.message && (
-                                <p className="text-sm text-destructive">
-                                    {
-                                        form
-                                            .formState
-                                            .errors
-                                            .paisCodigo
-                                            .message
-                                    }
-                                </p>
-                            )}
+                            <p className="text-sm text-destructive">
+                                {
+                                    form
+                                        .formState
+                                        .errors
+                                        .paisCodigo
+                                        .message
+                                }
+                            </p>
+                        )}
                     </div>
 
                     <FormField

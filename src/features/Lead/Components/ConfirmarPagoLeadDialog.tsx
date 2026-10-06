@@ -55,6 +55,7 @@ export function ConfirmarPagoLeadDialog({
     const actualizarEstado = useUpdateLeadEstado();
 
     const [medioPago, setMedioPago] = useState<MedioPagoType | "">("");
+    const [montoCobrado, setMontoCobrado] = useState("");
     const [referenciaPago, setReferenciaPago] = useState("");
     const [observaciones, setObservaciones] = useState("");
     const [comprobante, setComprobante] = useState<File | null>(null);
@@ -71,6 +72,7 @@ export function ConfirmarPagoLeadDialog({
 
     const limpiar = () => {
         setMedioPago("");
+        setMontoCobrado("");
         setReferenciaPago("");
         setObservaciones("");
         setComprobante(null);
@@ -83,7 +85,7 @@ export function ConfirmarPagoLeadDialog({
     };
 
     const confirmarPago = () => {
-        if (!lead || !medioPago || !comprobante) return;
+        if (!lead || !medioPago || !montoCobrado || !comprobante) return;
 
         actualizarEstado.mutate(
             {
@@ -92,6 +94,7 @@ export function ConfirmarPagoLeadDialog({
                     estado: "PAGO_COMPLETADO",
                     medioPago,
                     moneda: medioPago === "PAYPAL" ? "USD" : "BOB",
+                    montoCobrado: Number(montoCobrado),
                     referenciaPago: referenciaPago.trim() || undefined,
                     observaciones: observaciones.trim() || undefined,
                     comprobante,
@@ -199,17 +202,33 @@ export function ConfirmarPagoLeadDialog({
                     </div>
 
                     {medioPago && (
-                        <div className="space-y-2">
-                            <Label>Moneda</Label>
-                            <Input
-                                value={
-                                    medioPago === "PAYPAL"
-                                        ? "USD"
-                                        : "BOB"
-                                }
-                                disabled
-                            />
-                        </div>
+                        <>
+                            <div className="space-y-2">
+                                <Label>Moneda</Label>
+                                <Input
+                                    value={
+                                        medioPago === "PAYPAL"
+                                            ? "USD"
+                                            : "BOB"
+                                    }
+                                    disabled
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label>Monto cobrado</Label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    value={montoCobrado}
+                                    onChange={(e) =>
+                                        setMontoCobrado(e.target.value)
+                                    }
+                                    placeholder="Ej: 10"
+                                />
+                            </div>
+                        </>
                     )}
 
                     <div className="space-y-2">
@@ -292,6 +311,7 @@ export function ConfirmarPagoLeadDialog({
                         disabled={
                             actualizarEstado.isPending ||
                             !medioPago ||
+                            !montoCobrado ||
                             !comprobante
                         }
                         onClick={confirmarPago}

@@ -128,11 +128,11 @@ export function Navbar() {
                                 shrink-0
                                 items-center
                             "
-                            aria-label="Elaces Latam"
+                            aria-label="Elaces"
                         >
                             <img
                                 src="/logo_white.png"
-                                alt="Elaces Latam"
+                                alt="Elaces"
                                 className="
                                     size-10
                                     object-contain
@@ -145,7 +145,7 @@ export function Navbar() {
 
                             <img
                                 src="/logo_black.png"
-                                alt="Elaces Latam"
+                                alt="Elaces"
                                 className="
                                     hidden
                                     size-10

@@ -37,7 +37,7 @@ export default function AppSidebar() {
                         </div>
 
                         <span className="max-w-0 whitespace-nowrap text-sm font-semibold opacity-0 transition-all duration-300 group-hover/sidebar:max-w-36 group-hover/sidebar:opacity-100">
-                            Elaces Latam
+                            Elaces
                         </span>
                     </div>
 

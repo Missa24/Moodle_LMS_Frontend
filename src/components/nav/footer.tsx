@@ -79,7 +79,7 @@ export function Footer() {
                             <p className="mt-5 max-w-2xl text-sm leading-[1.7] text-muted-foreground sm:text-base">
                                 Explora nuevas áreas, desarrolla tus habilidades
                                 y continúa construyendo tu camino profesional
-                                junto a Elaces Latam.
+                                junto a Elaces.
                             </p>
                         </div>
 
@@ -117,7 +117,7 @@ export function Footer() {
                                 className="inline-flex items-center"
                             >
                                 <span className="text-xl font-bold tracking-[-0.04em] text-primary sm:text-2xl">
-                                    Elaces Latam
+                                    Elaces
                                 </span>
                             </Link>
 
@@ -248,7 +248,7 @@ export function Footer() {
                         <p>
                             ©{" "}
                             {new Date().getFullYear()}{" "}
-                            Elaces Latam. Todos los
+                            Elaces. Todos los
                             derechos reservados.
                         </p>
 
@@ -269,9 +269,6 @@ export function Footer() {
                                 )
                             )}
 
-                            <span>
-                                La Paz · Bolivia
-                            </span>
                         </div>
                     </div>
                 </div>

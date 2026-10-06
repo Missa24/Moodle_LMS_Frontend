@@ -172,7 +172,7 @@ export default function CertificadoParticipacion() {
     return (
         <Document
             title={`Certificado de finalización - ${certificado.nombre}`}
-            author="Elaces Latam"
+            author="Elaces"
             subject={`Certificación en ${certificado.curso}`}
         >
             <Page
@@ -195,7 +195,7 @@ export default function CertificadoParticipacion() {
 
                 <Text style={styles.introduccion}>
                     <Text style={styles.academia}>
-                        Elaces Latam
+                        Elaces
                     </Text>{" "}
                     formando profesionales en el área de la belleza,
                     se enorgullece en otorgar este certificado al

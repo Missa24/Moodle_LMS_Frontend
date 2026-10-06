@@ -39,7 +39,7 @@ export function useGoogleAuth() {
             login(response);
 
             toast.success(
-                "Bienvenido a Elaces Latam"
+                "Bienvenido a Elaces"
             );
 
             const redirectPath =

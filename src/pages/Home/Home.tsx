@@ -17,13 +17,13 @@ export default function Home() {
         <>
             <SEO
                 title="Formación profesional en estética"
-                description="Elaces Latam ofrece formación profesional en cosmetología, cosmiatría, dermatocosmiatría, maquillaje profesional y estética."
+                description="Elaces ofrece formación profesional en cosmetología, cosmiatría, dermatocosmiatría, maquillaje profesional y estética."
                 url="/"
                 structuredData={{
                     "@context": "https://schema.org",
                     "@type": "EducationalOrganization",
-                    name: "Elaces Latam",
-                    url: "https://moodle-lms-frontend-eight.vercel.app",
+                    name: "Elaces",
+                    url: "https://elaceslatam.com",
                     address: {
                         "@type": "PostalAddress",
                         addressLocality: "La Paz",

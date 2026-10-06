@@ -74,7 +74,7 @@ export const GoalsScrollSection = () => {
                         <div className="w-full max-w-[420px]">
                             <img
                                 src="/certificado/certificado_preview.png"
-                                alt="Vista previa de certificación Elaces Latam"
+                                alt="Vista previa de certificación Elaces"
                                 loading="lazy"
                                 decoding="async"
                                 className="h-auto w-full object-contain"

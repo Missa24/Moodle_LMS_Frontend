@@ -49,7 +49,7 @@ export function useLogin() {
             }
 
             toast.success(
-                "Bienvenido a Elaces Latam",
+                "Bienvenido a Elaces",
             );
 
             const redirectPath =
@@ -168,7 +168,7 @@ export function useRegister() {
         ) => {
             login(response);
 
-            toast.success("Cuenta creada correctamente. ¡Bienvenido a Elaces Latam!");
+            toast.success("Cuenta creada correctamente. ¡Bienvenido a Elaces!");
 
             const redirectPath = sessionStorage.getItem(POST_LOGIN_REDIRECT_KEY);
 

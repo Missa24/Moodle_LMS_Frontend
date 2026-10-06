@@ -51,7 +51,7 @@ export default function CursoPageContent() {
     const descripcionCurso =
         curso?.descripcionCorta ||
         curso?.descripcionCompleta ||
-        "Explora los módulos y contenidos disponibles en esta formación de Elaces Latam.";
+        "Explora los módulos y contenidos disponibles en esta formación de Elaces.";
 
     const structuredData = curso
         ? {
@@ -62,7 +62,7 @@ export default function CursoPageContent() {
             url: `${siteUrl}/cursos/${curso.id}`,
             provider: {
                 "@type": "EducationalOrganization",
-                name: "Elaces Latam",
+                name: "Elaces",
                 url: siteUrl,
             },
             ...(curso.rutaPortada

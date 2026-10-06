@@ -127,7 +127,7 @@ export default function CertificadoParticipacion({
     return (
         <Document
             title={`Certificado de participación - ${certificado.nombre}`}
-            author="Elaces Latam"
+            author="Elaces"
             subject={`Participación en el módulo de ${certificado.modulo}`}
         >
             <Page
