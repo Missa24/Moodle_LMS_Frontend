@@ -28,6 +28,7 @@ import {
 } from "@/features/Usuario/Hook/UsuarioHook";
 
 import {
+    useGetLead,
     useGetLeadsByUser,
 } from "@/features/Lead/Hook/LeadHook";
 
@@ -134,6 +135,20 @@ export default function LeadUserDetailPage() {
             usuarioId: string;
         }>();
 
+    const [
+        dialogPagoOpen,
+        setDialogPagoOpen,
+    ] =
+        useState(false);
+
+    const [
+        leadSeleccionadoId,
+        setLeadSeleccionadoId,
+    ] =
+        useState<string | null>(
+            null,
+        );
+
     const usuarioQuery =
         useGetUser(
             usuarioId,
@@ -146,18 +161,10 @@ export default function LeadUserDetailPage() {
             !!usuarioId,
         );
 
-    const [
-        dialogPagoOpen,
-        setDialogPagoOpen,
-    ] =
-        useState(false);
-
-    const [
-        leadSeleccionado,
-        setLeadSeleccionado,
-    ] =
-        useState<LeadUsuarioType | null>(
-            null,
+    const leadDetalleQuery =
+        useGetLead(
+            leadSeleccionadoId ?? "",
+            !!leadSeleccionadoId,
         );
 
     const usuario =
@@ -193,11 +200,10 @@ export default function LeadUserDetailPage() {
 
     const abrirConfirmacionPago =
         (
-            lead:
-                LeadUsuarioType,
+            lead: LeadUsuarioType,
         ) => {
-            setLeadSeleccionado(
-                lead,
+            setLeadSeleccionadoId(
+                lead.id,
             );
 
             setDialogPagoOpen(
@@ -214,7 +220,7 @@ export default function LeadUserDetailPage() {
             );
 
             if (!value) {
-                setLeadSeleccionado(
+                setLeadSeleccionadoId(
                     null,
                 );
             }
@@ -381,8 +387,7 @@ export default function LeadUserDetailPage() {
                                                         >
                                                             {
                                                                 estadoLabels[
-                                                                lead
-                                                                    .estado
+                                                                lead.estado
                                                                 ]
                                                             }
                                                         </Badge>
@@ -483,24 +488,13 @@ export default function LeadUserDetailPage() {
             </div>
 
             <ConfirmarPagoLeadDialog
-                open={
-                    dialogPagoOpen
-                }
-                onOpenChange={
-                    handleDialogPagoChange
-                }
-                lead={
-                    leadSeleccionado
-                }
-                estudianteNombre={
-                    nombreCompleto ||
-                    usuario?.correo
-                }
-                onSuccess={() =>
-                    setLeadSeleccionado(
-                        null,
-                    )
-                }
+                open={dialogPagoOpen}
+                onOpenChange={handleDialogPagoChange}
+                lead={leadDetalleQuery.data ?? null}
+                estudianteNombre={nombreCompleto || usuario?.correo}
+                onSuccess={() => {
+                    setLeadSeleccionadoId(null,);
+                }}
             />
         </>
     );
